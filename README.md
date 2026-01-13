@@ -1,8 +1,6 @@
 # 🎓 Sistema de Gestión Académica Interno - Colegio Vizcaya
 
-![Version](https://img.shields.io/badge/versión-1.3-blue) ![Status](https://img.shields.io/badge/estado-Estable-success) ![Angular](https://img.shields.io/badge/frontend-Angular-red) ![NodeJS](https://img.shields.io/badge/backend-Node.js-green) ![Firebase](https://img.shields.io/badge/db-Firestore-orange)
-
-> Plataforma web integral diseñada para centralizar, digitalizar y automatizar los procesos académicos y administrativos del **Colegio Vizcaya de las Américas (Nivel Secundaria)**.
+> Plataforma De Gestión Integral diseñada para Centralizar, Digitalizar y Automatizar los Procesos Académicos y Administrativos del **Colegio Vizcaya**.
 
 ---
 
@@ -44,12 +42,12 @@ Herramientas operativas para el seguimiento académico diario.
 Panel de control para la supervisión y análisis institucional.
 
 * **📊 Dashboard Ejecutivo (KPIs):**
-    * Total de estudiantes (Activos/Inactivos) desglosado por grado y género.
-    * Promedio general de la escuela en tiempo real.
-    * Monitoreo de grupos sin docente o materia asignada.
+    ** Total de estudiantes (Activos/Inactivos) desglosado por grado y género.
+    ** Promedio general de la escuela en tiempo real.
+    ** Monitoreo de grupos sin docente o materia asignada.
 * **🔍 Supervisión:**
-    * Checklist de cumplimiento de planeaciones docentes (Pendiente/Entregada/Revisada).
-    * Consulta irrestricta de calificaciones de cualquier grupo.
+    ** Checklist de cumplimiento de planeaciones docentes (Pendiente/Entregada/Revisada).
+    ** Consulta irrestricta de calificaciones de cualquier grupo.
 * **🗓️ Agenda Directiva:** Gestión de tareas y actividades diarias.
 * **📄 Actas y Reportes:** Generación de "Actas de Calificaciones" consolidadas por grupo y periodo listas para impresión.
 
