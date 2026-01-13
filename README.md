@@ -1,111 +1,117 @@
-# Sistema Integral de Gestión Académica - Colegio Vizcaya (Nivel Secundaria)
+# 🎓 Sistema de Gestión Académica Interno - Colegio Vizcaya
 
-Plataforma web integral diseñada para centralizar, digitalizar y automatizar los procesos académicos y administrativos del **Colegio Vizcaya de las Américas (Durango)**. Este sistema sustituye los métodos manuales tradicionales, garantizando la integridad de la información, reduciendo la carga operativa y facilitando la toma de decisiones estratégicas.
+![Version](https://img.shields.io/badge/versión-1.3-blue) ![Status](https://img.shields.io/badge/estado-Estable-success) ![Angular](https://img.shields.io/badge/frontend-Angular-red) ![NodeJS](https://img.shields.io/badge/backend-Node.js-green) ![Firebase](https://img.shields.io/badge/db-Firestore-orange)
+
+> Plataforma web integral diseñada para centralizar, digitalizar y automatizar los procesos académicos y administrativos del **Colegio Vizcaya de las Américas (Nivel Secundaria)**.
+
+---
 
 ## 📋 Descripción del Proyecto
 
-El **Sistema de Gestión Escolar Interno** es una solución tecnológica desarrollada para atender las necesidades críticas del área de Control Escolar, Docencia y Dirección. La plataforma permite la captura remota de calificaciones, el control de asistencias en tiempo real, la gestión de planeaciones docentes y la generación automatizada de documentación oficial.
+Este sistema implementa una arquitectura moderna para solucionar la dispersión de información académica. Sustituye los registros manuales por un **modelo de datos normalizado** en la nube, garantizando la integridad de la información, auditoría de acciones y optimización de tiempos operativos para la Dirección, Control Escolar y Docentes.
 
-### Objetivos Principales
-* **Centralización:** Unificación de datos académicos (calificaciones, asistencias, expedientes) en una base de datos segura en la nube.
-* **Automatización:** Generación instantánea de reportes oficiales (boletas, listas de asistencia) en formato PDF.
-* **Eficiencia:** Reducción significativa de tiempos administrativos y errores de transcripción humana.
-* **Supervisión:** Herramientas para el seguimiento del desempeño académico y cumplimiento docente.
+### 🎯 Objetivos Estratégicos
+* **Centralización:** Unificación de expedientes (Modelo Persona/Rol) para evitar redundancia de datos.
+* **Integridad:** Reglas de negocio estrictas para la captura de calificaciones y control de periodos.
+* **Supervisión:** Herramientas de inteligencia de negocios para la toma de decisiones directivas.
+* **Seguridad:** Autenticación robusta y registros de auditoría (Logs) de todas las operaciones críticas.
 
 ---
 
-## 🚀 Módulos y Funcionalidades
+## 🌟 Módulos y Funcionalidades
 
-El sistema cuenta con roles de acceso diferenciados y seguridad basada en autenticación:
+El sistema se divide en módulos funcionales basados en roles de usuario:
 
-### 1. 🎓 Control Escolar (Administrador)
-* **Gestión de Usuarios:** Altas, bajas y modificaciones de perfiles (Alumnos y Personal).
-* [cite_start]**Carga Masiva:** Importación de estudiantes mediante archivos CSV para inicio de ciclo rápido[cite: 980].
-* **Estructura Académica:** Administración de ciclos escolares, grupos, materias y periodos de evaluación.
-* **Reportes Oficiales:** Generación de boletas y documentación institucional membretada.
+### 1. 🏛️ Control Escolar (Administración)
+Encargado de la infraestructura de datos y gestión del ciclo escolar.
+
+* **👥 Gestión de Usuarios (CRUD):** Administración de cuentas con baja lógica para Estudiantes, Docentes y Directivos.
+* **🚀 Carga Masiva Inteligente:** Importación de estudiantes mediante archivos **CSV**, con creación automática de credenciales y validación de duplicados.
+* **📅 Control de Periodos:** Gestión de estatus (**ABIERTO/CERRADO**) para los periodos de evaluación, bloqueando o permitiendo la captura de notas según el calendario oficial.
+* **🏫 Estructura Académica:** Administración de catálogos de Materias, Grupos y Asignaciones Docentes.
 
 ### 2. 👨‍🏫 Módulo Docente
-* [cite_start]**Captura de Calificaciones:** Interfaz optimizada para el registro de notas por rubros y periodos con validación automática[cite: 859].
-* [cite_start]**Control de Asistencia:** Registro diario de incidencias (Faltas, Retardos, Asistencias)[cite: 1163].
-* [cite_start]**Planeaciones Didácticas:** Carga y gestión de planeaciones con integración directa a **Google Drive**[cite: 874].
-* **Reportes de Conducta:** Registro y seguimiento de incidencias disciplinarias.
+Herramientas operativas para el seguimiento académico diario.
+
+* **📝 Captura de Calificaciones:**
+    * Validación automática según el estatus del periodo (Bloqueo si está cerrado).
+    * Gestión de rubros de evaluación personalizados.
+* **✅ Control de Asistencia:** Registro diario de incidencias (Faltas, Retardos) vinculado al expediente del alumno.
+* **📂 Planeaciones Didácticas:** Registro y entrega de planeaciones con integración a **Google Drive**.
+* **⚠️ Reportes de Indisciplina:** Generación de incidencias conductuales con niveles de severidad.
 
 ### 3. 📈 Módulo de Dirección
-* **Dashboard (KPIs):** Visualización de estadísticas globales y rendimiento académico.
-* **Supervisión:** Validación de planeaciones docentes y revisión de expedientes.
-* **Consulta:** Acceso a historial académico y disciplinario de los estudiantes.
+Panel de control para la supervisión y análisis institucional.
+
+* **📊 Dashboard Ejecutivo (KPIs):**
+    * Total de estudiantes (Activos/Inactivos) desglosado por grado y género.
+    * Promedio general de la escuela en tiempo real.
+    * Monitoreo de grupos sin docente o materia asignada.
+* **🔍 Supervisión:**
+    * Checklist de cumplimiento de planeaciones docentes (Pendiente/Entregada/Revisada).
+    * Consulta irrestricta de calificaciones de cualquier grupo.
+* **🗓️ Agenda Directiva:** Gestión de tareas y actividades diarias.
+* **📄 Actas y Reportes:** Generación de "Actas de Calificaciones" consolidadas por grupo y periodo listas para impresión.
 
 ---
 
-## 🛠 Stack Tecnológico
+## 🛠️ Stack Tecnológico
 
-[cite_start]El proyecto fue desarrollado utilizando una arquitectura **Cliente-Servidor (MVC)** desacoplada y servicios en la nube [cite: 884-911].
+El proyecto utiliza una **Arquitectura Modelo 1 (Backend Dedicado + Frontend)** desacoplada para garantizar escalabilidad y mantenimiento.
 
-### Frontend (Cliente)
-* **Framework:** Angular (TypeScript, HTML5, SCSS).
-* **Diseño:** Interfaz modular y responsiva.
-* **Comunicación:** RxJS para manejo reactivo de datos.
+| Componente | Tecnología | Descripción |
+| :--- | :--- | :--- |
+| **Frontend** | ![Angular](https://img.shields.io/badge/-Angular-DD0031?logo=angular&logoColor=white) | SPA robusta, TypeScript, RxJS para manejo reactivo. |
+| **Backend** | ![NodeJS](https://img.shields.io/badge/-Node.js-339933?logo=node.js&logoColor=white) | Express.js exponiendo una API RESTful segura. |
+| **Base de Datos** | ![Firestore](https://img.shields.io/badge/-Firestore-FFCA28?logo=firebase&logoColor=black) | NoSQL con esquema normalizado (Colecciones separadas). |
+| **Autenticación** | ![Firebase Auth](https://img.shields.io/badge/-Auth-FFCA28?logo=firebase&logoColor=black) | Gestión de identidad segura (Email/Password). |
+| **Infraestructura** | ![Google Cloud](https://img.shields.io/badge/-Google_Cloud-4285F4?logo=google-cloud&logoColor=white) | Hosting y Cloud Functions. |
 
-### Backend (Servidor)
-* **Runtime:** Node.js.
-* **Framework:** Express.js (RESTful API).
-* **Integraciones:** Google Drive API v3 (Almacenamiento de evidencias).
-
-### Base de Datos & Cloud (Firebase)
-* **Base de Datos:** Google Cloud Firestore (NoSQL) para escalabilidad y flexibilidad de esquemas.
-* **Autenticación:** Firebase Authentication (Manejo de sesiones y seguridad).
-* **Hosting:** Firebase Hosting (Despliegue del cliente).
+### 🔒 Seguridad y Auditoría
+* **Logs de Sistema:** Registro automático de todas las acciones de creación, actualización y borrado (CUD) en una colección de auditoría.
+* **Validación de Periodos:** El backend rechaza intentos de modificación de calificaciones fuera de fechas establecidas.
 
 ---
 
-## 🔧 Instalación y Despliegue Local
-
-Sigue estos pasos para ejecutar el proyecto en un entorno local de desarrollo.
+## 💻 Instalación y Despliegue Local
 
 ### Prerrequisitos
-* Node.js (v18 o superior)
+* Node.js (v18 LTS o superior)
 * Angular CLI
-* Cuenta de Google Firebase configurada
+* Credenciales de Firebase Admin SDK
 
-### Pasos
+### Pasos de Instalación
 
 1.  **Clonar el repositorio:**
     ```bash
     git clone [https://github.com/25CristopherJoshuaReyesGtz1405/ProjectColegioVizcaya_2026.git](https://github.com/25CristopherJoshuaReyesGtz1405/ProjectColegioVizcaya_2026.git)
     ```
 
-2.  **Configurar el Backend:**
+2.  **Configurar Backend:**
     ```bash
     cd Backend
     npm install
-    # Configurar las variables de entorno (.env) con las credenciales de Firebase y Google Cloud
+    # Crear archivo .env con las credenciales de servicio de Firebase
     npm run dev
     ```
 
-3.  **Configurar el Frontend:**
+3.  **Configurar Frontend:**
     ```bash
     cd Frontend
     npm install
-    # Asegurarse de tener los environments de Angular configurados
     ng serve
     ```
 
-4.  **Acceso:**
-    Navegar a `http://localhost:4200/` para ver la aplicación.
+4.  **Acceso:** Navegar a `http://localhost:4200/`.
 
 ---
 
-## 👥 Autores
-
-* [cite_start]**Christopher Joshua Reyes Gutiérrez** - *Developer (Diseño técnico, implementación full-stack e integración)*[cite: 429].
-* [cite_start]**Christian Gibran Espituñal Villanueva** - *Project Manager (Análisis de requerimientos, documentación y gestión)*[cite: 426].
-
----
-
-## 📄 Estado del Proyecto
+## 📄 Licencia
 * **Versión:** 1.3
-* [cite_start]**Estado:** Funcional (~90% implementado)[cite: 989].
+* **Estado:** Funcional (~90% implementado).
+* **Christopher Joshua Reyes Gutiérrez** - *Developer (Diseño técnico, implementación full-stack e integración)*.
+* **Christian Gibran Espituñal Villanueva** - *Project Manager (Análisis de requerimientos, documentación y gestión)*.
 * **Licencia:** Privada / Uso exclusivo para el Colegio Vizcaya de las Américas.
-
 ---
+
 *Desarrollado como proyecto de Residencia Profesional para la carrera de Ingeniería en Sistemas Computacionales.*
