@@ -1,0 +1,115 @@
+<div class="modal-backdrop fade-in" (click)="close.emit()">
+    <div class="modal-content premium-modal" (click)="$event.stopPropagation()">
+
+        <header class="modal-header guinda-header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <i class="bi bi-cloud-arrow-up-fill"></i>
+                </div>
+                <div class="header-text">
+                    <h2>Subir Planeación</h2>
+                    <p class="subtitle">Entrega de instrumentación didáctica.</p>
+                </div>
+            </div>
+            <button class="btn-close-white" (click)="close.emit()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </header>
+
+        <div class="modal-body">
+            <form #form="ngForm">
+
+                <h6 class="section-label">DATOS ACADÉMICOS</h6>
+
+                <div class="form-grid">
+                    <div class="field-group">
+                        <label>Asignatura / Grupo <span class="required">*</span></label>
+                        <div class="input-box select-box">
+                            <i class="bi bi-collection-fill icon"></i>
+                            <select name="grupo" [(ngModel)]="datos.grupoId" required>
+                                <option value="" disabled selected>Seleccionar grupo...</option>
+                                <option *ngFor="let g of misGrupos" [value]="g.id">
+                                    {{ g.materia?.nombre || 'Sin Materia' }} - {{ g.materia?.grado }}°
+                                </option>
+                            </select>
+                            <i class="bi bi-chevron-down arrow"></i>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label>Periodo de Evaluación <span class="required">*</span></label>
+                        <div class="input-box select-box">
+                            <i class="bi bi-calendar-week icon"></i>
+                            <select name="periodo" [(ngModel)]="datos.periodoId" required>
+                                <option value="" disabled selected>Seleccionar periodo...</option>
+                                <option *ngFor="let p of periodos" [value]="p.id">{{ p.nombre }}</option>
+                            </select>
+                            <i class="bi bi-chevron-down arrow"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-group full-width mt-3">
+                    <label>Título del Documento</label>
+                    <div class="input-box">
+                        <i class="bi bi-type-h1 icon"></i>
+                        <input type="text" name="nombre" [(ngModel)]="datos.nombre"
+                            placeholder="Ej: Planeación Matemáticas Parcial 1" required>
+                    </div>
+                </div>
+
+                <h6 class="section-label mt-4">DOCUMENTO DIGITAL (PDF/WORD)</h6>
+
+                <div class="upload-zone" (dragover)="onDragOver($event)" (drop)="onDrop($event)"
+                    *ngIf="!archivoSeleccionado">
+
+                    <input type="file" id="fileInput" (change)="onFileSelected($event)" hidden accept=".pdf,.doc,.docx">
+
+                    <label for="fileInput" class="upload-label">
+                        <div class="icon-cloud">
+                            <i class="bi bi-cloud-upload"></i>
+                        </div>
+                        <p class="main-text">Haz clic para subir o arrastra tu archivo aquí</p>
+                        <p class="sub-text">Soporta PDF, DOCX (Máx 5MB)</p>
+                    </label>
+                </div>
+
+                <div class="file-preview" *ngIf="archivoSeleccionado">
+                    <div class="file-icon">
+                        <i class="bi bi-file-earmark-pdf-fill text-danger"
+                            *ngIf="archivoSeleccionado.type.includes('pdf')"></i>
+                        <i class="bi bi-file-earmark-word-fill text-primary"
+                            *ngIf="archivoSeleccionado.type.includes('word')"></i>
+                    </div>
+                    <div class="file-info">
+                        <span class="file-name">{{ archivoSeleccionado.name }}</span>
+                        <span class="file-size">{{ (archivoSeleccionado.size / 1024 / 1024) | number:'1.2-2' }}
+                            MB</span>
+                    </div>
+                    <button class="btn-remove-file" (click)="quitarArchivo()">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+
+                <div class="error-msg" *ngIf="errorArchivo">
+                    <i class="bi bi-exclamation-circle"></i> {{ errorArchivo }}
+                </div>
+
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-ghost" (click)="close.emit()" [disabled]="cargando">Cancelar</button>
+
+            <button class="btn-solid" (click)="guardar()" [disabled]="!form.valid || !archivoSeleccionado || cargando">
+                <ng-container *ngIf="!cargando">
+                    <i class="bi bi-send-fill me-2"></i> Enviar Planeación
+                </ng-container>
+                <ng-container *ngIf="cargando">
+                    <span class="spinner"></span> Subiendo a Drive...
+                </ng-container>
+            </button>
+        </div>
+
+    </div>
+</div>

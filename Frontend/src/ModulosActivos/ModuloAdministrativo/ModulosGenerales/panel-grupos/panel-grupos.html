@@ -1,0 +1,117 @@
+<div class="dashboard-page">
+  <!-- 1. ENCABEZADO CON BIENVENIDA -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1 class="titulo-principal">Control Y Gestión De Materias En General</h1>
+      <br />
+      <p class="subtitulo">Resumen gestión operativa del Colegio Vizcaya.</p>
+      <br />
+    </div>
+  </header>
+
+  <!-- 2. TARJETAS DE INDICADORES (KPIs) -->
+  <!-- Se muestran con animación escalonada -->
+  <section class="stats-section" *ngIf="!estaCargando && estadisticas; else loadingSkeleton">
+    <app-tarjeta-stadistic
+      class="kpi-card delay-100"
+      titulo="Materias Activas"
+      [valor]="estadisticas.conteoEstudiantes.activos"
+      detalle="Todas las materias activas"
+      color="verde"
+      icono="bi-people-fill"
+    >
+    </app-tarjeta-stadistic>
+
+    <app-tarjeta-stadistic
+      class="kpi-card delay-100"
+      titulo="Estudiantes de 1ero"
+      [valor]="estadisticas.conteoEstudiantes.activos"
+      detalle="Materias de 1er grado"
+      color="morado"
+      icono="bi-people-fill"
+    >
+    </app-tarjeta-stadistic>
+
+    <app-tarjeta-stadistic
+      class="kpi-card delay-200"
+      titulo="Estudiantes de 2ndo"
+      [valor]="estadisticas.conteoEstudiantes.inactivos"
+      detalle="Materias de 2ndo grado"
+      color="naranja"
+      icono="bi-person-video3"
+    >
+    </app-tarjeta-stadistic>
+
+    <app-tarjeta-stadistic
+      class="kpi-card delay-400"
+      titulo="Estudiantes de 3ero"
+      [valor]="estadisticas.conteoReportesIndisciplina.total"
+      detalle="Materias de 3er grado"
+      color="guinda"
+      icono="bi-graph-up-arrow"
+    >
+    </app-tarjeta-stadistic>
+  </section>
+
+  <!-- TEMPLATE DE CARGA (SKELETON) -->
+  <ng-template #loadingSkeleton>
+    <div class="stats-section">
+      <div class="skeleton-card" *ngFor="let i of [1, 2, 3, 4]"></div>
+    </div>
+  </ng-template>
+
+  <!-- 3. CONTENIDO PRINCIPAL (GRID) -->
+  <div class="main-layout">
+    <!-- COLUMNA IZQUIERDA (Datos Masivos) -->
+    <div class="col-primary">
+      <!-- Widget: Alumnos -->
+       <div>
+        <app-grupos-widget
+          (manage)="abrirGestionAlumnos($event)"
+          (delete)="confirmarEliminar($event)"
+          (add)="abrirModalCrear($event)"
+        >
+        </app-grupos-widget>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA (Panel Lateral de Gestión) -->
+    <aside class="col-secondary">
+      <aside class="col-secondary d-flex flex-column gap-4">
+        <div style="height: auto"><app-materias-alerts-widget></app-materias-alerts-widget></div>
+
+        <div class="widget-card">
+          <div class="widget-header">
+            <div class="header-icon guinda-theme"><i class="bi bi-lightning-charge-fill"></i></div>
+            <div class="header-info">
+              <h3>Acciones Rápidas</h3>
+            </div>
+          </div>
+          <div class="widget-body p-3 d-flex flex-column gap-2">
+            <button class="btn btn-outline-secondary w-100 text-start">
+              <i class="bi bi-file-earmark-pdf me-2"></i> Descargar Plan de Estudios
+            </button>
+            <button class="btn btn-outline-secondary w-100 text-start">
+              <i class="bi bi-upload me-2"></i> Carga Masiva (CSV)
+            </button>
+          </div>
+        </div>
+      </aside>
+    </aside>
+  </div>
+</div>
+
+<app-modal-grupo-nuevo
+  *ngIf="mostrarModalNuevo"
+  (close)="mostrarModalNuevo = false"
+  (success)="alCrearGrupo()"
+>
+</app-modal-grupo-nuevo>
+
+<app-modal-grupo-gestion
+  *ngIf="mostrarModalGestion"
+  [grupo]="grupoSeleccionado!"
+  (close)="mostrarModalGestion = false"
+  (updated)="alTerminarGestion()"
+>
+</app-modal-grupo-gestion>

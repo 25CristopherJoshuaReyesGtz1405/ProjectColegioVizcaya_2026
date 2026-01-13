@@ -1,0 +1,127 @@
+<div class="modal-backdrop fade-in" (click)="close.emit()">
+  <div class="modal-content premium-modal" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header">
+      <div class="brand-icon">
+        <i class="bi bi-person-plus-fill"></i>
+      </div>
+      <div class="header-titles">
+        <h2>Registro de Estudiante</h2>
+        <p>Alta de nueva matrícula en el sistema.</p>
+      </div>
+      <button class="btn-close-custom" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </header>
+
+    <form class="modal-body custom-scroll" #form="ngForm">
+      
+      <div class="section-label">
+        <i class="bi bi-person-lines-fill"></i> Información Personal
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre(s)</label>
+          <div class="input-wrapper">
+            <input type="text" name="nombre" [(ngModel)]="nuevoEstudiante.nombre" required placeholder="Ej. Juan Pablo">
+            <i class="bi bi-person"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Apellidos</label>
+          <div class="input-wrapper">
+            <input type="text" name="apellidos" [(ngModel)]="nuevoEstudiante.apellidos" required placeholder="Ej. Pérez López">
+            <i class="bi bi-person-badge"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>CURP</label>
+          <div class="input-wrapper">
+            <input type="text" name="curp" [(ngModel)]="nuevoEstudiante.curp" required placeholder="Clave Única de Registro" style="text-transform: uppercase;">
+            <i class="bi bi-card-heading"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Fecha de Nacimiento</label>
+          <div class="input-wrapper">
+            <input type="date" name="fechaNacimiento" [(ngModel)]="nuevoEstudiante.fechaNacimiento" required>
+            </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Sexo</label>
+          <div class="input-wrapper">
+            <select name="sexo" [(ngModel)]="nuevoEstudiante.sexo" required>
+              <option value="HOMBRE">Hombre</option>
+              <option value="MUJER">Mujer</option>
+            </select>
+            <i class="bi bi-gender-ambiguous"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">
+        <i class="bi bi-mortarboard-fill"></i> Datos Académicos y Cuenta
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label>Matrícula Institucional</label>
+          <div class="input-wrapper">
+            <input type="text" name="matricula" [(ngModel)]="nuevoEstudiante.matricula" required placeholder="Ej. 2024001">
+            <i class="bi bi-upc-scan"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Grado</label>
+          <div class="input-wrapper">
+            <input type="number" name="grado" [(ngModel)]="nuevoEstudiante.grado" required min="1" max="10">
+            <i class="bi bi-123"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Grupo</label>
+          <div class="input-wrapper">
+            <input type="text" name="grupo" [(ngModel)]="nuevoEstudiante.grupo" required maxlength="2" placeholder="Ej. A" style="text-transform: uppercase;">
+            <i class="bi bi-people"></i>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Correo Institucional / Personal</label>
+          <div class="input-wrapper">
+            <input type="email" name="email" [(ngModel)]="nuevoEstudiante.email" required placeholder="alumno@vizcaya.edu.mx">
+            <i class="bi bi-envelope"></i>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Contraseña de Acceso</label>
+          <div class="input-wrapper">
+            <input type="password" name="password" [(ngModel)]="nuevoEstudiante.password" required minlength="6" placeholder="Mínimo 6 caracteres">
+            <i class="bi bi-key"></i>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="close.emit()" [disabled]="guardando">
+        Cancelar Operación
+      </button>
+      
+      <button class="btn-primary" (click)="guardar()" [disabled]="!form.valid || guardando">
+        <span *ngIf="!guardando"><i class="bi bi-check-circle-fill"></i> Registrar Estudiante</span>
+        <span *ngIf="guardando"><i class="bi bi-arrow-repeat spin"></i> Procesando...</span>
+      </button>
+    </div>
+
+  </div>
+</div>

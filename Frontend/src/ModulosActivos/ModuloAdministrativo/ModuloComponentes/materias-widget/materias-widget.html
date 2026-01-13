@@ -1,0 +1,53 @@
+<div class="widget-card h-100 animate-slide-up">
+
+  <div class="widget-body custom-scroll">
+    
+    <div *ngIf="cargando" class="loading-state">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+
+    <div *ngIf="!cargando && listaMaterias.length === 0" class="empty-state">
+      <i class="bi bi-folder2-open"></i>
+      <p>No hay materias registradas.</p>
+    </div>
+
+    <div class="table-responsive" *ngIf="!cargando && listaMaterias.length > 0">
+      <table class="materias-table">
+        <thead>
+          <tr>
+            <th class="th-clave">CLAVE</th>
+            <th class="th-asig">ASIGNATURA</th>
+            <th class="th-grado text-center">GRADO</th>
+            <th class="th-actions text-end">ACCIONES</th> </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of listaMaterias">
+            <td>
+              <span class="badge-clave">{{ m.claveMateria }}</span>
+            </td>
+            <td>
+              <span class="text-asignatura">{{ m.nombre }}</span>
+            </td>
+            <td class="text-center">
+              <div class="circle-grado">{{ m.grado }}°</div>
+            </td>
+            <td class="text-end">
+              <div class="actions-group">
+                <button class="btn-icon btn-print" (click)="onImprimir(m)" title="Imprimir Ficha">
+                  <i class="bi bi-printer"></i>
+                </button>
+                <button class="btn-icon btn-edit" (click)="onEditar(m)" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn-icon btn-delete" (click)="onEliminar(m)" title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>

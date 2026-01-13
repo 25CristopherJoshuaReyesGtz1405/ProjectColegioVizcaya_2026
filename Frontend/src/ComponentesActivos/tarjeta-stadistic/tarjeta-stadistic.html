@@ -1,0 +1,22 @@
+<div class="card-container" [ngClass]="'gradiente-' + color">
+  
+  <!-- Contenido Principal -->
+  <div class="contenido">
+    <p class="titulo">{{ titulo }}</p>
+    <h3 class="valor">{{ valor }}</h3>
+    
+    <!-- Línea decorativa y detalle -->
+    <div class="footer-card" *ngIf="detalle">
+      <span class="indicador"></span>
+      <p class="detalle">{{ detalle }}</p>
+    </div>
+  </div>
+
+  <!-- Icono de Fondo (Decorativo) -->
+  <div class="icono-fondo">
+    <i class="bi" [ngClass]="icono"></i>
+  </div>
+
+  <!-- Efecto de Brillo (Overlay) -->
+  <div class="brillo"></div>
+</div>

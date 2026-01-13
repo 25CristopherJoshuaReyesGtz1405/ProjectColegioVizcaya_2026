@@ -1,0 +1,126 @@
+/* VARIABLES TEMA ESTUDIANTE (GUINDA) */
+:host {
+  --stu-primary: #8C1D40;       /* Guinda Institucional */
+  --stu-primary-dark: #5a1a21;  /* Guinda Oscuro */
+  --stu-accent: #d97706;        /* Dorado/Bronce para detalles */
+  --stu-icon-bg: #fff1f2;       /* Fondo rosado muy claro para iconos */
+  --stu-bg-gradient: linear-gradient(145deg, #ffffff, #fffbfc);
+
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  
+  --active-color: #10b981; 
+  --inactive-color: #ef4444;
+  --border-color: #f3f4f6;
+
+  display: block;
+  height: 100%;
+}
+
+.btn-id {
+  color: #4f46e5; /* Índigo */
+  &:hover { background: #eef2ff; }
+}
+
+/* --- TARJETA PRINCIPAL --- */
+.student-card {
+  position: relative;
+  background: var(--stu-bg-gradient);
+  border-radius: 36px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0,0,0,0.02);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  height: 100%;
+  width: 97.01%;
+
+  /* Animación Hover (Elevación y Brillo) */
+  &:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 15px 30px -10px rgba(140, 29, 64, 0.15), 0 5px 15px -5px rgba(0,0,0,0.05);
+    border-color: rgba(140, 29, 64, 0.2);
+
+    .avatar-placeholder, .avatar-img { transform: scale(1.08); }
+    .icon-box { background: var(--stu-primary); color: white; transform: rotate(-5deg); }
+  }
+
+  /* Estado Inactivo */
+  &.status-inactive {
+    .status-stripe { background: var(--inactive-color); }
+    opacity: 0.75; background: #fff5f5;
+    &:hover { transform: none; box-shadow: none; border-color: var(--inactive-color); }
+  }
+  &.status-active .status-stripe { background: var(--stu-primary); }
+}
+
+.status-stripe { width: 5px; flex-shrink: 0; background: #cbd5e1; transition: background 0.3s; }
+.card-content { flex: 1; padding: 1.25rem; display: flex; flex-direction: column; }
+
+/* --- ENCABEZADO --- */
+.card-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem; }
+.avatar-container { position: relative; width: 58px; height: 58px; flex-shrink: 0; border: 3px solid white; }
+
+.avatar-img, .avatar-placeholder {
+  width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; border-radius: 36px;
+}
+
+/* Degradado Guinda Premium */
+.avatar-placeholder.gradient-student {
+  display: grid; place-items: center; font-weight: 700; color: white; font-size: 1.2rem;
+  background: linear-gradient(135deg, var(--stu-primary), #be185d);
+}
+
+.status-dot {
+  position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px;
+  border-radius: 50%; border: 2px solid white; background: var(--active-color);
+}
+.status-inactive .status-dot { background: var(--inactive-color); }
+
+.header-text { flex: 1; overflow: hidden; }
+
+.student-name {
+  margin: 0; font-size: 1.05rem; color: var(--text-main); font-weight: 700; line-height: 1.2;
+  .last-name { color: var(--text-muted); font-weight: 500; }
+}
+
+/* Placa de Matrícula (Estilo Cinta) */
+.chip-matricula.ribbon-effect {
+  display: inline-flex; align-items: center; gap: 0.3rem; margin-top: 0.3rem;
+  background: linear-gradient(90deg, #f1f5f9, #e2e8f0);
+  color: var(--text-muted);
+  padding: 0.2rem 0.6rem; border-radius: 4px;
+  font-size: 0.7rem; font-weight: 700; font-family: monospace;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* --- CUERPO --- */
+.data-item { display: flex; align-items: center; gap: 0.75rem; }
+.icon-box {
+  width: 32px; height: 32px;
+  background: var(--stu-icon-bg); color: var(--stu-primary);
+  display: grid; place-items: center; font-size: 1rem; flex-shrink: 0;
+  transition: all 0.3s ease; border: 1px solid rgba(140, 29, 64, 0.05);
+}
+.data-text { display: flex; flex-direction: column; line-height: 1.1; label { margin-bottom: 2px; } }
+.email-text { font-size: 0.8rem; }
+.text-primary { color: var(--stu-primary) !important; } /* Sobrescribimos primary de bootstrap localmente */
+
+/* --- PIE Y ACCIONES --- */
+.status-indicator { width: 8px; height: 8px; border-radius: 50%; }
+
+.card-footer { margin-top: auto; }
+.action-btn {
+  width: 34px; height: 34px; background: white; color: var(--text-muted);
+  display: grid; place-items: center; font-size: 1rem; cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  &:hover { transform: translateY(-3px); }
+  &.btn-print:hover { background: #eff6ff; color: #3b82f6; }
+  &.btn-edit:hover { background: #fffbeb; color: #f59e0b; }
+  &.btn-delete:hover { background: #fef2f2; color: #ef4444; }
+}
+
+/* Animaciones */
+.fade-in { animation: fadeInUp 0.5s ease-out forwards; opacity: 0; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

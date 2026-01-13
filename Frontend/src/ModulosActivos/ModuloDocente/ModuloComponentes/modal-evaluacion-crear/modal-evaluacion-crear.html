@@ -1,0 +1,85 @@
+<div class="modal-backdrop fade-in" (click)="cerrarModal()">
+  <div class="modal-content premium-modal" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header guinda-header">
+      <div class="header-content">
+        <div class="header-icon">
+          <i class="bi bi-sliders"></i>
+        </div>
+        <div class="header-text">
+          <h2>Nuevo Criterio</h2>
+          <p class="subtitle">Configuración de evaluación</p>
+        </div>
+      </div>
+      <button class="btn-close-white" (click)="cerrarModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </header>
+
+    <div class="modal-body custom-scroll">
+      
+      <form #form="ngForm">
+        
+        <h6 class="section-label">TIPO DE ACTIVIDAD</h6>
+        
+        <div class="cards-grid">
+          <div class="type-card" 
+               *ngFor="let t of tiposActividad"
+               [class.selected]="nuevaEvaluacion.tipo === t.id"
+               (click)="seleccionarTipo(t.id)">
+            
+            <div class="check-badge" *ngIf="nuevaEvaluacion.tipo === t.id">
+              <i class="bi bi-check"></i>
+            </div>
+
+            <i class="bi {{ t.icon }} card-icon" [style.color]="t.color"></i>
+            <span class="card-label">{{ t.label }}</span>
+          </div>
+        </div>
+
+        <h6 class="section-label mt-4">DETALLES GENERALES</h6>
+        
+        <div class="form-grid">
+          <div class="field-group flex-grow">
+            <label>Nombre del Rubro <span class="required">*</span></label>
+            <div class="input-box">
+              <i class="bi bi-tag-fill icon"></i>
+              <input type="text" name="nombre" [(ngModel)]="nuevaEvaluacion.nombre" 
+                     placeholder="Ej. Examen Parcial 1" required autocomplete="off">
+            </div>
+          </div>
+
+          <div class="field-group w-30">
+            <label>Valor (%) <span class="required">*</span></label>
+            <div class="input-box">
+              <i class="bi bi-percent icon"></i>
+              <input type="number" name="porcentaje" [(ngModel)]="nuevaEvaluacion.porcentaje" 
+                     min="1" max="100" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-alert mt-3">
+          <i class="bi bi-info-circle-fill"></i>
+          <p>La suma de todos los criterios en este periodo debe dar 100%.</p>
+        </div>
+
+      </form>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="cerrarModal()" [disabled]="cargando">Cancelar</button>
+      
+      <button class="btn-solid" (click)="guardar()" [disabled]="!form.valid || cargando">
+        <ng-container *ngIf="!cargando">
+          <i class="bi bi-plus-lg me-2"></i> Crear Rubro
+        </ng-container>
+        <ng-container *ngIf="cargando">
+          <span class="spinner"></span> Guardando...
+        </ng-container>
+      </button>
+    </div>
+
+  </div>
+</div>

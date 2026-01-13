@@ -1,0 +1,81 @@
+<div class="modal-backdrop fade-in" (click)="close.emit()">
+  <div class="modal-content institucional-modal" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header guinda-header">
+      <div class="header-content">
+        <div class="header-icon">
+          <i class="bi bi-mortarboard-fill"></i>
+        </div>
+        <div class="header-text">
+          <h2>Crear Nuevo Grupo</h2>
+          <p class="subtitle">Configuración de ciclo escolar y asignación académica.</p>
+        </div>
+      </div>
+      <button class="btn-close-white" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </header>
+
+    <form class="modal-body" #form="ngForm">
+      
+      <div class="form-section">
+        <h6 class="section-title">Detalles del Curso</h6>
+
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="ciclo">Ciclo Escolar <span class="required">*</span></label>
+            <div class="input-group premium-input">
+              <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+              <input type="text" id="ciclo" name="ciclo" 
+                     [(ngModel)]="nuevoGrupo.cicloEscolar" required 
+                     placeholder="Ej. 2024-2025" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="materia">Asignatura <span class="required">*</span></label>
+            <div class="input-group premium-input">
+              <span class="input-group-text"><i class="bi bi-journal-bookmark"></i></span>
+              <select id="materia" name="materia" [(ngModel)]="nuevoGrupo.materiaId" required class="form-select">
+                <option value="" disabled selected>Seleccionar asignatura...</option>
+                <option *ngFor="let m of materias" [value]="m.id">
+                  {{ m.nombre }} ({{ m.grado }}°)
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="docente">Docente Titular <span class="required">*</span></label>
+            <div class="input-group premium-input">
+              <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+              <select id="docente" name="docente" [(ngModel)]="nuevoGrupo.empleadoUid" required class="form-select">
+                <option value="" disabled selected>Asignar docente...</option>
+                <option *ngFor="let d of docentes" [value]="d.persona.uid">
+                  {{ d.persona.apellidos }} {{ d.persona.nombre }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline-secondary btn-premium" (click)="close.emit()" [disabled]="cargando">
+        Cancelar
+      </button>
+      <button class="btn btn-guinda btn-premium w-150" (click)="guardar()" [disabled]="!form.valid || cargando">
+        <span *ngIf="!cargando">
+          <i class="bi bi-check2-circle me-2"></i> Crear Grupo
+        </span>
+        <span *ngIf="cargando">
+          <div class="spinner-border spinner-border-sm text-light me-2" role="status"></div>
+          Guardando...
+        </span>
+      </button>
+    </div>
+
+  </div>
+</div>

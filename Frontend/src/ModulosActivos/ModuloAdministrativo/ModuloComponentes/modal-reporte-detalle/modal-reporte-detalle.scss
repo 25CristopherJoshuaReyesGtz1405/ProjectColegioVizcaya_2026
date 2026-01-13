@@ -1,0 +1,339 @@
+/* VARIABLES (Mismas que en las tarjetas) */
+:host {
+  --primary: #8c1d40; /* Guinda */
+  --primary-light: #fdf2f4;
+  --text-dark: #1e293b;
+  --text-gray: #64748b;
+  --bg-white: #ffffff;
+  --border: #e2e8f0;
+  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 36px;
+  z-index: 1200;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: var(--bg-white);
+  width: 100%;
+  max-width: 550px;
+  border-radius: 36px;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+/* --- CINTA DE SEVERIDAD --- */
+.ribbon {
+  position: absolute;
+  top: 20px;
+  left: -35px;
+  transform: rotate(-45deg);
+  padding: 6px 40px;
+  color: white;
+  font-weight: 800;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+
+  &.high {
+    background: #dc2626;
+  } /* Rojo */
+  &.medium {
+    background: #f59e0b;
+  } /* Naranja */
+  &.low {
+    background: #3b82f6;
+  } /* Azul */
+}
+
+/* --- HEADER --- */
+.modal-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: #fff;
+
+  .header-branding {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: 1rem; /* Espacio para la cinta */
+    .logo-img {
+      height: 45px;
+      opacity: 0.9;
+    }
+    .header-text {
+      h2 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        line-height: 1.2;
+      }
+      .folio-badge {
+        font-family: monospace;
+        font-size: 0.8rem;
+        color: var(--text-gray);
+        background: #f1f5f9;
+        padding: 2px 6px;
+        border-radius: 4px;
+        letter-spacing: 1px;
+      }
+    }
+  }
+
+  .btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: color 0.2s;
+    &:hover {
+      color: var(--text-dark);
+    }
+  }
+}
+
+.modal-body {
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* --- SECCIÓN ALUMNO (Estilo Tarjeta) --- */
+.student-profile-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  .avatar-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.8rem;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(
+      135deg,
+      var(--primary),
+      #be185d
+    ); /* Mismo degradado que Student Card */
+    box-shadow: 0 4px 10px rgba(140, 29, 64, 0.2);
+    border: 3px solid white;
+  }
+
+  .student-info {
+    .meta-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      color: var(--text-gray);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .student-name {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .grade-badge {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+  }
+}
+
+.divider {
+  border: 0;
+  height: 1px;
+  background: var(--border);
+  margin: 0 0 1.5rem 0;
+}
+
+/* --- GRID DE DETALLES --- */
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .icon-box {
+    width: 36px;
+    height: 36px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-size: 1.1rem;
+  }
+
+  .data-text {
+    label {
+      font-size: 0.7rem;
+      color: var(--text-gray);
+      text-transform: uppercase;
+      font-weight: 600;
+      display: block;
+    }
+    span {
+      font-size: 0.9rem;
+      color: var(--text-dark);
+    }
+  }
+}
+
+/* --- DESCRIPCIÓN --- */
+.description-section {
+  .section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    display: block;
+    i {
+      margin-right: 5px;
+    }
+  }
+
+  .text-content {
+    background: #fff5f5; /* Tinte rojo muy suave para reporte */
+    border: 1px solid #fed7d7;
+    border-left: 4px solid #fc8181;
+    padding: 1rem;
+    border-radius: 8px;
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #742a2a;
+      line-height: 1.6;
+      font-style: italic;
+    }
+  }
+}
+
+/* --- FIRMAS --- */
+.signatures-section {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+  padding-top: 1rem;
+
+  .signature-block {
+    text-align: center;
+    width: 45%;
+    .line {
+      border-bottom: 1px solid var(--text-dark);
+      margin-bottom: 8px;
+    }
+    span {
+      font-size: 0.7rem;
+      color: var(--text-gray);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+  }
+}
+
+/* --- FOOTER --- */
+.modal-footer {
+  padding: 1.2rem 2rem;
+  background: #f8fafc;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+
+  .btn-print {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 36px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px rgba(140, 29, 64, 0.2);
+
+    &:hover {
+      background: #6d1631;
+      transform: translateY(-2px);
+    }
+    i {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+/* ANIMACIÓN */
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Agrega esto en tu sección de FOOTER */
+
+.modal-footer {
+  /* ... estilos existentes ... */
+  display: flex; 
+  align-items: center; /* Asegura alineación vertical */
+  
+  .spacer { flex: 1; } /* Empuja el botón de imprimir a la derecha */
+
+  .btn-icon-delete {
+    width: 40px; height: 40px; border-radius: 10px; border: 1px solid #fee2e2;
+    background: #fff1f2; color: #dc2626; cursor: pointer;
+    display: grid; place-items: center; font-size: 1.2rem; transition: all 0.2s;
+
+    &:hover {
+      background: #dc2626; color: white; border-color: #dc2626;
+      transform: scale(1.05); box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);
+    }
+  }
+  
+  /* ... estilos de .btn-print ... */
+}

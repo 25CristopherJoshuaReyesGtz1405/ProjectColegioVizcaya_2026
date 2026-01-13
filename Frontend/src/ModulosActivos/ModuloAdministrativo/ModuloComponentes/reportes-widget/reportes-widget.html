@@ -1,0 +1,38 @@
+<div *ngIf="cargando" class="loading-state">
+  <div class="spinner-border text-danger" role="status"></div>
+</div>
+
+<div *ngIf="!cargando && listaReportes.length === 0" class="empty-state">
+  <i class="bi bi-check-circle-fill"></i>
+  <p>Sin novedades disciplinarias.</p>
+</div>
+
+<div class="report-widget" *ngIf="!cargando && listaReportes.length > 0">
+  <div
+    *ngFor="let r of listaReportes"
+    class="report-item"
+    (click)="abrirReporte(r)"
+    [ngClass]="{
+      high: r.severidad === 'ALTA',
+      med: r.severidad === 'MEDIA',
+      low: r.severidad === 'BAJA'
+    }"
+  >
+    <div class="date-box">
+      <span class="day">{{ r.fecha | date : 'dd' }}</span>
+      <span class="month">{{ r.fecha | date : 'MMM' }}</span>
+    </div>
+
+    <div class="info-box">
+      <div class="top-row">
+        <h4 class="student-name">{{ r.estudiante }}</h4>
+        <span class="grade-badge">{{ r.grado }}</span>
+      </div>
+      <p class="preview-text">{{ r.descripcion }}</p>
+    </div>
+
+    <div class="arrow-icon">
+      <i class="bi bi-chevron-right"></i>
+    </div>
+  </div>
+</div>

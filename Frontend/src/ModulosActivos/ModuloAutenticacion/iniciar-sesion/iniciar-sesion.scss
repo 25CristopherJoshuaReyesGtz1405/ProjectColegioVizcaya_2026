@@ -1,0 +1,195 @@
+/* --- Variables de Color y Fuentes --- */
+:host {
+  --color-primario: #990707fd;
+  --color-error: #ef4444;
+  --fuente-principal: 'Roboto', sans-serif;
+  
+  // --- NUEVO: Variables para el carrusel ---
+  --slide-duration: 7s; // Duración de cada imagen
+  --total-slides: 8; // Número total de imágenes
+  --total-duration: calc(var(--slide-duration) * var(--total-slides)); // 7s * 8 = 56s
+}
+
+/* --- Fondo y Contenedor Principal --- */
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: var(--fuente-principal);
+  position: relative;
+  overflow: hidden;
+}
+
+.background-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Se pone detrás de la tarjeta de login */
+}
+
+/* --- INICIO: NUEVA LÓGICA DEL CARRUSEL CSS --- */
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  
+  opacity: 0; // Todas empiezan invisibles
+  animation: kenBurns 20s infinite, imageFade var(--total-duration) infinite;
+}
+
+/* 1. Asignamos las imágenes y el RETRASO de la animación */
+/* Usamos la ruta absoluta '/assets/...' que es la más fiable */
+
+.slide-1 {
+  background-image: url('./../../../../public/ColegioImagen_4.jpg');
+  animation-delay: 0s, 0s; // Sin retraso para la primera imagen
+}
+.slide-2 {
+  background-image: url('./../../../../public/ColegioImagen_8.jpg');
+  animation-delay: 0s, var(--slide-duration); // Retraso de 7s
+}
+.slide-3 {
+  background-image: url('./../../../../public/ColegioImagen_2.jpg');
+  animation-delay: 0s, calc(var(--slide-duration) * 2); // Retraso de 14s
+}
+.slide-4 {
+  background-image: url('./../../../../public/FondoColegio_1.jpg');
+  animation-delay: 0s, calc(var(--slide-duration) * 3); // Retraso de 21s
+}
+.slide-5 {
+  background-image: url('./../../../../public/ColegioImagen_5.jpg');
+  animation-delay: 0s, calc(var(--slide-duration) * 4); // Retraso de 28s
+}
+.slide-6 {
+  background-image: url('./../../../../public/ColegioImagen_3.jpg');
+  animation-delay: 0s, calc(var(--slide-duration) * 5); // Retraso de 35s
+}
+.slide-7 {
+  background-image: url('./../../../../public/ColegioImagen_2.jpg');
+  animation-delay: 0s, calc(var(--slide-duration) * 6); // Retraso de 42s
+}
+.slide-8 {
+  background-image: url('./../../../../public/ColegioImagen_1.jpg');
+  animation-delay: 0s, calc(var(--slide-duration) * 7); // Retraso de 49s
+}
+
+/* 2. Definimos la animación de fundido (crossfade) */
+@keyframes imageFade {
+  0% { opacity: 0; }
+  2% { opacity: 1; } /* Fundido de entrada rápido */
+  
+  /* 1/8 de 100% es 12.5%. Esta es la duración de UNA slide */
+  12.5% { opacity: 1; } /* Se mantiene visible */
+  14.5% { opacity: 0; } /* Fundido de salida rápido */
+  
+  100% { opacity: 0; } /* Resto del tiempo invisible */
+}
+
+/* 3. Animación Ken Burns (zoom) */
+@keyframes kenBurns {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(1deg); }
+}
+
+/* --- FIN: NUEVA LÓGICA DEL CARRUSEL CSS --- */
+
+
+/* --- Tarjeta de Cristal Esmerilado --- */
+.login-card {
+  width: 60%;
+  max-width: 450px;
+  max-height: 720px;
+  padding: 3rem;
+  border-radius: 24px;
+  
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.8s ease-out;
+  position: relative;
+  z-index: 2; // Se pone delante del slider
+}
+
+/* --- (El resto de tus estilos para .ColorPrincipal, .form-group, etc. va aquí) --- */
+.ColorPrincipal {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  text-align: center;
+  color: #5a0000;
+}
+.ColorPrincipal_1 {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  text-align: center;
+  color: #ffffff;
+}
+.login-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.logo { height: 90px; margin: 0.05rem; }
+.login-header h2 { font-size: 1.8rem; font-weight: 700; color: var(--color-texto-principal); }
+.login-header p { color: var(--color-texto-secundario); }
+.form-group {
+  margin-bottom: 0.5rem;
+}
+.error-message {
+  color: var(--color-error);
+  font-size: 0.8rem;
+  padding-left: 1rem;
+  height: 20px;
+  margin-bottom: 0.5rem;
+}
+.ng-invalid.ng-touched .form-input {
+  border-color: var(--color-error) !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+.forgot-link {
+  display: block;
+  text-align: right;
+  margin: 1.5rem 0 1.5rem 0;
+  color: var(--color-primario);
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.error-container {
+  background-color: rgba(255, 12, 12, 0.432); /* Fondo rojo transparente */
+ // border-left: 5px solid #EF4444;
+  color: #ffffff; /* Texto claro para leer sobre fondo oscuro */
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  backdrop-filter: blur(4px);
+  
+  i { font-size: 0.9rem; }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,48 @@
+<div class="periodo-card animate-fade-in">
+  <div class="card-content">
+    
+    <div class="calendar-visual" [ngClass]="{'ACTIVO': periodoActivo, 'INACTIVO': !periodoActivo}">
+      <div class="cal-header">
+        <div class="cal-rings">
+          <span></span><span></span>
+        </div>
+      </div>
+      <div class="cal-body">
+        <div class="clock-badge">
+          <i class="bi" [ngClass]="periodoActivo ? 'bi-hourglass-split' : 'bi-lock-fill'"></i>
+        </div>
+        <i class="bi bi-grid-3x3-gap-fill grid-icon"></i>
+      </div>
+    </div>
+
+    <div class="info-section">
+      
+      <ng-container *ngIf="!cargando && periodoActivo">
+        <h3 class="period-title">{{ periodoActivo.nombre }}</h3>
+        
+        <div class="period-dates">
+          <span class="label">Vigencia de Captura:</span>
+          <p class="date-range">
+            {{ periodoActivo.fechaInicio | date:'dd/MMM' }} - {{ periodoActivo.fechaFin | date:'dd/MMM/yyyy' }}
+          </p>
+        </div>
+
+        <div class="status-badge active">
+          <span class="pulse-dot"></span> Captura Abierta
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="!cargando && !periodoActivo">
+        <h3 class="period-title text-muted">Sistema Cerrado</h3>
+        <p class="no-period-desc">No hay evaluaciones en curso actualmente.</p>
+        
+        <div class="status-badge inactive">
+          <i class="bi bi-pause-circle-fill"></i> En Espera
+        </div>
+      </ng-container>
+
+      <div *ngIf="cargando" class="loading-text">Cargando...</div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,66 @@
+<div class="login-page">
+  <div class="background-slider"> 
+    <div class="slide slide-1"></div>
+    <div class="slide slide-2"></div>
+    <div class="slide slide-3"></div>
+    <div class="slide slide-4"></div>
+    <div class="slide slide-5"></div>
+    <div class="slide slide-6"></div>
+    <div class="slide slide-7"></div>
+    <div class="slide slide-8"></div>
+
+    </div>
+
+  <div class="login-card">
+    <div class="login-header">
+      <h2 class="ColorPrincipal">Colegio Vizcaya Durango</h2>
+      <h3 class="ColorPrincipal">Innovación Educativa...</h3>
+      <br>
+      <img
+        src="https://vectorseek.com/wp-content/uploads/2023/09/Colegio-Vizcaya-Logo-Vector.svg--300x283.png"
+        alt="Logo Colegio Vizcaya"
+        class="logo"
+      />
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="iniciarSesion()">
+      
+      <div class="form-group">
+        <p class="ColorPrincipal_1"><strong>Correo Institucional</strong></p>
+        <app-campo-entrada-shared
+          label="Ingresa tu matrícula"
+          type="text"
+          iconClass="bi bi-person-badge-fill"
+          formControlName="correo">
+        </app-campo-entrada-shared>
+        
+        <div *ngIf="f['correo'].invalid && f['correo'].touched" class="error-container fade-in">
+          <span *ngIf="f['correo'].errors?.['required']"><i class="bi bi-exclamation-circle"></i> La matrícula es obligatoria.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <p class="ColorPrincipal_1"><strong>Clave de Acceso</strong></p>
+        <app-campo-entrada-shared
+          label="••••••••"
+          type="password"
+          iconClass="bi bi-lock-fill"
+          formControlName="contrasena">
+        </app-campo-entrada-shared>
+        
+        <div *ngIf="f['contrasena'].invalid && f['contrasena'].touched" class="error-container fade-in">
+          <span *ngIf="f['contrasena'].errors?.['required']"><i class="bi bi-exclamation-circle"> </i> La contraseña es obligatoria.</span>
+          <span *ngIf="f['contrasena'].errors?.['minlength']"><i class="bi bi-exclamation-circle"></i> Mínimo 6 caracteres.</span>
+        </div>
+      </div>
+
+      <a class="forgot-link" (click)="recuperarAcceso()">¿Olvidaste tu contraseña?</a>
+
+      <app-btn-shared
+        text="Iniciar Sesión"
+        iconClass="bi bi-box-arrow-in-right"
+        [disabled]="estaCargando">
+      </app-btn-shared>
+    </form>
+  </div>
+</div>

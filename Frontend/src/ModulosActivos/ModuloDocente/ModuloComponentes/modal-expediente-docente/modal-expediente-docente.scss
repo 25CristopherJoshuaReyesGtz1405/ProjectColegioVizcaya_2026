@@ -1,0 +1,261 @@
+/* --- VARIABLES (Definidas al inicio) --- */
+$guinda: #8C1D40;
+$text-dark: #1e293b;
+$text-gray: #64748b;
+$bg-white: #ffffff;
+$bg-light: #f9fafc;
+$border: #e5e7eb;
+
+/* 1. FONDO (OVERLAY) */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 2000; /* Z-Index alto para estar encima de todo */
+  
+  /* Centrado */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* 2. CONTENEDOR PRINCIPAL */
+.modal-content {
+  background-color: $bg-white;
+  width: 100%;
+  max-width: 550px;
+  border-radius: 36px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 90vh;
+  position: relative; /* Para contener elementos absolutos si los hubiera */
+}
+
+/* 3. HEADER */
+.modal-header {
+  background-color: $guinda;
+  color: $bg-white;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  .brand-area {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+
+    .brand-icon {
+      font-size: 1.8rem;
+      opacity: 0.9;
+    }
+    .brand-text {
+      h2 { margin: 0; font-size: 1.2rem; font-weight: 700; }
+      p { margin: 0; font-size: 0.85rem; opacity: 0.8; font-weight: 400; }
+    }
+  }
+
+  .btn-close-custom {
+    background: transparent;
+    border: none;
+    color: $bg-white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.7;
+    &:hover { opacity: 1; }
+  }
+}
+
+/* 4. PERFIL HERO */
+.profile-hero {
+  text-align: center;
+  padding: 2rem 2rem 1rem;
+  background: linear-gradient(to bottom, $bg-white, $bg-light);
+  border-bottom: 1px solid $border;
+
+  .avatar-ring {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    padding: 4px;
+    background: $bg-white;
+    box-shadow: 0 0 0 4px rgba($guinda, 0.1);
+    position: relative;
+    overflow: visible;
+
+    img, .avatar-placeholder {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .avatar-placeholder {
+      background: #e2e8f0;
+      color: $text-gray;
+      display: grid;
+      place-items: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+  }
+
+  .hero-text {
+    h3 { margin: 0; font-size: 1.3rem; font-weight: 800; color: $text-dark; }
+    .role-badge {
+      display: inline-block;
+      margin-top: 0.4rem;
+      padding: 4px 12px;
+      background: rgba($guinda, 0.1);
+      color: $guinda;
+      font-size: 0.7rem;
+      font-weight: 800;
+      border-radius: 20px;
+      letter-spacing: 1px;
+    }
+    .email { margin: 5px 0 0 0; font-size: 0.9rem; color: $text-gray; }
+  }
+}
+
+/* 5. BODY */
+.modal-body {
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: $text-gray;
+  margin-bottom: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Tarjeta Laboral */
+.credential-card {
+  background: linear-gradient(135deg, #0363ff, #770000);
+  color: white;
+  border-radius: 36px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  
+  .cred-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    
+    .cred-item {
+      display: flex;
+      flex-direction: column;
+      
+      label { font-size: 0.65rem; opacity: 0.6; text-transform: uppercase; margin-bottom: 4px; }
+      span { font-family: monospace; font-size: 1rem; font-weight: 600; letter-spacing: 1px; }
+      
+      &.right { text-align: right; }
+    }
+  }
+  
+  .cred-footer {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    opacity: 0.8;
+    letter-spacing: 1px;
+    
+    i { font-size: 1.5rem; }
+  }
+}
+
+/* Grid de Datos */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  
+  .info-item {
+    background: $bg-white;
+    border: 1px solid $border;
+    border-radius: 36px;
+    padding: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    
+    .icon {
+      width: 36px;
+      height: 36px;
+      background: rgba($guinda, 0.1);
+      color: $guinda;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+    }
+    
+    .text {
+      label { display: block; font-size: 0.7rem; color: $text-gray; font-weight: 700; margin-bottom: 2px; }
+      p { margin: 0; font-size: 0.9rem; color: $text-dark; font-weight: 600; }
+    }
+  }
+}
+
+/* 6. FOOTER */
+.modal-footer {
+  padding: 1.2rem 2rem;
+  background-color: $bg-light;
+  border-top: 1px solid $border;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.8rem;
+}
+
+.btn-action {
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+
+  &.btn-ghost {
+    background: transparent;
+    color: $text-gray;
+    border: 1px solid $border; /* AQUI ESTABA EL ERROR ANTES */
+    
+    &:hover {
+      background: $bg-light;
+      color: $text-dark;
+      border-color: #cbd5e1;
+    }
+  }
+  
+  &.btn-guinda-gradient {
+    background: $guinda;
+    color: white;
+    box-shadow: 0 4px 10px rgba($guinda, 0.3);
+    
+    &:hover {
+      background: darken($guinda, 5%);
+    }
+    
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+}

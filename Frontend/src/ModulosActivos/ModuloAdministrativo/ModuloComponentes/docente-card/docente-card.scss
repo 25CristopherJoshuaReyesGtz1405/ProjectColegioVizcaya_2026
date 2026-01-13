@@ -1,0 +1,266 @@
+/* VARIABLES TEMA DOCENTE PREMIUM */
+:host {
+  --doc-primary: #0f172a; /* Azul marino profundo (Pizarra) */
+  --doc-secondary: #334155; /* Gris azulado para textos */
+  --doc-accent: #850000; /* Bronce/Dorado para acentos */
+  --doc-accent-light: #fff7ed; /* Fondo claro para iconos */
+  --doc-bg-gradient: linear-gradient(145deg, #ffffff, #f8fafc);
+
+  --active-color: #059669; /* Verde esmeralda */
+  --inactive-color: #dc2626; /* Rojo intenso */
+  --border-color: #e2e8f0;
+
+  display: block;
+  height: 100%;
+}
+
+/* --- TARJETA PRINCIPAL --- */
+.docente-card {
+  background: var(--doc-bg-gradient);
+  border-radius: 36px;
+  // Sombra inicial más suave pero definida
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.05), 0 8px 16px -4px rgba(15, 23, 42, 0.05);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); // Efecto rebote sutil
+  display: flex;
+  height: 100%;
+  width: 97.01%;
+
+  /* Animación Hover (Elevación Premium) */
+  &:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.15), 0 4px 8px -2px rgba(15, 23, 42, 0.1);
+    border-color: rgba(180, 83, 9, 0.3); // Borde dorado sutil al pasar mouse
+
+    .avatar-placeholder,
+    .avatar-img {
+      transform: scale(1.08) rotate(-2deg);
+    }
+    .icon-box {
+      background: var(--doc-accent);
+      color: white;
+      transform: rotate(5deg);
+    }
+  }
+
+  /* Estados */
+  &.status-inactive {
+    .status-stripe {
+      background: var(--inactive-color);
+    }
+    opacity: 0.75;
+    background: #fef2f2;
+    &:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: var(--inactive-color);
+    }
+  }
+  &.status-active .status-stripe {
+    background: var(--doc-primary);
+  }
+}
+
+.status-stripe {
+  width: 5px;
+  flex-shrink: 0;
+  background: #cbd5e1;
+  transition: background 0.3s;
+}
+.card-content {
+  flex: 1;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- ENCABEZADO --- */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.avatar-container {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
+  border: 3px solid white;
+}
+
+.avatar-img,
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+/* Nuevo degradado premium para docentes */
+.avatar-placeholder.gradient-premium {
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: white;
+  font-size: 1.2rem;
+  background: linear-gradient(135deg, var(--doc-primary), #be185d);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: var(--active-color);
+}
+.status-inactive .status-dot {
+  background: var(--inactive-color);
+}
+
+.header-text {
+  flex: 1;
+  overflow: hidden;
+}
+
+.docente-name {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--doc-primary);
+  font-weight: 700;
+  line-height: 1.2;
+  .prefix {
+    color: var(--doc-accent);
+    font-size: 0.9rem;
+    margin-right: 3px;
+    font-weight: 800;
+  }
+  .last-name {
+    color: var(--doc-secondary);
+    font-weight: 500;
+  }
+}
+
+/* Chip de Rol estilo "Placa Metálica" */
+.chip-rol.ribbon-effect {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+  // Degradado metálico dorado/bronce
+  background: linear-gradient(135deg, var(--doc-accent), #d97706);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 4px rgba(180, 83, 9, 0.25);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    // Brillo sutil pasando por encima
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      to bottom right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.3) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(45deg);
+    animation: shine 3s infinite;
+  }
+}
+
+/* --- CUERPO --- */
+.data-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.icon-box {
+  width: 32px;
+  height: 32px;
+  background: var(--doc-accent-light);
+  color: var(--doc-accent);
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(180, 83, 9, 0.1);
+}
+.data-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  label {
+    margin-bottom: 2px;
+  }
+}
+.email-text {
+  color: var(--doc-primary) !important;
+}
+
+/* --- PIE Y ACCIONES --- */
+.card-footer {
+  margin-top: auto;
+}
+.action-btn {
+  width: 36px;
+  height: 36px;
+  background: white;
+  color: var(--doc-secondary);
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  &:hover {
+    transform: translateY(-3px);
+  }
+  &.btn-edit:hover {
+    background: var(--doc-accent);
+    color: white;
+  }
+  &.btn-delete:hover {
+    background: var(--inactive-color);
+    color: white;
+  }
+}
+
+/* Animaciones */
+@keyframes shine {
+  from {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  to {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+.fade-in {
+  animation: fadeInUp 0.5s ease-out forwards;
+  opacity: 0;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

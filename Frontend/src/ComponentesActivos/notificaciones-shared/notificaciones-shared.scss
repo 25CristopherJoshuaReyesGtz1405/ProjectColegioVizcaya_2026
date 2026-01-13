@@ -1,0 +1,177 @@
+/* --- Variables --- */
+:host {
+  --color-principal: #8C1D40; /* Guinda */
+  --color-exito: #10B981;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
+  --color-warning: #F59E0B;
+  
+  --color-fondo: #ffffff;
+  --color-borde: #E2E8F0;
+  --color-texto-titulo: #1e293b;
+  --color-texto-cuerpo: #64748b;
+}
+
+/* =====================================================
+   1. ESTILOS PARA LOS TOASTS (Flotantes)
+   ===================================================== */
+.contenedor-toasts {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 11000; /* ¡SUPERIOR AL MODAL! */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.toast-card {
+  pointer-events: auto;
+  width: 340px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  border: 1px solid rgba(0,0,0,0.05);
+  
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  
+  /* Indicador lateral */
+  border-left: 5px solid transparent;
+  
+  &.exito { border-left-color: var(--color-exito); .icono { color: var(--color-exito); } }
+  &.error { border-left-color: var(--color-error); .icono { color: var(--color-error); } }
+  &.info { border-left-color: var(--color-info); .icono { color: var(--color-info); } }
+
+  .icono { font-size: 1.3rem; margin-top: 2px; }
+  .contenido { flex: 1; }
+  .titulo { font-weight: 700; font-size: 0.95rem; color: var(--color-texto-titulo); margin-bottom: 3px; }
+  .mensaje { font-size: 0.85rem; color: var(--color-texto-cuerpo); line-height: 1.4; }
+  
+  .btn-cerrar {
+    background: none; border: none; font-size: 1.2rem;
+    color: #94a3b8; cursor: pointer; padding: 0;
+    &:hover { color: #333; }
+  }
+
+  /* Animaciones CSS */
+  &.entrada { animation: slideInRight 0.4s ease-out forwards; }
+  &.salida { animation: fadeOutUp 0.3s ease-in forwards; }
+}
+
+/* =====================================================
+   2. ESTILOS PARA EL MODAL DE CONFIRMACIÓN
+   ===================================================== */
+
+/* Fondo Oscuro */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(15, 23, 42, 0.6); /* Oscuro y elegante */
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000; /* Debajo de los toasts, encima de la app */
+  padding: 2rem;
+  
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Tarjeta del Modal */
+.modal-content {
+  width: 100%;
+  max-width: 420px; /* Tamaño compacto para confirmaciones */
+  background: var(--color-fondo);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-body {
+  padding: 2.5rem 2rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+}
+
+.icon-wrapper {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+
+  &.warning {
+    background-color: rgba(245, 158, 11, 0.1); /* Amarillo suave */
+    color: var(--color-warning);
+  }
+}
+
+.texto-wrapper {
+  .titulo { font-size: 1.3rem; font-weight: 700; color: var(--color-texto-titulo); margin: 0 0 0.5rem 0; }
+  .mensaje { font-size: 0.95rem; color: var(--color-texto-cuerpo); margin: 0; line-height: 1.5; }
+}
+
+/* Footer con Botones */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.25rem 2rem 1.5rem 2rem;
+  background-color: #f8fafc; /* Gris muy claro */
+  border-top: 1px solid var(--color-borde);
+}
+
+.btn {
+  padding: 0.7rem 1.2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  flex: 1; /* Botones del mismo ancho */
+}
+
+.btn-secondary {
+  background-color: #fff;
+  border: 1px solid #cbd5e1;
+  color: var(--color-texto-cuerpo);
+  &:hover { background-color: #f1f5f9; color: #1e293b; }
+}
+
+.btn-primary {
+  background-color: var(--color-principal);
+  color: white;
+  &:hover { background-color: #6D1631; transform: translateY(-1px); }
+}
+
+.logo-colegio
+{
+  height: 30px;
+  width: 30px;
+}
+
+/* --- Keyframes --- */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeOutUp {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-20px); }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { 
+  from { opacity: 0; transform: scale(0.95) translateY(10px); } 
+  to { opacity: 1; transform: scale(1) translateY(0); } 
+}

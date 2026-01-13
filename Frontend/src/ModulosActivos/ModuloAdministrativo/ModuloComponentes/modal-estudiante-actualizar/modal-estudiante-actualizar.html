@@ -1,0 +1,96 @@
+<div class="modal-backdrop" (click)="close.emit()">
+  <div class="modal-content fade-in" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header">
+      <div class="header-icon">
+        <img
+          src="https://images.seeklogo.com/logo-png/30/2/colegio-vizcaya-logo-png_seeklogo-307798.png"
+          alt="Logo Colegio Vizcaya"
+          class="logo-colegio"
+        />
+      </div>
+      <div class="header-text">
+        <h2>Editar Estudiante</h2>
+        <p class="subtitle">Actualizando información de <strong>{{ datosPersona.nombre }} {{ datosPersona.apellidos }}</strong></p>
+      </div>
+      <button class="btn-close" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
+    </header>
+
+    <form *ngIf="originalDTO" class="modal-body" #form="ngForm">
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre(s)</label>
+          <div class="input-wrapper">
+            <i class="bi bi-person"></i>
+            <input type="text" name="nombre" [(ngModel)]="datosPersona.nombre" required placeholder="Nombres">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Apellidos</label>
+          <div class="input-wrapper">
+            <i class="bi bi-person"></i>
+            <input type="text" name="apellidos" [(ngModel)]="datosPersona.apellidos" required placeholder="Apellidos">
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>CURP</label>
+          <div class="input-wrapper">
+            <i class="bi bi-card-heading"></i>
+            <input type="text" name="curp" [(ngModel)]="datosPersona.curp" required placeholder="CLAVE ÚNICA DE REGISTRO">
+          </div>
+        </div>
+      </div>
+
+      <hr class="separator">
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Matrícula</label>
+          <div class="input-wrapper">
+            <i class="bi bi-upc-scan"></i>
+            <input type="text" name="matricula" [(ngModel)]="datosRol.matricula" required placeholder="ID Estudiante">
+          </div>
+        </div>
+
+        <div class="form-group small">
+          <label>Grado</label>
+          <div class="input-wrapper">
+            <i class="bi bi-mortarboard"></i>
+            <input type="number" name="grado" [(ngModel)]="datosRol.grado" required min="1" max="6">
+          </div>
+        </div>
+
+        <div class="form-group small">
+          <label>Grupo</label>
+          <div class="input-wrapper">
+            <i class="bi bi-people"></i>
+            <input type="text" name="grupo" [(ngModel)]="datosRol.grupo" required maxlength="2" placeholder="A">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Estatus</label>
+          <div class="input-wrapper">
+            <i class="bi bi-toggle-on"></i>
+            <select name="estatus" [(ngModel)]="datosRol.estatus" required [class.baja]="datosRol.estatus === 'BAJA'" [class.activo]="datosRol.estatus === 'ACTIVO'">
+              <option value="ACTIVO">Activo</option>
+              <option value="BAJA">Baja Temporal/Definitiva</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="close.emit()">Cancelar</button>
+      <button class="btn btn-primary" (click)="onSaveChanges()">
+        <i class="bi bi-check2-circle"></i> Guardar Cambios
+      </button>
+    </div>
+
+  </div>
+</div>

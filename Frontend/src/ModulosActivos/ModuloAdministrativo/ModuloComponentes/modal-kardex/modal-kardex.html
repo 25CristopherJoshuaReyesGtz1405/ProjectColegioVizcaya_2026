@@ -1,0 +1,110 @@
+<div class="modal-backdrop fade-in" (click)="close.emit()">
+  <div class="modal-content premium-panel custom-scroll" (click)="$event.stopPropagation()" [@modalEntrance]>
+    
+    <div class="modal-header-premium">
+      <div class="header-content">
+        <h2 class="title">Expediente Académico</h2>
+        <div class="student-chip">
+          <i class="bi bi-person-fill"></i>
+          <span>{{ estudiante.persona.nombre }} {{ estudiante.persona.apellidos }}</span>
+        </div>
+      </div>
+      <button class="btn-close-white" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="modal-body-premium" *ngIf="!loading && kardexData; else loadingTpl">
+      
+      <div class="summary-section">
+        <div class="main-gpa-card" [ngClass]="getPromedioColorClass(kardexData.promedioGlobal)">
+          <div class="gpa-label">PROMEDIO GLOBAL</div>
+          <div class="gpa-value">{{ promedioAnimado | number:'1.1-1' }}</div>
+          <div class="gpa-icon"><i class="bi bi-award-fill"></i></div>
+          <div class="gpa-shine"></div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-box">
+            <span class="stat-value">{{ kardexData.totalMateriasCursadas }}</span>
+            <span class="stat-label">Materias Cursadas</span>
+          </div>
+          <div class="stat-box danger" *ngIf="kardexData.totalMateriasReprobadas > 0">
+             <span class="stat-value">{{ kardexData.totalMateriasReprobadas }}</span>
+             <span class="stat-label">Adeudos / Reprobadas</span>
+          </div>
+           <div class="stat-box success" *ngIf="kardexData.totalMateriasReprobadas === 0">
+             <span class="stat-value"><i class="bi bi-check-circle-fill"></i></span>
+             <span class="stat-label">Sin Adeudos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-wrapper">
+        <h3 class="timeline-title">Trayectoria Escolar</h3>
+        
+        <div class="timeline-list" [@listAnimation]="kardexData.ciclos.length">
+          
+          <div class="timeline-item" *ngFor="let ciclo of kardexData.ciclos; let i = index">
+            <div class="timeline-marker">
+              <div class="dot"></div>
+              <div class="line"></div>
+            </div>
+
+            <div class="timeline-content">
+              
+              <div class="ciclo-card-header" (click)="toggleCiclo(i)" [class.active]="cicloExpandido === i">
+                <div class="ciclo-main-info">
+                   <span class="ciclo-name">{{ ciclo.nombreCiclo }}</span>
+                   <span class="ciclo-status" *ngIf="ciclo.estatus === 'FINALIZADO'"><i class="bi bi-check-all"></i> Concluido</span>
+                </div>
+                <div class="ciclo-meta">
+                  <div class="mini-avg" [ngClass]="getPromedioColorClass(ciclo.promedioCiclo)">
+                    {{ ciclo.promedioCiclo | number:'1.1-1' }}
+                  </div>
+                  <i class="bi bi-chevron-down arrow-icon"></i>
+                </div>
+              </div>
+
+              <div class="ciclo-card-body" *ngIf="cicloExpandido === i" [@smoothCollapse]>
+                 <table class="premium-table">
+                   <thead>
+                     <tr>
+                       <th>Asignatura</th>
+                       <th class="text-center">Estatus</th>
+                       <th class="text-end">Calif. Final</th>
+                     </tr>
+                   </thead>
+                   <tbody>
+                     <tr *ngFor="let mat of ciclo.materias">
+                       <td class="materia-cell">{{ mat.nombreMateria }}</td>
+                       <td class="text-center">
+                         <span class="status-badge" [ngClass]="mat.calificacionFinal >= 6 ? 'passed' : 'failed'">
+                           {{ mat.calificacionFinal >= 6 ? 'Aprobada' : 'Reprobada' }}
+                         </span>
+                       </td>
+                       <td class="grade-cell text-end" [ngClass]="getPromedioColorClass(mat.calificacionFinal)">
+                         {{ mat.calificacionFinal | number:'1.1-1' }}
+                       </td>
+                     </tr>
+                   </tbody>
+                 </table>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <ng-template #loadingTpl>
+      <div class="loading-premium">
+        <div class="spinner-grow text-guinda" role="status"></div>
+        <p>Consultando historial académico...</p>
+      </div>
+    </ng-template>
+
+  </div>
+</div>

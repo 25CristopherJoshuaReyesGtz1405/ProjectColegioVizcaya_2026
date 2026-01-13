@@ -1,0 +1,83 @@
+<div class="modal-backdrop" (click)="close.emit()">
+  <div class="modal-content fade-in" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header">
+      <div class="header-icon blue-theme"> <i class="bi bi-briefcase"></i>
+      </div>
+      <div class="header-text">
+        <h2>Editar Docente</h2>
+        <p class="subtitle">Prof. <strong>{{ datosPersona.nombre }} {{ datosPersona.apellidos }}</strong></p>
+      </div>
+      <button class="btn-close" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
+    </header>
+
+    <form *ngIf="originalDTO" class="modal-body" #form="ngForm">
+      
+      <h6 class="section-title">Datos Personales</h6>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre(s)</label>
+          <div class="input-wrapper">
+            <i class="bi bi-person"></i>
+            <input type="text" name="nombre" [(ngModel)]="datosPersona.nombre" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Apellidos</label>
+          <div class="input-wrapper">
+            <i class="bi bi-person"></i>
+            <input type="text" name="apellidos" [(ngModel)]="datosPersona.apellidos" required>
+          </div>
+        </div>
+        <div class="form-group full-width">
+          <label>Email Institucional</label>
+          <div class="input-wrapper">
+            <i class="bi bi-envelope"></i>
+            <input type="email" name="email" [(ngModel)]="datosPersona.email" required disabled style="opacity: 0.7; background: #eee;">
+          </div>
+        </div>
+      </div>
+
+      <hr class="separator">
+
+      <h6 class="section-title">Datos Laborales</h6>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>RFC</label>
+          <div class="input-wrapper">
+            <i class="bi bi-fingerprint"></i>
+            <input type="text" name="rfc" [(ngModel)]="datosEmpleado.RFC" required placeholder="ABCD900101XXX">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Cédula Profesional</label>
+          <div class="input-wrapper">
+            <i class="bi bi-award"></i>
+            <input type="text" name="cedula" [(ngModel)]="datosEmpleado.cedulaProfesional" placeholder="Opcional">
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Estatus Laboral</label>
+          <div class="input-wrapper">
+            <i class="bi bi-toggle-on"></i>
+            <select name="estatus" [(ngModel)]="datosEmpleado.estatus" required [class.baja]="datosEmpleado.estatus === 'BAJA'">
+              <option value="ACTIVO">Activo (En Plantilla)</option>
+              <option value="BAJA">Baja / Inactivo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="close.emit()">Cancelar</button>
+      <button class="btn btn-primary blue-btn" (click)="onSaveChanges()">
+        <i class="bi bi-save"></i> Guardar Cambios
+      </button>
+    </div>
+
+  </div>
+</div>

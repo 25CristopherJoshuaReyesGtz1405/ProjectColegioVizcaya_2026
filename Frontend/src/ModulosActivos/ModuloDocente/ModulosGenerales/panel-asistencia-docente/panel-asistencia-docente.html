@@ -1,0 +1,152 @@
+<div class="inicio">
+
+  <header class="page-header">
+    <div class="header-content">
+      <h1 class="titulo-principal">Panel Gestión De Asistencia</h1>
+      <p class="subtitulo">Resumen de actividades, grupos y gestión escolar.</p>
+    </div>
+  </header>
+
+  <section class="stats-section" *ngIf="!cargando && stats; else loadingSkeleton">
+    <app-tarjeta-stadistic titulo="Mis Grupos" [valor]="stats.totalGrupos" detalle="Clases asignadas" color="azul" icono="bi-collection-fill"></app-tarjeta-stadistic>
+    <app-tarjeta-stadistic titulo="Total Alumnos" [valor]="stats.totalAlumnos" detalle="Estudiantes a cargo" color="verde" icono="bi-people-fill"></app-tarjeta-stadistic>
+    <app-tarjeta-stadistic titulo="Planeaciones" [valor]="stats.totalPlaneaciones" detalle="Entregadas" color="naranja" icono="bi-journal-check"></app-tarjeta-stadistic>
+    <app-tarjeta-stadistic titulo="Incidencias" [valor]="stats.totalReportes" detalle="Reportes" color="guinda" icono="bi-exclamation-triangle-fill"></app-tarjeta-stadistic>
+  </section>
+
+  <ng-template #loadingSkeleton>
+    <div class="stats-section">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3,4]"></div>
+    </div>
+  </ng-template>
+
+  <div class="control-card">
+    <div class="card-decoration"></div>
+    
+    <div class="header-row">
+      <div class="title-block">
+        <div class="icon-box"><i class="bi bi-calendar-check-fill"></i></div>
+        <div>
+          <h2>Pase de Lista</h2>
+          <p>Selecciona grupo y fecha para comenzar.</p>
+        </div>
+      </div>
+      
+      <div class="mini-stats" *ngIf="alumnos.length > 0">
+        <div class="stat-pill green">
+          <i class="bi bi-check-circle-fill"></i> {{ resumen.presentes }}
+        </div>
+        <div class="stat-pill orange">
+          <i class="bi bi-clock-history"></i> {{ resumen.retardos }}
+        </div>
+        <div class="stat-pill red">
+          <i class="bi bi-x-circle-fill"></i> {{ resumen.ausentes }}
+        </div>
+      </div>
+    </div>
+
+    <div class="filters-grid mt-4">
+      <div class="input-pill flex-grow">
+        <i class="bi bi-people-fill icon"></i>
+        <select [(ngModel)]="seleccion.grupoId" (change)="cargarAsistencia()">
+          <option value="" disabled selected>Seleccionar Grupo</option>
+          <option *ngFor="let g of misGrupos" [value]="g.id">
+            {{ g.materia?.nombre }} ({{ g.materia?.grado }}°)
+          </option>
+        </select>
+        <i class="bi bi-chevron-down arrow"></i>
+      </div>
+
+      <div class="input-pill w-30">
+        <i class="bi bi-calendar-event icon"></i>
+        <input type="date" [(ngModel)]="seleccion.fecha" (change)="cargarAsistencia()">
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="cargandoLista" class="loader-container">
+    <div class="spinner"></div>
+    <p>Obteniendo lista...</p>
+  </div>
+
+  <div class="sheet-card animate-slide-up" *ngIf="!cargandoLista && seleccion.grupoId">
+    
+    <div class="sheet-header">
+      <div class="info">
+        <h3>Listado del Grupo</h3>
+        <p class="date-label">Fecha: {{ seleccion.fecha | date:'fullDate' }}</p>
+      </div>
+      
+      <button class="btn-save-pill" (click)="guardar()" [disabled]="guardando">
+        <ng-container *ngIf="!guardando">
+          <i class="bi bi-cloud-check-fill"></i> Guardar Asistencia
+        </ng-container>
+        <ng-container *ngIf="guardando">
+          <span class="spinner-mini"></span> Guardando...
+        </ng-container>
+      </button>
+    </div>
+
+    <div class="table-responsive custom-scroll">
+      <table class="premium-table">
+        <thead>
+          <tr>
+            <th class="col-id">#</th>
+            <th>Estudiante</th>
+            <th class="text-center">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let alumno of alumnos; let i = index" [class.is-modified]="alumno.modificado">
+            <td class="col-id">{{ i + 1 }}</td>
+            <td>
+              <div class="student-profile">
+                <div class="avatar">
+                  <span *ngIf="!alumno.fotoUrl">{{ alumno.nombre.charAt(0) }}</span>
+                  <img *ngIf="alumno.fotoUrl" [src]="alumno.fotoUrl">
+                </div>
+                <div class="data">
+                  <strong class="name">{{ alumno.nombre }}</strong>
+                  <span class="matricula">{{ alumno.matricula }}</span>
+                </div>
+              </div>
+            </td>
+            
+            <td class="text-center">
+              <div class="attendance-toggles">
+                
+                <button class="toggle-btn present" 
+                        [class.active]="alumno.estatus === 'PRESENTE'"
+                        (click)="cambiarEstado(alumno, 'PRESENTE')"
+                        title="Asistencia">
+                  <i class="bi bi-check-lg"></i>
+                </button>
+
+                <button class="toggle-btn late" 
+                        [class.active]="alumno.estatus === 'RETARDO'"
+                        (click)="cambiarEstado(alumno, 'RETARDO')"
+                        title="Retardo">
+                  <i class="bi bi-clock"></i>
+                </button>
+
+                <button class="toggle-btn absent" 
+                        [class.active]="alumno.estatus === 'AUSENTE'"
+                        (click)="cambiarEstado(alumno, 'AUSENTE')"
+                        title="Falta">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="alumnos.length === 0" class="empty-state">
+        <i class="bi bi-person-video3"></i>
+        <p>Selecciona un grupo para cargar la lista.</p>
+      </div>
+    </div>
+  </div>
+
+</div>

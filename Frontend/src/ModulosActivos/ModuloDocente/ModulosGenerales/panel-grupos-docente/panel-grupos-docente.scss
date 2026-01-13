@@ -1,0 +1,162 @@
+// --- VARIABLES DE DISEÑO (Colores Institucionales) ---
+$guinda: #8C1D40;
+$guinda-dark: #65122d;
+$guinda-light: #fdf2f4;
+$text-main: #111827;
+$text-light: #6b7280;
+$white: #ffffff;
+$bg-body: #f3f4f6;
+$border: #e5e7eb;
+
+// CONFIGURACIÓN DE BORDES Y SOMBRAS
+$radius-xl: 36px;  // Borde "Pill" grande para contenedores
+$radius-lg: 24px;  // Borde para tarjetas
+$radius-md: 12px;  // Borde para botones/inputs
+$shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
+$shadow-hover: 0 20px 40px -10px rgba(140, 29, 64, 0.1);
+
+:host { 
+  display: block; 
+  padding: 2.5rem; 
+  background-color: $white; 
+  min-height: 100vh;
+  font-family: 'Roboto', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* HEADER */
+.page-header {
+  margin-bottom: 2.5rem;
+  .titulo-principal {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: black;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: 0.02rem;
+  }
+  .subtitulo {
+    font-size: 1.10rem;
+    color: var(--text-medium);
+    margin: 0;
+  }
+}
+
+/* SECCIÓN ESTADÍSTICAS (Grid superior) */
+.stats-section {
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.7rem; 
+  margin-bottom: 2.5rem;
+}
+.skeleton-card {
+  height: 120px; background: #e2e8f0; border-radius: $radius-lg;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+@keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+
+/* CONTENEDOR BLANCO PRINCIPAL (El marco blanco grande) */
+.main-content-card {
+  background: $white;
+  border-radius: $radius-xl;
+  padding: 2.5rem;
+  box-shadow: $shadow-soft;
+  border: 1px solid $white;
+  position: relative;
+  overflow: hidden;
+}
+
+/* CABECERA DE SECCIÓN (Dentro de lo blanco) */
+.section-header {
+  display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;
+  
+  .icon-title {
+    width: 48px; height: 48px; border-radius: 16px;
+    background: $guinda; color: $white;
+    display: grid; place-items: center; font-size: 1.5rem;
+    box-shadow: 0 4px 10px rgba($guinda, 0.3);
+  }
+  .text {
+    h2 { font-size: 1.3rem; font-weight: 700; color: $text-main; margin: 0; }
+    p { font-size: 0.9rem; color: $text-light; margin: 0; }
+  }
+}
+
+/* GRID DE TARJETAS DE GRUPO */
+.grid-cards {
+  display: grid; 
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+/* TARJETA DE GRUPO INDIVIDUAL */
+.group-card {
+  background: $white;
+  border: 1px solid $border;
+  border-radius: 36px;
+  padding: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex; flex-direction: column; gap: 1.2rem;
+  position: relative;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: $shadow-hover;
+    border-color: rgba($guinda, 0.2);
+    
+    .icon-circle { transform: scale(1.1); background: $guinda; color: $white; }
+  }
+}
+
+.card-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  .icon-circle {
+    width: 50px; height: 50px; border-radius: 50%;
+    background: $guinda-light; color: $guinda;
+    display: grid; place-items: center; font-size: 1.4rem;
+    transition: 0.3s ease;
+  }
+  .badge-semestre {
+    background: $text-main; color: $white;
+    font-size: 0.65rem; font-weight: 800; text-transform: uppercase;
+    padding: 5px 10px; border-radius: 36px; letter-spacing: 0.5px;
+  }
+}
+
+.card-content {
+  .materia-name {
+    font-size: 1.2rem; font-weight: 800; color: $text-main;
+    margin: 0 0 0.8rem 0; line-height: 1.3;
+  }
+  .info-line {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.9rem; color: $text-light; margin-bottom: 0.4rem;
+    i { color: $guinda; font-size: 1rem; }
+  }
+}
+
+.card-actions {
+  display: flex; gap: 0.8rem; margin-top: auto;
+  
+  button {
+    flex: 1; border: none; padding: 0.7rem 1rem; border-radius: 36px;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  }
+
+  .btn-secondary {
+    background: $bg-body; color: $text-light;
+    &:hover { background: #e5e7eb; color: $text-main; }
+  }
+
+  .btn-primary {
+    background: $guinda; color: $white;
+    &:hover { background: $guinda-dark; transform: translateY(-2px); box-shadow: 0 4px 12px rgba($guinda, 0.3); }
+  }
+}
+
+/* UTILS */
+.loader-container { text-align: center; padding: 3rem; color: $guinda; }
+.spinner { width: 30px; height: 30px; border: 3px solid rgba($guinda,0.2); border-top-color: $guinda; border-radius: 50%; animation: spin 1s infinite linear; margin: 0 auto 1rem; }
+.empty-state { text-align: center; padding: 3rem; color: $text-light; i { font-size: 3rem; opacity: 0.3; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+.fade-in { animation: fadeIn 0.6s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

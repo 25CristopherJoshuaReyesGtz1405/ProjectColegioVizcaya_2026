@@ -1,0 +1,170 @@
+/* --- VARIABLES PREMIUM --- */
+$guinda: #8C1D40;
+$guinda-dark: #65122d;
+$dorado: #D4AF37;
+$text-dark: #1e293b;
+$text-light: #64748b;
+$bg-soft: #f8fafc;
+$success: #10b981;
+$danger: #ef4444;
+
+/* --- MODAL WRAPPER --- */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); 
+  backdrop-filter: blur(8px); /* Efecto cristal */
+  display: flex; justify-content: center; align-items: center; z-index: 1060;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content.premium-panel {
+  width: 100%; max-width: 650px; max-height: 90vh;
+  background: white; border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+
+/* --- HEADER CON GRADIENTE --- */
+.modal-header-premium {
+  background: linear-gradient(135deg, $guinda 0%, $guinda-dark 100%);
+  padding: 1.5rem 2rem;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  color: white; position: relative; overflow: hidden;
+
+  /* Decoración de fondo sutil */
+  &::before {
+    content: ''; position: absolute; top: -50%; right: -10%; width: 200px; height: 200px;
+    background: rgba(255,255,255,0.05); border-radius: 50%; pointer-events: none;
+  }
+
+  .title { margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
+  .student-chip {
+    margin-top: 0.5rem; display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px;
+    font-size: 0.85rem; font-weight: 500;
+  }
+  .btn-close-white {
+    background: rgba(255,255,255,0.2); border: none; width: 36px; height: 36px;
+    border-radius: 50%; color: white; cursor: pointer; transition: 0.2s;
+    display: grid; place-items: center;
+    &:hover { background: rgba(255,255,255,0.4); transform: rotate(90deg); }
+  }
+}
+
+.modal-body-premium { padding: 2rem; background: $bg-soft; }
+
+/* --- RESUMEN KPI --- */
+.summary-section { margin-bottom: 2.5rem; }
+
+.main-gpa-card {
+  position: relative; overflow: hidden;
+  background: white; padding: 1.5rem; border-radius: 20px;
+  box-shadow: 0 10px 30px -5px rgba(0,0,0,0.1);
+  text-align: center; margin-bottom: 1.5rem;
+  border: 1px solid rgba(0,0,0,0.05);
+
+  .gpa-label { font-size: 0.8rem; font-weight: 700; color: $text-light; letter-spacing: 1px; }
+  .gpa-value { font-size: 3.5rem; font-weight: 900; line-height: 1; margin: 0.5rem 0; color: $text-dark; }
+  .gpa-icon { position: absolute; top: 1rem; right: 1.5rem; font-size: 2rem; opacity: 0.1; color: $text-dark; }
+  
+  /* Variantes de color según promedio */
+  &.grade-excellent { .gpa-value { color: $guinda; } .gpa-icon { color: $guinda; } border-bottom: 4px solid $guinda; }
+  &.grade-good { .gpa-value { color: $dorado; } border-bottom: 4px solid $dorado; }
+  &.grade-bad { .gpa-value { color: $danger; } border-bottom: 4px solid $danger; }
+
+  /* Efecto de brillo animado */
+  .gpa-shine {
+    position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    transform: skewX(-20deg); animation: shine 6s infinite; pointer-events: none;
+  }
+}
+
+.stats-row {
+  display: flex; gap: 1rem;
+  .stat-box {
+    flex: 1; background: white; padding: 1rem; border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center;
+    border: 1px solid rgba(0,0,0,0.05);
+    display: flex; flex-direction: column;
+    
+    .stat-value { font-size: 1.4rem; font-weight: 800; color: $text-dark; }
+    .stat-label { font-size: 0.75rem; font-weight: 600; color: $text-light; }
+    
+    &.danger { .stat-value { color: $danger; } background: #fef2f2; }
+    &.success { .stat-value { color: $success; } }
+  }
+}
+
+/* --- LÍNEA DE TIEMPO (Timeline Real) --- */
+.timeline-wrapper { .timeline-title { font-size: 1.1rem; font-weight: 700; color: $text-dark; margin-bottom: 1.5rem; } }
+.timeline-list { position: relative; padding-left: 1rem; }
+
+.timeline-item {
+  display: flex; gap: 1.5rem; position: relative; padding-bottom: 2rem;
+  &:last-child { padding-bottom: 0; .line { display: none; } }
+  
+  /* Marcadores Visuales */
+  .timeline-marker {
+    display: flex; flex-direction: column; align-items: center; width: 20px;
+    .dot { 
+      width: 16px; height: 16px; background: white; border: 4px solid $guinda; 
+      border-radius: 50%; z-index: 2; box-shadow: 0 0 0 3px rgba(140,29,64,0.15);
+    }
+    .line { 
+      flex: 1; width: 2px; background: #e2e8f0; margin-top: 4px; min-height: 40px;
+    }
+  }
+
+  .timeline-content { flex: 1; }
+}
+
+/* Tarjetas de Ciclo (Acordeón) */
+.ciclo-card-header {
+  background: white; padding: 1rem 1.5rem; border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  border: 1px solid transparent; transition: all 0.2s;
+
+  &:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+  &.active { border-color: $guinda; .arrow-icon { transform: rotate(180deg); } }
+
+  .ciclo-main-info { display: flex; flex-direction: column; gap: 0.3rem; }
+  .ciclo-name { font-weight: 700; font-size: 1rem; color: $text-dark; }
+  .ciclo-status { font-size: 0.75rem; color: $success; font-weight: 600; i { margin-right: 4px; } }
+  
+  .ciclo-meta { display: flex; align-items: center; gap: 1rem; }
+  .mini-avg { font-weight: 800; font-size: 1.1rem; }
+  .arrow-icon { color: $text-light; transition: transform 0.3s; }
+}
+
+.ciclo-card-body {
+  margin-top: 1rem; background: white; border-radius: 16px; padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Tabla Interna Premium */
+.premium-table {
+  width: 100%; border-collapse: separate; border-spacing: 0 0.5rem;
+  th { font-size: 0.7rem; font-weight: 700; color: $text-light; text-transform: uppercase; padding: 0 1rem; }
+  td { padding: 0.8rem 1rem; background: #f8fafc; &:first-child { border-radius: 10px 0 0 10px; } &:last-child { border-radius: 0 10px 10px 0; } }
+  
+  .materia-cell { font-weight: 600; color: $text-dark; font-size: 0.9rem; }
+  .grade-cell { font-weight: 800; font-size: 1rem; }
+  
+  .status-badge {
+    font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 20px;
+    &.passed { background: #dcfce7; color: #166534; }
+    &.failed { background: #fee2e2; color: #991b1b; }
+  }
+}
+
+/* Clases de Color */
+.grade-excellent { color: $guinda !important; }
+.grade-good { color: $dorado !important; }
+.grade-regular { color: $text-dark !important; }
+.grade-bad { color: $danger !important; }
+
+.loading-premium { padding: 4rem; text-align: center; color: $text-light; font-weight: 500; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }

@@ -1,0 +1,121 @@
+<div class="modal-backdrop fade-in" (click)="close.emit()">
+  <div class="modal-content premium-glass" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <div class="header-title">
+        <i class="bi bi-person-badge-fill text-guinda"></i>
+        <h2>Credencial Digital</h2>
+      </div>
+      <button class="btn-close-custom" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      
+      <div class="scene">
+        <div class="card-3d-wrapper" [class.is-flipped]="isFlipped" (click)="voltearCredencial()">
+          
+          <div class="card-face card-front">
+            <div class="holographic-overlay"></div>
+            
+            <div class="design-top-curve"></div>
+            
+            <div class="brand-section">
+              <img src="https://images.seeklogo.com/logo-png/30/2/colegio-vizcaya-logo-png_seeklogo-307798.png" alt="Vizcaya" class="logo-img">
+              <div class="brand-text">
+                <span class="school">COLEGIO VIZCAYA</span>
+                <span class="campus">DE DURANGO</span>
+              </div>
+            </div>
+
+            <div class="photo-container">
+              <div class="photo-border">
+                <img src="https://cdn-icons-png.flaticon.com/512/10307/10307911.png" alt="Foto Estudiante">
+              </div>
+              <div class="status-pill active" *ngIf="datosRol?.estatus === 'ACTIVO'">ACTIVO</div>
+            </div>
+
+            <div class="info-section">
+              <h3 class="student-name">
+                {{ estudiante.persona.nombre }}
+                <br>
+                <span class="student-lastname">{{ estudiante.persona.apellidos }}</span>
+              </h3>
+              
+              <div class="academic-grid">
+                <div class="grid-item">
+                  <span class="label">MATRÍCULA</span>
+                  <span class="value">{{ datosRol?.matricula }}</span>
+                </div>
+                <div class="grid-item">
+                  <span class="label">GRADO</span>
+                  <span class="value">{{ datosRol?.grado }}° "{{ datosRol?.grupo }}"</span>
+                </div>
+              </div>
+
+              <div class="role-badge">ESTUDIANTE</div>
+              
+            </div>
+            
+            <div class="footer-strip">
+              CICLO ESCOLAR 2025 - 2026
+            </div>
+          </div>
+
+          <div class="card-face card-back">
+            <div class="design-back-pattern"></div>
+            
+            <div class="back-content">
+              <div class="legal-text">
+                <i class="bi bi-info-circle-fill"></i>
+                <p>Esta credencial es propiedad del Colegio Vizcaya. Su uso es personal e intransferible.</p>
+              </div>
+
+              <div class="emergency-card">
+                <div class="em-icon"><i class="bi bi-telephone-plus-fill"></i></div>
+                <div class="em-data">
+                  <span>EN CASO DE EMERGENCIA</span>
+                  <strong>618-123-4567</strong>
+                </div>
+              </div>
+
+              <div class="auth-section">
+                <div class="signature-line">
+                  <img src="assets/firma-director.png" class="signature-img" alt="Firma" onerror="this.style.display='none'">
+                </div>
+                <span>DIRECTOR ACADÉMICO</span>
+              </div>
+
+              <div class="qr-placeholder">
+                <i class="bi bi-qr-code"></i>
+                <span>Validación Digital</span>
+              </div>
+
+              <div class="back-footer">
+                www.colegiovizcaya.edu.mx
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="instruction-text">
+        <i class="bi bi-arrow-repeat"></i> Haz clic en la tarjeta para girarla
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="close.emit()">Cerrar</button>
+      <button class="btn-premium" (click)="imprimir()">
+        <span class="btn-content">
+          <i class="bi bi-printer-fill"></i> Descargar PDF
+        </span>
+        <div class="btn-shine"></div>
+      </button>
+    </div>
+
+  </div>
+</div>

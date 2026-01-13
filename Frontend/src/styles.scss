@@ -1,0 +1,30 @@
+// Importa los estilos de Bootstrap
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Fuente Principal */
+body.light-theme {
+  --color-fondo-principal: #fdfdfc;     // Fondo de página (casi blanco)
+  --color-fondo-secundario: #ffffff;    // Fondo de tarjetas, modales, top-bar
+  --color-borde: #E2E8F0;           // Bordes suaves
+  --color-texto-principal: #1A202C; // Títulos y texto importante
+  --color-texto-secundario: #000000; // Texto de cuerpo y descripciones
+  --color-texto-terciario: #718096;  // Texto más tenue (placeholders, matrículas)
+  --color-fondo-input: #F1F5F9;       // Fondo de inputs
+  --color-fondo-hover: #f8f9fa;       // Hover para items de listas
+}
+
+/* --- 2. Definiciones para el Tema Oscuro --- */
+body.dark-theme {
+  --color-fondo-principal: #1A202C;     // Fondo de página (oscuro)
+  --color-fondo-secundario: #2D3748;    // Fondo de tarjetas, modales, top-bar (un poco más claro)
+  --color-borde: #4A5568;           // Bordes (claros en fondo oscuro)
+  --color-texto-principal: #F7FAFC; // Títulos y texto importante (claro)
+  --color-texto-secundario: #E2E8F0; // Texto de cuerpo (claro)
+  --color-texto-terciario: #A0AEC0;  // Texto más tenue (claro)
+  --color-fondo-input: #4A5568;       // Fondo de inputs (oscuro)
+  --color-fondo-hover: #4A5568;       // Hover para items de listas (oscuro)
+}

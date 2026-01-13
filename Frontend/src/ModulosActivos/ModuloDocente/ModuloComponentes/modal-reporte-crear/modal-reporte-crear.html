@@ -1,0 +1,134 @@
+<div class="modal-backdrop fade-in" (click)="close.emit()">
+  <div class="modal-content premium-modal" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header guinda-header">
+      <div class="header-content">
+        <div class="header-icon">
+          <i class="bi bi-shield-exclamation"></i>
+        </div>
+        <div class="header-text">
+          <h2>Nueva Incidencia</h2>
+          <p class="subtitle">Registro al expediente disciplinario del alumno.</p>
+        </div>
+      </div>
+      <button class="btn-close-white" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </header>
+
+    <form class="modal-body" #form="ngForm">
+      
+      <div class="form-section">
+        <span class="section-label">ALUMNO IMPLICADO</span>
+        
+        <div class="field-group full-width">
+          <label>Seleccionar Estudiante <span class="required">*</span></label>
+          <div class="input-group premium-input">
+            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+            <select name="estudiante" [(ngModel)]="reporte.estudianteUid" required class="form-select">
+              <option value="" disabled selected>Buscar en la lista...</option>
+              <option *ngFor="let est of listaEstudiantes" [value]="est.persona.uid">
+                {{ est.persona.apellidos }} {{ est.persona.nombre }} ({{ est.rol?.uid }})
+              </option>
+            </select>
+            <i class="bi bi-chevron-down arrow-icon"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section mt-4">
+        <span class="section-label">DETALLES DEL SUCESO</span>
+        
+        <div class="form-grid">
+          
+          <div class="field-group">
+            <label>Tipo de Falta <span class="required">*</span></label>
+            <div class="input-group premium-input">
+              <span class="input-group-text"><i class="bi bi-tag-fill"></i></span>
+              <select name="tipo" [(ngModel)]="reporte.tipo" required class="form-select">
+                <option value="Conducta">Conducta en Aula</option>
+                <option value="Uniforme">Uniforme Incompleto</option>
+                <option value="Asistencia">Retardo / Falta</option>
+                <option value="Agresión">Agresión Verbal/Física</option>
+                <option value="Mobiliario">Daño a Mobiliario</option>
+                <option value="Otro">Otro Motivo</option>
+              </select>
+              <i class="bi bi-chevron-down arrow-icon"></i>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>Nivel de Severidad <span class="required">*</span></label>
+            <div class="input-group premium-input" 
+                 [ngClass]="{
+                   'border-green': reporte.severidad === 'BAJA',
+                   'border-orange': reporte.severidad === 'MEDIA',
+                   'border-red': reporte.severidad === 'ALTA'
+                 }">
+              <span class="input-group-text">
+                <i class="bi bi-thermometer-high"
+                   [ngClass]="{
+                     'text-success': reporte.severidad === 'BAJA',
+                     'text-warning': reporte.severidad === 'MEDIA',
+                     'text-danger': reporte.severidad === 'ALTA'
+                   }"></i>
+              </span>
+              <select name="severidad" [(ngModel)]="reporte.severidad" required class="form-select">
+                <option value="BAJA">BAJA (Amonestación)</option>
+                <option value="MEDIA">MEDIA (Reporte)</option>
+                <option value="ALTA">ALTA (Suspensión)</option>
+              </select>
+              <i class="bi bi-chevron-down arrow-icon"></i>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>Fecha</label>
+            <div class="input-group premium-input">
+              <input type="date" name="fecha" [(ngModel)]="reporte.fecha" required class="form-control pl-3">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>Hora</label>
+            <div class="input-group premium-input">
+              <input type="time" name="hora" [(ngModel)]="reporte.hora" required class="form-control pl-3">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-section mt-4">
+        <div class="field-group full-width">
+          <label>Descripción de los Hechos <span class="required">*</span></label>
+          <div class="input-group premium-input textarea-group">
+            <textarea name="descripcion" [(ngModel)]="reporte.descripcion" rows="4" required
+                      class="form-control"
+                      placeholder="Describa detalladamente lo ocurrido..."></textarea>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline-secondary btn-premium" (click)="close.emit()" [disabled]="cargando">
+        Cancelar
+      </button>
+      
+      <button class="btn btn-guinda btn-premium" 
+              [ngClass]="{'btn-danger-gradient': reporte.severidad === 'ALTA'}"
+              (click)="guardar()" [disabled]="!form.valid || cargando">
+        <ng-container *ngIf="!cargando">
+          <i class="bi bi-file-earmark-plus me-2"></i> Registrar Reporte
+        </ng-container>
+        <ng-container *ngIf="cargando">
+          <div class="spinner-border spinner-border-sm text-light me-2" role="status"></div>
+          Guardando...
+        </ng-container>
+      </button>
+    </div>
+
+  </div>
+</div>

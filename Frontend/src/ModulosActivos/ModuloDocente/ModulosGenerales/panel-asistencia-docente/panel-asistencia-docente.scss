@@ -1,0 +1,488 @@
+@import "./../panel-califcaciones/panel-califcaciones.scss";
+
+// VARIABLES INSTITUCIONALES (Iguales a calificaciones para coherencia)
+$guinda: #8C1D40;
+$guinda-dark: #65122d;
+$guinda-light: #fdf2f4;
+$text-main: #111827;
+$text-light: #6b7280;
+$white: #ffffff;
+$bg-body: #f3f4f6;
+$border: #e5e7eb;
+
+// CONSTANTES
+$radius-pill: 36px;
+$radius-card: 24px;
+$shadow-card: 0 20px 40px -10px rgba(0, 0, 0, 0.06);
+
+.inicio {
+  padding: 1rem;
+  font-family: 'Roboto', sans-serif;
+  animation: fadeInPage 0.6s ease-out forwards;
+}
+
+:host {
+  display: block;
+  padding: 2.0rem;
+  min-height: 100vh;
+}
+
+.main-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.titulo-principal {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: $guinda;
+  margin: 0;
+}
+
+.subtitulo {
+  color: $text-light;
+  margin: 0;
+}
+
+/* 1. CONTROL CARD */
+.control-card {
+  background: $white;
+  border-radius: $radius-card;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: $shadow-card;
+  margin-bottom: 2rem;
+  border: 1px solid $white;
+
+  .card-decoration {
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba($guinda, 0.05), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .title-block {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, $guinda, $guinda-dark);
+      color: $white;
+      display: grid;
+      place-items: center;
+      font-size: 1.5rem;
+      box-shadow: 0 8px 16px rgba($guinda, 0.25);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: $text-main;
+      letter-spacing: -0.5px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: $text-light;
+    }
+  }
+}
+
+/* MINI STATS (Resumen rápido) */
+.mini-stats {
+  display: flex;
+  gap: 0.8rem;
+
+  .stat-pill {
+    padding: 0.5rem 1rem;
+    border-radius: $radius-pill;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &.green {
+      background: #ecfdf5;
+      color: #059669;
+    }
+
+    &.orange {
+      background: #fff7ed;
+      color: #ea580c;
+    }
+
+    &.red {
+      background: #fef2f2;
+      color: #ef4444;
+    }
+  }
+}
+
+/* FILTROS */
+.filters-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.flex-grow {
+  flex: 1;
+}
+
+.w-30 {
+  width: 300px;
+}
+
+.input-pill {
+  position: relative;
+  height: 52px;
+  border-radius: $radius-pill;
+  background: $bg-body;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s;
+
+  &:focus-within {
+    background-color: $white;
+    border-color: $guinda;
+    box-shadow: 0 0 0 4px rgba($guinda, 0.1);
+
+    .icon {
+      color: $guinda;
+    }
+  }
+
+  .icon {
+    position: absolute;
+    left: 1.2rem;
+    font-size: 1.1rem;
+    color: $text-light;
+  }
+
+  select,
+  input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    padding: 0 2.5rem 0 3rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: $text-main;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .arrow {
+    position: absolute;
+    right: 1.5rem;
+    color: $text-light;
+    pointer-events: none;
+    font-size: 0.8rem;
+  }
+}
+
+/* 2. HOJA DE ASISTENCIA */
+.sheet-card {
+  background: $white;
+  border-radius: $radius-card;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+  border: 1px solid $white;
+}
+
+.sheet-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid $border;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $text-main;
+  }
+
+  .date-label {
+    font-size: 0.85rem;
+    color: $text-light;
+    margin: 0;
+    text-transform: capitalize;
+  }
+}
+
+.btn-save-pill {
+  background: linear-gradient(135deg, $guinda, $guinda-dark);
+  color: $white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: $radius-pill;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 4px 15px rgba($guinda, 0.3);
+  transition: all 0.3s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba($guinda, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+}
+
+/* TABLA */
+.premium-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  thead th {
+    background: #fcfcfc;
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #6b7280;
+    font-weight: 800;
+    border-bottom: 1px solid $border;
+  }
+
+  .col-id {
+    width: 50px;
+    color: #9ca3af;
+    text-align: center;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  tbody tr {
+    transition: background 0.2s;
+
+    &:hover {
+      background: #fafafa;
+    }
+
+    &.is-modified {
+      background: #fffbeb;
+
+      td:first-child {
+        box-shadow: inset 4px 0 0 #f59e0b;
+      }
+    }
+  }
+
+  td {
+    padding: 0.8rem 1.5rem;
+    vertical-align: middle;
+    border-bottom: 1px solid $border;
+  }
+}
+
+/* PERFIL ALUMNO */
+.student-profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: $guinda-light;
+    color: $guinda;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+  }
+
+  .data {
+    display: flex;
+    flex-direction: column;
+
+    .name {
+      font-size: 0.95rem;
+      color: $text-main;
+    }
+
+    .matricula {
+      font-size: 0.8rem;
+      color: $text-light;
+      font-family: monospace;
+    }
+  }
+}
+
+/* TOGGLES DE ASISTENCIA (Botones redondos) */
+.attendance-toggles {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #f8fafc;
+  padding: 4px;
+  border-radius: 30px;
+  width: fit-content;
+  margin: 0 auto;
+  border: 1px solid #e2e8f0;
+
+  .toggle-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: grid;
+    place-items: center;
+    font-size: 1.1rem;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    &.present.active {
+      background: #10b981;
+      color: white;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+      transform: scale(1.05);
+    }
+
+    &.late.active {
+      background: #f59e0b;
+      color: white;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+      transform: scale(1.05);
+    }
+
+    &.absent.active {
+      background: #ef4444;
+      color: white;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+      transform: scale(1.05);
+    }
+  }
+}
+
+/* LOADER & ANIMACIONES */
+.loader-container {
+  text-align: center;
+  padding: 4rem;
+  color: $guinda;
+  font-weight: 600;
+}
+
+.spinner,
+.spinner-mini {
+  border: 2px solid rgba($guinda, 0.2);
+  border-top-color: $guinda;
+  border-radius: 50%;
+  animation: spin 0.8s infinite linear;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 1rem;
+}
+
+.spinner-mini {
+  width: 16px;
+  height: 16px;
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: $text-light;
+
+  i {
+    font-size: 2.5rem;
+    display: block;
+    opacity: 0.3;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

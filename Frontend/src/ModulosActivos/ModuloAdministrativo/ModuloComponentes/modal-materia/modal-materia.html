@@ -1,0 +1,77 @@
+<div class="modal-backdrop fade-in" (click)="close.emit()">
+  <div class="modal-content institucional-modal" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header guinda-header">
+      <div class="header-content">
+        <div class="header-icon">
+          <i class="bi bi-journal-bookmark-fill"></i>
+        </div>
+        <div class="header-text">
+          <h2>{{ esEdicion ? 'Editar Asignatura' : 'Nueva Asignatura' }}</h2>
+          <p class="subtitle">Gestión del catálogo académico institucional.</p>
+        </div>
+      </div>
+      <button class="btn-close-white" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </header>
+
+    <form class="modal-body" #form="ngForm">
+      
+      <div class="form-section">
+        <h6 class="section-title">Información Académica</h6>
+        
+        <div class="form-grid">
+          
+          <div class="form-group">
+            <label>Clave Oficial <span class="required">*</span></label>
+            <div class="input-group premium-input">
+              <span class="input-group-text"><i class="bi bi-upc-scan"></i></span>
+              <input type="text" name="clave" [(ngModel)]="materia.claveMateria" 
+                     placeholder="Ej: MAT-101" required class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Grado / Semestre <span class="required">*</span></label>
+            <div class="input-group premium-input">
+              <span class="input-group-text"><i class="bi bi-mortarboard-fill"></i></span>
+              <input type="number" name="grado" [(ngModel)]="materia.grado" 
+                     placeholder="Ej: 1" required min="1" max="12" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Nombre de la Materia <span class="required">*</span></label>
+            <div class="input-group premium-input">
+              <span class="input-group-text"><i class="bi bi-book-fill"></i></span>
+              <input type="text" name="nombre" [(ngModel)]="materia.nombre" 
+                     placeholder="Ej: Matemáticas Aplicadas I" required class="form-control">
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </form>
+
+    <div class="modal-footer">
+      <button class="btn btn-outline-secondary btn-premium" (click)="close.emit()" [disabled]="cargando">
+        Cancelar
+      </button>
+      
+      <button class="btn btn-guinda btn-premium w-150" (click)="guardar()" [disabled]="!form.valid || cargando">
+        <span *ngIf="!cargando">
+          <i class="bi" [ngClass]="esEdicion ? 'bi-check2-circle' : 'bi-plus-lg'"></i> 
+          {{ esEdicion ? 'Guardar Cambios' : 'Crear Materia' }}
+        </span>
+        
+        <span *ngIf="cargando">
+          <div class="spinner-border spinner-border-sm text-light me-2" role="status"></div>
+          Procesando...
+        </span>
+      </button>
+    </div>
+
+  </div>
+</div>

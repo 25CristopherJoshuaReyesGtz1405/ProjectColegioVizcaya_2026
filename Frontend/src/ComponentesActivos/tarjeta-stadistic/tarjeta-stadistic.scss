@@ -1,0 +1,145 @@
+:host {
+  display: block;
+}
+
+.card-container {
+  position: relative;
+  border-radius: 40px;
+  padding: 1.5rem;
+  color: #ffffff;
+  overflow: hidden; /* Para recortar el icono gigante */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  cursor: default;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  /* Animación de Entrada */
+  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+  transform: translateY(20px);
+
+  /* Transición para Hover */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    
+    /* Efecto en el icono al hacer hover */
+    .icono-fondo i {
+      transform: scale(1.1) rotate(-10deg);
+      opacity: 0.25;
+    }
+  }
+}
+
+/* --- Contenido --- */
+.contenido {
+  position: relative;
+  z-index: 2; /* Encima del icono */
+}
+
+.titulo {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+  opacity: 0.9;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+}
+
+.valor {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+  line-height: 1;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.footer-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.indicador {
+  width: 6px;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+}
+
+.detalle {
+  font-size: 0.85rem;
+  margin: 0;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+/* --- Icono Decorativo --- */
+.icono-fondo {
+  position: absolute;
+  top: 50%;
+  right: 30px;
+  transform: translateY(-50%);
+  z-index: 1;
+  pointer-events: none;
+
+  i {
+    font-size: 3rem;
+    opacity: 0.15;
+    display: block;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+}
+
+/* --- Variantes de Color (Gradientes Profesionales) --- */
+
+/* 1. Guinda (Institucional) */
+.gradiente-guinda {
+  background: linear-gradient(135deg, #8C1D40 0%, #5e132b 100%);
+}
+
+/* 2. Azul (Información/Estudiantes) */
+.gradiente-azul {
+  background: linear-gradient(135deg, #3B82F6 0%, #1d4ed8 100%);
+}
+
+/* 3. Verde (Éxito/Activos) */
+.gradiente-verde {
+  background: linear-gradient(135deg, #10B981 0%, #047857 100%);
+}
+
+/* 4. Naranja (Advertencia/Pendientes) */
+.gradiente-naranja {
+  background: linear-gradient(135deg, #F59E0B 0%, #b45309 100%);
+}
+
+/* 5. Morado (Grupos/Académico) */
+.gradiente-morado {
+  background: linear-gradient(135deg, #8B5CF6 0%, #6d28d9 100%);
+}
+
+/* 6. Negro (Sofisticado) */
+.gradiente-negro {
+  background: linear-gradient(135deg, #374151 0%, #111827 100%);
+}
+
+/* --- Efecto de Brillo Sutil --- */
+.brillo {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at top left, rgba(255,255,255,0.2) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* --- Keyframes --- */
+@keyframes slideUpFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

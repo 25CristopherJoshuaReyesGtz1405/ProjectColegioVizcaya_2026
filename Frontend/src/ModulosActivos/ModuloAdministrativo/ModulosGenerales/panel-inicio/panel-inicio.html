@@ -1,0 +1,211 @@
+<div class="dashboard-page">
+  <!-- 1. ENCABEZADO CON BIENVENIDA -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1 class="titulo-principal">Control Y Gestión De Adminstración General</h1>
+      <br>
+      <p class="subtitulo">Resumen ejecutivo y gestión operativa del Colegio Vizcaya.</p>
+      <br>
+    </div>
+    <div class="header-actions">
+      <span class="fecha-actual">Bienvenido... Hoy es {{ today | date: 'dd/MM/yyyy'}}</span>
+    </div>
+  </header>
+
+  <!-- 2. TARJETAS DE INDICADORES (KPIs) -->
+  <!-- Se muestran con animación escalonada -->
+  <section class="stats-section" *ngIf="!estaCargando && estadisticas; else loadingSkeleton">
+    <app-tarjeta-stadistic
+      class="kpi-card delay-100"
+      titulo="Estudiantes"
+      [valor]="estadisticas.conteoEstudiantes.activos"
+      detalle="Matrícula Activa"
+      color="verde"
+      icono="bi-people-fill"
+    >
+    </app-tarjeta-stadistic>
+
+    <app-tarjeta-stadistic
+      class="kpi-card delay-200"
+      titulo="Docentes"
+      [valor]="estadisticas.conteoDocentes.activos"
+      detalle="Plantilla Docente"
+      color="azul"
+      icono="bi-person-video3"
+    >
+    </app-tarjeta-stadistic>
+
+    <app-tarjeta-stadistic
+      class="kpi-card delay-300"
+      titulo="Grupos"
+      [valor]="estadisticas.conteoGrupos.total"
+      [detalle]="(estadisticas.conteoGrupos.sinDocente || 0) + ' pendientes de asignar'"
+      color="morado"
+      icono="bi-collection-fill"
+    >
+    </app-tarjeta-stadistic>
+
+    <app-tarjeta-stadistic
+      class="kpi-card delay-400"
+      titulo="Promedio Global"
+      [valor]="estadisticas.promedioGeneral"
+      detalle="Rendimiento Ciclo Actual"
+      color="guinda"
+      icono="bi-graph-up-arrow"
+    >
+    </app-tarjeta-stadistic>
+  </section>
+
+  <!-- TEMPLATE DE CARGA (SKELETON) -->
+  <ng-template #loadingSkeleton>
+    <div class="stats-section">
+      <div class="skeleton-card" *ngFor="let i of [1, 2, 3, 4]"></div>
+    </div>
+  </ng-template>
+
+  <!-- 3. CONTENIDO PRINCIPAL (GRID) -->
+  <div class="main-layout">
+    <!-- COLUMNA IZQUIERDA (Datos Masivos) -->
+    <div class="col-primary">
+      <!-- Widget: Alumnos -->
+      <article class="widget-card animate-slide-up delay-500">
+        <div class="widget-header">
+          <div class="header-icon azul-bg"><i class="bi bi-backpack"></i></div>
+          <div class="header-info">
+            <h3>Matrícula Reciente</h3>
+            <p>Últimos movimientos en la matrícula</p>
+          </div>
+          <button class="btn-more"><i class="bi bi-three-dots"></i></button>
+        </div>
+        <div class="widget-body lista-estudiantes-scroll">
+
+          <ng-container *ngIf="listaEstudiantes.length > 0">
+            <app-estudiante-card 
+              *ngFor="let estudiante_ad of listaEstudiantes" 
+              [estudiante]="estudiante_ad"
+              (edit)="abrirEdicion($event)"
+              (delete)="confirmarBaja($event)"
+              class="mb-3 block">
+            </app-estudiante-card>
+            </ng-container>
+        </div>
+      </article>
+
+      <!-- Widget: Docentes -->
+      <article class="widget-card animate-slide-up delay-600">
+        <div class="widget-header">
+          <div class="header-icon verde-bg"><i class="bi bi-person-badge"></i></div>
+          <div class="header-info">
+            <h3>Cuerpo Docente</h3>
+            <p>Profesores activos en el sistema</p>
+          </div>
+        </div>
+        <div class="widget-body lista-estudiantes-scroll">
+          <ng-container *ngIf="listaDocentes.length > 0">
+            <app-docente-card 
+              *ngFor="let profe of listaDocentes" 
+              [docente]="profe"
+              (edit)="abrirEdicionDocente($event)"
+              (delete)="confirmarBajaDocente($event)"
+              class="mb-3 block">
+            </app-docente-card>
+          </ng-container>
+        </div>
+      </article>
+    </div>
+
+    <!-- COLUMNA DERECHA (Panel Lateral de Gestión) -->
+    <aside class="col-secondary">
+      <!-- Widget: Alertas (Solo si hay problemas) -->
+      <div
+        class="widget-card alert-card animate-slide-up delay-700"
+        *ngIf="
+          (estadisticas?.conteoGrupos?.sinDocente ?? 0) > 0 ||
+          (estadisticas?.conteoGrupos?.sinMateria ?? 0) > 0
+        "
+      >
+        <div class="widget-header-simple warning-bg">
+          <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+          <h3>Atención Requerida</h3>
+        </div>
+        <div class="widget-body p-0">
+          <ul class="alert-list">
+            <li *ngIf="(estadisticas?.conteoGrupos?.sinDocente ?? 0) > 0">
+              <div class="alert-content">
+                <span class="alert-title">Grupos sin Docente</span>
+                <span class="alert-desc">Asigna un profesor titular</span>
+              </div>
+              <span class="badge red">{{ estadisticas?.conteoGrupos?.sinDocente }}</span>
+            </li>
+
+            <li *ngIf="(estadisticas?.conteoGrupos?.sinMateria ?? 0) > 0">
+              <div class="alert-content">
+                <span class="alert-title">Sin Materia</span>
+                <span class="alert-desc">Configura la carga académica</span>
+              </div>
+              <span class="badge orange">{{ estadisticas?.conteoGrupos?.sinMateria }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Widget: Agenda (Estilo Timeline) -->
+      <div class="widget-card animate-slide-up delay-800">
+        <div class="widget-header">
+          <div class="header-icon guinda-bg"><i class="bi bi-calendar2-week"></i></div>
+          <div class="header-info">
+            <h3>Agenda del Día</h3>
+            <p>Actividades programadas</p>
+          </div>
+          <button
+            (click)="abrirModalCreacion()"
+            class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 border border-gray-200 text-gray-600 hover:bg-red-50 hover:text-red-800 hover:border-red-200 transition-all shadow-sm"
+          >
+            <i class="bi bi-plus-lg"></i>
+          </button>
+        </div>
+
+        <div class="widget-body p-0 flex-1 overflow-hidden">
+          <app-agenda-widget [actividades]="actividades"></app-agenda-widget>
+        </div>
+      </div>
+
+      <div class="widget-card animate-slide-up delay-800">
+        <div class="widget-header">
+          <div class="header-icon guinda-bg"><i class="bi bi-archive"></i></div>
+          <div class="header-info">
+            <h3>Accesos Directos</h3>
+            <p>Acceda más facil a sus pendientes...</p>
+          </div>
+        </div>
+
+        <div class="widget-body p-0 flex-1 overflow-hidden">
+          <div> hoal</div><br> <br>
+        </div>
+      </div>
+
+
+    </aside>
+  </div>
+</div>
+
+<app-modal-actividad
+  [visible]="Abrimodal"
+  (close)="Abrimodal = false"
+  (save)="agregarActividad($event)"
+>
+</app-modal-actividad>
+
+<app-modal-estudiante-actualizar
+  *ngIf="mostrarModalEdicion" 
+  [student]="estudianteSeleccionado"
+  (close)="mostrarModalEdicion = false"
+  (save)="guardarEdicion($event)">
+</app-modal-estudiante-actualizar>
+
+<app-modal-docente-actualizar
+  *ngIf="mostrarModalDocente"
+  [docente]="docenteSeleccionado"
+  (close)="mostrarModalDocente = false"
+  (save)="guardarEdicionDocente($event)">
+</app-modal-docente-actualizar>

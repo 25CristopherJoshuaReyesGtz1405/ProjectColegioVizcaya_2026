@@ -1,0 +1,117 @@
+<div class="modal-backdrop fade-in" (click)="cerrar()">
+  <div class="modal-content premium-modal" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header">
+      <div class="brand-icon">
+        <i class="bi bi-cloud-upload-fill"></i>
+      </div>
+      <div class="header-titles">
+        <h2>Carga Masiva de Estudiantes</h2>
+        <p>Importación desde archivo CSV.</p>
+      </div>
+      <button class="btn-close-custom" (click)="cerrar()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </header>
+
+    <div class="modal-body custom-scroll">
+
+      <div *ngIf="!resultado && !cargando" class="upload-section fade-in">
+        
+        <div class="upload-zone" 
+             (dragover)="onDragOver($event)" 
+             (drop)="onDrop($event)">
+          
+          <div class="icon-cloud">
+            <i class="bi bi-file-earmark-spreadsheet"></i>
+          </div>
+          
+          <div class="text-instructions" *ngIf="!archivoSeleccionado">
+            <h3>Arrastra tu archivo CSV aquí</h3>
+            <p>o haz clic para buscar en tu equipo</p>
+          </div>
+
+          <div class="file-selected" *ngIf="archivoSeleccionado">
+            <i class="bi bi-check-circle-fill text-success"></i>
+            <span class="filename">{{ archivoSeleccionado.name }}</span>
+            <span class="filesize">{{ (archivoSeleccionado.size / 1024) | number:'1.0-2' }} KB</span>
+          </div>
+
+          <input type="file" #fileInput (change)="onFileSelected($event)" accept=".csv" class="hidden-input">
+          
+          <button class="btn-select" (click)="fileInput.click()" *ngIf="!archivoSeleccionado">
+            Seleccionar Archivo
+          </button>
+          
+          <button class="btn-change" (click)="fileInput.click()" *ngIf="archivoSeleccionado">
+            Cambiar Archivo
+          </button>
+        </div>
+
+        <div class="format-info">
+          <i class="bi bi-info-circle"></i>
+          <p>El archivo debe contener las columnas: <strong>nombre, apellidos, curp, matricula, grado, grupo...</strong></p>
+        </div>
+
+        <div *ngIf="mensajeError" class="error-banner slide-up">
+          <i class="bi bi-exclamation-triangle-fill"></i> {{ mensajeError }}
+        </div>
+
+      </div>
+
+      <div *ngIf="cargando" class="loading-state fade-in">
+        <div class="spinner"></div>
+        <p>Procesando registros, por favor espere...</p>
+      </div>
+
+      <div *ngIf="resultado" class="results-section fade-in">
+        
+        <div class="summary-grid">
+          <div class="stat-card total">
+            <label>Procesados</label>
+            <span>{{ resultado.total }}</span>
+          </div>
+          <div class="stat-card success">
+            <label>Exitosos</label>
+            <span>{{ resultado.exitosos }}</span>
+          </div>
+          <div class="stat-card error">
+            <label>Fallidos</label>
+            <span>{{ resultado.fallidos }}</span>
+          </div>
+        </div>
+
+        <div class="error-log-container" *ngIf="resultado.errores && resultado.errores.length > 0">
+          <h4><i class="bi bi-bug-fill"></i> Reporte de Errores</h4>
+          <ul class="error-list custom-scroll">
+            <li *ngFor="let error of resultado.errores">
+              {{ error }}
+            </li>
+          </ul>
+        </div>
+
+        <div *ngIf="resultado.fallidos === 0" class="success-message">
+          <i class="bi bi-check-circle-fill"></i>
+          <p>¡Carga completada sin errores!</p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="cerrar()">
+        {{ resultado ? 'Cerrar' : 'Cancelar' }}
+      </button>
+      
+      <button class="btn-primary" 
+              (click)="subirArchivo()" 
+              [disabled]="!archivoSeleccionado || cargando"
+              *ngIf="!resultado">
+        <span *ngIf="!cargando">Subir Archivo</span>
+        <span *ngIf="cargando">Subiendo...</span>
+      </button>
+    </div>
+
+  </div>
+</div>

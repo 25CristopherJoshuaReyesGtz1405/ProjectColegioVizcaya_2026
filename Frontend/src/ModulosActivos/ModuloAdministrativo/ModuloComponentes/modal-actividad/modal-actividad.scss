@@ -1,0 +1,189 @@
+/* --- Fondo del Modal --- */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 20, 40, 0.4);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+/* --- Contenedor del Modal --- */
+.modal-content {
+  width: 100%;
+  max-width: 600px; /* Mismo ancho que en materia-modal */
+  background-color: var(--color-fondo-secundario);
+  border-radius: 36px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  color: var(--color-texto-principal);
+  animation: modalEnter 0.4s ease-out;
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* --- Encabezado del Modal --- */
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e2e8f0; /* O puedes usar var(--color-borde) si prefieres */
+
+  .logo-colegio {
+    height: 40px;
+    opacity: 0.7;
+  }
+
+  .header-title {
+    flex-grow: 1;
+    h2 {
+      font-size: 1.5rem;
+      color: var(--color-texto-titulos);
+      margin: 0;
+    }
+    p {
+      font-size: 0.9rem;
+      color: var(--color-texto-cuerpo);
+      margin: 0;
+    }
+  }
+
+  .btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-texto-cuerpo);
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--color-texto-titulos);
+    }
+  }
+}
+
+/* --- Cuerpo y Formulario --- */
+.modal-body {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Clase utilitaria para que la descripción o título ocupen todo el ancho */
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--color-texto-titulos);
+  }
+
+  /* Aplica estilos a input, select y textarea */
+  input,
+  select,
+  textarea {
+    background: var(
+      --color-fondo-input,
+      #f8fafc
+    ); /* Fallback si la variable global no está definida */
+    border: 1px solid var(--color-borde);
+    border-radius: 36px;
+    padding: 0.8rem 1rem;
+    color: var(--color-texto-principal, #333); /* Fallback */
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+    font-family: inherit;
+
+    &:focus {
+      border-color: var(--color-principal, #8c1d40);
+      box-shadow: 0 0 0 3px rgba(140, 29, 64, 0.15);
+      background-color: var(--color-fondo-input, #fff);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+}
+
+.color_text
+{
+  color:var(--color-texto-cuerpo); 
+}
+
+/* --- Pie de Modal y Botones --- */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  background-color: var(--color-fondo);
+  border-top: 1px solid #e2e8f0;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+}
+
+.btn {
+  padding: 0.7rem 1.5rem;
+  border-radius: 36px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  /* Estado deshabilitado */
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-secondary {
+  background-color: var(--color-fondo);
+  color: var(--color-texto-cuerpo);
+  border: 1px solid var(--color-borde); /* Agregué borde sutil para que no se pierda */
+
+  &:hover {
+    background-color: #cbd5e1;
+  }
+}
+
+.btn-primary {
+  background-color: var(--color-principal, #8c1d40);
+  color: white;
+
+  &:hover {
+    background-color: #6d1631;
+  }
+}

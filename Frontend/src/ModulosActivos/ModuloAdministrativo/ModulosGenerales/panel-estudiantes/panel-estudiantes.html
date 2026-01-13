@@ -1,0 +1,230 @@
+<div class="dashboard-page">
+  <header class="page-header">
+    <div class="header-content">
+      <h1 class="titulo-principal">Control Y Gestión De Administración General</h1>
+      <p class="subtitulo">Resumen ejecutivo y gestión operativa del Colegio Vizcaya.</p>
+    </div>
+    <div class="header-actions">
+      <span class="fecha-actual">Bienvenido... Hoy es {{ today | date : 'dd/MM/yyyy' }}</span>
+    </div>
+  </header>
+
+  <section class="stats-section" *ngIf="!estaCargando && estadisticas; else loadingSkeleton">
+    <app-tarjeta-stadistic
+      class="kpi-card delay-100"
+      titulo="Estudiantes Activos"
+      [valor]="estadisticas.conteoEstudiantes.activos"
+      detalle="Matrícula Total"
+      color="verde"
+      icono="bi-people-fill">
+    </app-tarjeta-stadistic>
+
+    <app-tarjeta-stadistic
+      class="kpi-card delay-200"
+      titulo="Estudiantes Inactivos"
+      [valor]="estadisticas.conteoEstudiantes.inactivos"
+      detalle="Bajas Registradas"
+      color="naranja"
+      icono="bi-person-x-fill">
+    </app-tarjeta-stadistic>
+
+    <app-tarjeta-stadistic
+      class="kpi-card delay-400"
+      titulo="Reportes Disciplina"
+      [valor]="estadisticas.conteoReportesIndisciplina.total"
+      detalle="Total del periodo"
+      color="guinda"
+      icono="bi-exclamation-octagon-fill">
+    </app-tarjeta-stadistic>
+  </section>
+
+  <ng-template #loadingSkeleton>
+    <div class="stats-section">
+      <div class="skeleton-card" *ngFor="let i of [1, 2, 3]"></div>
+    </div>
+  </ng-template>
+
+  <div class="main-layout">
+    
+    <div class="col-primary">
+      
+      <div class="toolbar-section animate-slide-up delay-300">
+        <div class="search-box">
+          <i class="bi bi-search"></i>
+
+          <input 
+            type="text" 
+            placeholder="Buscar por nombre, apellidos o matrícula..." 
+            [(ngModel)]="terminoBusqueda"
+          >
+        </div>
+        
+        <div class="actions-box">
+          <button class="btn-secondary-action" (click)="mostrarCargaMasiva = true">
+            <i class="bi bi-cloud-upload"></i> Importar
+          </button>
+          
+          <button class="btn-primary-action" (click)="abrirCreacionEstudiante()">
+            <i class="bi bi-person-plus-fill"></i> Nuevo Estudiante
+          </button>
+        </div>
+      </div>
+
+      <article class="widget-card animate-slide-up delay-500">
+        <div class="widget-header">
+          <div class="header-icon azul-bg"><i class="bi bi-backpack"></i></div>
+          <div class="header-info">
+            <h3>Matrícula Activa</h3>
+            <p *ngIf="!terminoBusqueda">Últimos movimientos registrados</p>
+            <p *ngIf="terminoBusqueda">Resultados de búsqueda: {{estudiantesFiltrados.length}}</p>
+          </div>
+          <button class="btn-more"><i class="bi bi-three-dots"></i></button>
+        </div>
+        
+        <div class="widget-body lista-estudiantes-scroll">
+          <ng-container *ngIf="estudiantesFiltrados.length > 0; else noResults">
+            <app-estudiante-card
+              *ngFor="let estudiante_ad of estudiantesFiltrados"
+              [estudiante]="estudiante_ad"
+              (edit)="abrirEdicion(estudiante_ad)"
+              (delete)="confirmarBaja(estudiante_ad)"
+              (print)="descargarBoleta(estudiante_ad)"
+              (credencial)="abrirModalCredencial(estudiante_ad)"
+              (kardex)="abrirKardex($event)">
+              class="mb-3 block"
+            >
+            </app-estudiante-card>
+          </ng-container>
+
+          <ng-template #noResults>
+            <div class="text-center p-4 text-gray-500">
+              <p>No se encontraron estudiantes con ese criterio.</p>
+            </div>
+          </ng-template>
+        </div>
+      </article>
+
+      <article class="widget-card animate-slide-up delay-600">
+        <div class="widget-header">
+          <div class="header-icon rojo-bg"><i class="bi bi-person-dash"></i></div>
+          <div class="header-info">
+            <h3>Historial de Bajas</h3>
+            <p>Estudiantes dados de baja recientemente</p>
+          </div>
+        </div>
+        <div class="widget-body lista-estudiantes-scroll">
+          <ng-container *ngIf="listaEstudiantesBaja.length > 0">
+            <app-estudiante-card
+              *ngFor="let estudiante_ad of listaEstudiantesBaja"
+              [estudiante]="estudiante_ad"
+              (edit)="abrirEdicion(estudiante_ad)"
+              (delete)="confirmarBaja(estudiante_ad)" 
+              (print)="descargarBoleta(estudiante_ad)"
+              (credencial)="abrirModalCredencial(estudiante_ad)"
+              (kardex)="abrirKardex($event)"
+              class="mb-3 block"
+            >
+            </app-estudiante-card>
+          </ng-container>
+        </div>
+      </article>
+    </div>
+
+    <aside class="col-secondary">
+      
+      <div class="widget-card alert-card animate-slide-up delay-700"
+        *ngIf="(estadisticas?.conteoGrupos?.sinDocente ?? 0) > 0">
+        <div class="widget-header-simple warning-bg">
+          <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+          <h3>Atención Requerida</h3>
+        </div>
+        <div class="widget-body p-0">
+          <ul class="alert-list">
+             <li *ngIf="(estadisticas?.conteoGrupos?.sinDocente ?? 0) > 0">
+              <div class="alert-content">
+                <span class="alert-title">Grupos sin Docente</span>
+              </div>
+              <span class="badge red">{{ estadisticas?.conteoGrupos?.sinDocente }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="widget-card animate-slide-up delay-800">
+        <div class="widget-header">
+          <div class="header-icon guinda-bg"><i class="bi bi-calendar-event"></i></div>
+          <div class="header-info">
+            <h3>Periodo Actual</h3>
+            <p>Gestión de fechas</p>
+          </div>
+          <button (click)="mostrarModalPeriodos = true" class="btn-more">
+            <i class="bi bi-gear"></i>
+          </button>
+        </div>
+        <div class="widget-body p-0">
+          <br>
+          <app-periodo-widget></app-periodo-widget>
+          <br>
+        </div>
+        </div>
+
+      <div class="widget-card animate-slide-up delay-800">
+        <div class="widget-header">
+          <div class="header-icon guinda-bg"><i class="bi bi-shield-exclamation"></i></div>
+          <div class="header-info">
+            <h3>Disciplina</h3>
+            <p>Últimos reportes</p>
+          </div>
+        </div>
+        <div class="widget-body">
+          <app-reportes-widget (verDetalle)="verReporte($event)"></app-reportes-widget>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</div>
+
+<app-modal-estudiante-actualizar
+  *ngIf="mostrarModalEdicion"
+  [student]="estudianteSeleccionado"
+  (close)="mostrarModalEdicion = false"
+  (save)="guardarEdicion($event)">
+</app-modal-estudiante-actualizar>
+
+<app-modal-estudiante-nuevo
+  *ngIf="mostrarModalCreacion"
+  (close)="mostrarModalCreacion = false"
+  (save)="guardarNuevoEstudiante($event)">
+</app-modal-estudiante-nuevo>
+
+<app-modal-gestion-periodos
+  *ngIf="mostrarModalPeriodos"
+  (close)="mostrarModalPeriodos = false"
+  (updated)="onPeriodoActualizado()">
+</app-modal-gestion-periodos>
+
+<app-modal-reporte-detalle
+  *ngIf="mostrarModalReporte"
+  [reporte]="reporteSeleccionado"
+  (close)="mostrarModalReporte = false"
+  (deleted)="recargarReportes()"> 
+</app-modal-reporte-detalle>
+
+<app-modal-carga-masiva 
+  *ngIf="mostrarCargaMasiva"
+  (close)="mostrarCargaMasiva = false" 
+  (success)="recargarTrasCarga()"> 
+</app-modal-carga-masiva>
+
+<app-modal-credencial
+  *ngIf="mostrarModalCredencialVar"
+  [estudiante]="estudianteSeleccionado"
+  (close)="mostrarModalCredencialVar = false">
+</app-modal-credencial>
+
+<app-modal-kardex
+  *ngIf="mostrarModalKardex"
+  [estudiante]="estudianteSeleccionado"
+  (close)="mostrarModalKardex = false">
+</app-modal-kardex>

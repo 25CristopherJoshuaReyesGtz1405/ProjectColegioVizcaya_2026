@@ -1,0 +1,96 @@
+<div class="modal-backdrop" (click)="cerrarModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <header class="modal-header">
+      <div class="brand-area">
+        <i class="bi bi-mortarboard-fill brand-icon"></i>
+        <div class="brand-text">
+          <h2>Expediente Académico</h2>
+          <p>Personal Docente</p>
+        </div>
+      </div>
+      <button class="btn-close-custom" (click)="cerrarModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </header>
+
+    <div class="profile-hero">
+      <div class="avatar-ring">
+        <img *ngIf="docente.persona.fotoUrl" [src]="docente.persona.fotoUrl" alt="Docente">
+        <div *ngIf="!docente.persona.fotoUrl" class="avatar-placeholder">
+          {{ iniciales }}
+        </div>
+      </div>
+      <div class="hero-text">
+        <h3>{{ docente.persona.nombre }} {{ docente.persona.apellidos }}</h3>
+        <span class="role-badge">DOCENTE TITULAR</span>
+        <p class="email">{{ docente.persona.email }}</p>
+      </div>
+    </div>
+
+    <div class="modal-body custom-scroll">
+
+      <div class="section">
+        <h6 class="section-label">INFORMACIÓN PROFESIONAL</h6>
+        <div class="credential-card">
+          <div class="cred-row">
+            <div class="cred-item">
+              <label>RFC</label>
+              <span>{{ datosRol?.RFC || '---' }}</span>
+            </div>
+            <div class="cred-item right">
+              <label>CÉDULA PROFESIONAL</label>
+              <span>{{ datosRol?.cedulaProfesional || 'En trámite' }}</span>
+            </div>
+          </div>
+          <div class="cred-footer">
+            <span><i class="bi bi-building"></i> COLEGIO VIZCAYA</span>
+            <span class="cred-id">ID: {{ docente.persona.uid.substring(0, 8) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section mt-4">
+        <h6 class="section-label">DATOS GENERALES</h6>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="icon"><i class="bi bi-person-vcard"></i></div>
+            <div class="text">
+              <label>CURP</label>
+              <p>{{ docente.persona.curp }}</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="icon"><i class="bi bi-gender-ambiguous"></i></div>
+            <div class="text">
+              <label>Género</label>
+              <p>{{ docente.persona.sexo }}</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="icon"><i class="bi bi-calendar-event"></i></div>
+            <div class="text">
+              <label>Fecha Nacimiento</label>
+              <p>{{ docente.persona.fechaNacimiento | date:'longDate' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-action btn-ghost" (click)="cerrarModal()">
+        Cerrar </button>
+      <button class="btn-action btn-guinda-gradient" (click)="imprimirExpediente()" [disabled]="cargandoPDF">
+        <i class="bi bi-file-earmark-pdf-fill" *ngIf="!cargandoPDF"></i>
+        <span *ngIf="!cargandoPDF"> Descargar Expediente</span>
+        <span *ngIf="cargandoPDF"> Generando PDF...</span>
+      </button>
+    </div>
+
+  </div>
+</div>

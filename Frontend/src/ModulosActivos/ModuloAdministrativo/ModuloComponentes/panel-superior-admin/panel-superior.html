@@ -1,0 +1,70 @@
+<header class="topbar-admin" *ngIf="usuario$ | async as usuario">
+  
+  <div class="brand-area">
+    <div class="user-avatar-ring">
+      <img *ngIf="fotoUrl" [src]="fotoUrl" alt="Avatar">
+      <span *ngIf="!fotoUrl">{{ usuario.persona.nombre.charAt(0) }}</span>
+    </div>
+    <div class="welcome-text">
+      <h1>¡Hola, {{ usuario.persona.nombre }}!</h1>
+      <span class="badge-rol">Administración General</span>
+    </div>
+  </div>
+
+  <div class="search-area">
+    <div class="search-box">
+      <i class="bi bi-search"></i>
+      <input type="text" placeholder="Buscar estudiante, docente o grupo...">
+    </div>
+  </div>
+
+  <div class="actions-area">
+    
+    <div class="tool-buttons">
+      <button class="btn-icon" (click)="toggleTheme()" title="Cambiar Tema">
+        <i class="bi" [ngClass]="isDarkMode ? 'bi-moon-stars-fill' : 'bi-sun-fill'"></i>
+      </button>
+      <button class="btn-icon notification" title="Notificaciones">
+        <i class="bi bi-bell-fill"></i>
+        <span class="dot"></span>
+      </button>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="profile-wrapper" (click)="toggleProfileMenu()">
+      <div class="profile-info">
+        <span class="name">{{ usuario.persona.nombre }} {{ usuario.persona.apellidos.split(' ')[0] }}</span>
+        <span class="email">{{ usuario.persona.email }}</span>
+      </div>
+      <i class="bi bi-chevron-down arrow" [class.open]="isProfileMenuOpen"></i>
+
+      <div class="dropdown-menu-card" *ngIf="isProfileMenuOpen">
+        
+        <div class="menu-header">
+          <p>Cuenta Administrativa</p>
+        </div>
+
+        <div class="menu-body">
+          <a routerLink="/admin/perfil" class="menu-item">
+            <i class="bi bi-person-gear"></i> Mi Perfil
+          </a>
+          <a routerLink="/admin/configuracion" class="menu-item">
+            <i class="bi bi-sliders"></i> Configuración Global
+          </a>
+          <a href="#" class="menu-item">
+            <i class="bi bi-shield-lock"></i> Seguridad
+          </a>
+        </div>
+
+        <div class="menu-footer">
+          <button (click)="logout()" class="btn-logout">
+            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</header>

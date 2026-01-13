@@ -1,0 +1,82 @@
+@import "./../../../ModuloAdministrativo/ModulosGenerales/panel-inicio/panel-inicio.scss";
+
+
+:host {
+  --primary-color: #8C1D40;
+  --bg-page: var(--color-fondo-principal, #F4F7FE); 
+  --text-dark: var(--color-texto-principal, #2E3A59);
+  --text-medium: var(--color-texto-secundario, #5E6E82);
+  --bg-card: var(--color-fondo-secundario, #FFFFFF); 
+  --border-light: var(--color-borde, #E5E9F2);
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Lista de Grupos (Versión Dashboard) */
+.group-list {
+  display: flex; flex-direction: column;
+}
+
+.group-item {
+  display: flex; align-items: center; gap: 1rem; padding: 1rem 1.5rem;
+  border-bottom: 1px dashed var(--border-light); transition: background 0.2s;
+
+  &:hover { background: #f9fafb; }
+  &:last-child { border-bottom: none; }
+
+  .icon-sq {
+    width: 42px; height: 42px; background: var(--primary-color); color: white;
+    border-radius: 10px; display: grid; place-items: center; font-weight: 700; font-size: 1.2rem;
+  }
+
+  .info {
+    flex: 1;
+    h4 { margin: 0; font-size: 1rem; font-weight: 600; color: var(--text-dark); }
+    span { font-size: 0.85rem; color: var(--text-medium); }
+  }
+
+  .actions {
+    display: flex; gap: 0.5rem;
+    .btn-icon {
+      width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border-light);
+      background: white; color: var(--text-medium); cursor: pointer;
+      display: grid; place-items: center; transition: all 0.2s;
+
+      &:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+    }
+  }
+}
+
+/* Botones Rápidos */
+.btn-quick {
+  width: 100%; padding: 1rem; border: none; border-radius: 12px;
+  font-weight: 600; text-align: left; cursor: pointer; transition: transform 0.2s;
+  display: flex; align-items: center;
+
+  &.action-reporte { 
+    background: #fef2f2; color: #dc2626; 
+    &:hover { background: #fee2e2; transform: translateY(-2px); } 
+  }
+  
+  &.action-plan { 
+    background: #eff6ff; color: #2563eb; 
+    &:hover { background: #dbeafe; transform: translateY(-2px); } 
+  }
+}
+
+.empty-placeholder { padding: 2rem; text-align: center; color: var(--text-medium); font-style: italic; }
+
+/* Animaciones */
+.animate-slide-up { animation: slideUp 0.5s ease-out forwards; opacity: 0; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Delays */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.delay-700 { animation-delay: 0.7s; }

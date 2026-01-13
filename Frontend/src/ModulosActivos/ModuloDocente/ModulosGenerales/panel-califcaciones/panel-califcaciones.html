@@ -1,0 +1,159 @@
+<div class="dashboard-page fade-in">
+
+  <header class="page-header">
+    <div class="header-content">
+      <h1 class="titulo-principal">Panel Gestión Calificaciones</h1>
+      <p class="subtitulo">Resumen de actividades, grupos y gestión escolar.</p>
+    </div>
+  </header>
+
+  <section class="stats-section" *ngIf="!cargando && stats; else loadingSkeleton">
+    <app-tarjeta-stadistic titulo="Mis Grupos" [valor]="stats.totalGrupos" detalle="Clases asignadas" color="azul" icono="bi-collection-fill"></app-tarjeta-stadistic>
+    <app-tarjeta-stadistic titulo="Total Alumnos" [valor]="stats.totalAlumnos" detalle="Estudiantes a cargo" color="verde" icono="bi-people-fill"></app-tarjeta-stadistic>
+    <app-tarjeta-stadistic titulo="Planeaciones" [valor]="stats.totalPlaneaciones" detalle="Entregadas" color="naranja" icono="bi-journal-check"></app-tarjeta-stadistic>
+    <app-tarjeta-stadistic titulo="Incidencias" [valor]="stats.totalReportes" detalle="Reportes" color="guinda" icono="bi-exclamation-triangle-fill"></app-tarjeta-stadistic>
+  </section>
+
+  <ng-template #loadingSkeleton>
+    <div class="stats-section">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3,4]"></div>
+    </div>
+  </ng-template>
+
+  <div class="control-card">
+    <div class="card-decoration"></div>
+    <div class="header-row">
+      <div class="title-block">
+        <div class="icon-box"><i class="bi bi-mortarboard-fill"></i></div>
+        <div>
+          <h2>Gestión de Calificaciones</h2>
+          <p>Captura de notas y cálculo de promedios.</p>
+        </div>
+      </div>
+      <button class="btn-new-pill" (click)="mostrarModalEvaluacion = true" [disabled]="!seleccion.grupoId || !seleccion.periodoId">
+        <i class="bi bi-plus-lg"></i><span>Nuevo Criterio</span>
+      </button>
+    </div>
+
+    <div class="filters-grid mt-4">
+      <div class="input-pill">
+        <i class="bi bi-people-fill icon"></i>
+        <select [(ngModel)]="seleccion.grupoId" (change)="onFiltroChange()">
+          <option value="" disabled selected>Seleccionar Grupo</option>
+          <option *ngFor="let g of misGrupos" [value]="g.id">{{ g.materia?.nombre }} ({{ g.materia?.grado }}°)</option>
+        </select>
+        <i class="bi bi-chevron-down arrow"></i>
+      </div>
+      <div class="input-pill">
+        <i class="bi bi-calendar-range icon"></i>
+        <select [(ngModel)]="seleccion.periodoId" (change)="onFiltroChange()">
+          <option value="" disabled selected>Periodo</option>
+          <option *ngFor="let p of periodos" [value]="p.id">{{ p.nombre }}</option>
+        </select>
+        <i class="bi bi-chevron-down arrow"></i>
+      </div>
+      <div class="input-pill wide">
+        <i class="bi bi-clipboard-check icon"></i>
+        <select [(ngModel)]="seleccion.evaluacionId" (change)="cargarActa()" [disabled]="!seleccion.grupoId || !seleccion.periodoId">
+          <option value="" disabled selected>{{ evaluaciones.length > 0 ? 'Seleccionar Rubro...' : '---' }}</option>
+          <option *ngFor="let ev of evaluaciones" [value]="ev.id">{{ ev.nombre }} ({{ ev.porcentaje }}%)</option>
+        </select>
+        <i class="bi bi-chevron-down arrow"></i>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="cargandoTabla" class="loader-container">
+    <div class="spinner"></div>
+    <p>Cargando lista de alumnos...</p>
+  </div>
+
+  <div class="sheet-card animate-slide-up" *ngIf="!cargandoTabla && seleccion.evaluacionId">
+    
+    <div class="sheet-header">
+      <div class="info">
+        <span class="badge-status" [class.closed]="actaCerrada">
+          {{ actaCerrada ? 'ACTA CERRADA' : 'ACTA ABIERTA' }}
+        </span>
+        <h3>Listado de Alumnos</h3>
+      </div>
+      <div class="actions-group">
+        <button class="btn-print" (click)="imprimirActa()" title="Imprimir"><i class="bi bi-printer-fill"></i></button>
+        <button class="btn-save-pill" (click)="guardarTodo()" [disabled]="guardando || actaCerrada" *ngIf="!actaCerrada">
+          <ng-container *ngIf="!guardando"><i class="bi bi-cloud-arrow-up-fill"></i> Guardar</ng-container>
+          <ng-container *ngIf="guardando"><span class="spinner-mini"></span></ng-container>
+        </button>
+        <button class="btn-finalize" (click)="confirmarCierre()" *ngIf="!actaCerrada">
+          <i class="bi bi-lock-fill"></i> Finalizar
+        </button>
+      </div>
+    </div>
+
+    <div class="table-responsive custom-scroll">
+      <table class="premium-table">
+        <thead>
+          <tr>
+            <th class="col-id">#</th>
+            <th>Estudiante</th>
+            <th class="text-center">Prom. Ant.</th>
+            <th class="col-grade">Nota Actual</th>
+            <th class="text-center">Final</th>
+            <th class="text-center">Estatus</th>
+            <th>Observaciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let alumno of alumnos; let i = index" [class.is-modified]="alumno.modificado">
+            <td class="col-id">{{ i + 1 }}</td>
+            <td>
+              <div class="student-profile">
+                <div class="avatar">
+                  <span *ngIf="!alumno.fotoUrl">{{ alumno.nombre.charAt(0) }}</span>
+                  <img *ngIf="alumno.fotoUrl" [src]="alumno.fotoUrl">
+                </div>
+                <div class="data">
+                  <strong class="name">{{ alumno.nombre }}</strong>
+                  <span class="matricula">{{ alumno.matricula }}</span>
+                </div>
+              </div>
+            </td>
+            <td class="text-center text-muted font-mono">{{ alumno.promedioAnterior | number:'1.1-1' }}</td>
+            <td class="text-center">
+              <div class="grade-input-box">
+                <input type="number" [(ngModel)]="alumno.calificacion" (change)="actualizarPromedio(alumno)"
+                  [disabled]="actaCerrada" [ngClass]="getNotaClass(alumno.calificacion)" min="0" max="10" placeholder="-">
+              </div>
+            </td>
+            <td class="text-center font-bold" [style.color]="alumno.promedioResultante < 6 ? '#ef4444' : '#111827'">
+              {{ alumno.promedioResultante | number:'1.1-1' }}
+            </td>
+            <td class="text-center">
+              <span class="status-badge" [ngClass]="getEstatusClass(alumno.promedioResultante)">
+                {{ getEstatusLabel(alumno.promedioResultante) }}
+              </span>
+            </td>
+            <td>
+              <input type="text" class="obs-input" placeholder="..." [disabled]="actaCerrada"
+                [(ngModel)]="alumno.observaciones" (change)="actualizarPromedio(alumno)">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="alumnos.length === 0" class="empty-state">
+        <i class="bi bi-people"></i> <p>No hay alumnos inscritos.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="placeholder-state fade-in" *ngIf="!seleccion.evaluacionId && !cargandoTabla">
+    <div class="icon-big"><i class="bi bi-arrow-up-circle"></i></div>
+    <h3>Selecciona los filtros</h3>
+    <p>Elige un grupo, un periodo y un rubro de evaluación para comenzar.</p>
+  </div>
+
+</div>
+
+<app-modal-evaluacion-crear *ngIf="mostrarModalEvaluacion" 
+  [grupoId]="seleccion.grupoId" [periodoId]="seleccion.periodoId"
+  (close)="mostrarModalEvaluacion = false" (success)="onFiltroChange()"> 
+</app-modal-evaluacion-crear>

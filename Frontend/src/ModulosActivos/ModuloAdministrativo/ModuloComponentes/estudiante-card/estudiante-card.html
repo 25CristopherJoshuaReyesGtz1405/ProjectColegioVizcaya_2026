@@ -1,0 +1,104 @@
+<div class="student-card fade-in" [ngClass]="{'status-inactive': esInactivo, 'status-active': !esInactivo}">
+  
+
+  <div class="card-content">
+    
+    <div class="card-header">
+      <div class="avatar-container rounded-circle shadow-sm">
+        <img 
+          *ngIf="estudiante?.persona?.fotoUrl; else initialsTemplate" 
+          [src]="estudiante.persona.fotoUrl" 
+          alt="Avatar" 
+          class="avatar-img"
+        >
+        <ng-template #initialsTemplate>
+          <div class="avatar-placeholder gradient-student">
+            {{ getInitials(estudiante?.persona?.nombre || '', estudiante?.persona?.apellidos || '') }}
+          </div>
+        </ng-template>
+        
+        <div class="status-dot shadow-sm" [title]="datosRol?.estatus"></div>
+      </div>
+
+      <div class="header-text">
+        <h3 class="student-name text-truncate" title="{{ estudiante?.persona?.nombre }} {{ estudiante?.persona?.apellidos }}">
+          {{ estudiante?.persona?.nombre }} 
+          <span class="last-name">{{ estudiante?.persona?.apellidos }}</span>
+        </h3>
+        
+        <div class="chip-matricula ribbon-effect">
+          <i class="bi bi-upc-scan me-1"></i>
+          <span>{{ datosRol?.matricula || 'S/N' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body p-0 py-3">
+      
+      <div class="data-row d-flex gap-3 mb-3">
+        <div class="data-item flex-fill">
+          <div class="icon-box rounded-3 shadow-sm"><i class="bi bi-person-vcard"></i></div>
+          <div class="data-text">
+            <label class="text-muted text-uppercase fw-bold small">CURP</label>
+            <span class="fw-medium text-dark small text-truncate d-block" style="max-width: 110px;">
+              {{ estudiante?.persona?.curp || '---' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="data-item flex-fill">
+          <div class="icon-box rounded-3 shadow-sm"><i class="bi bi-mortarboard"></i></div>
+          <div class="data-text">
+            <label class="text-muted text-uppercase fw-bold small">Grado/Grupo</label>
+            <span *ngIf="datosRol" class="fw-bold text-primary">
+              {{ datosRol.grado }}° "{{ datosRol.grupo }}"
+            </span>
+            <span *ngIf="!datosRol" class="text-danger small">Sin asignar</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-item full-width mt-2 pt-3 border-top">
+        <div class="icon-box rounded-3 shadow-sm"><i class="bi bi-envelope"></i></div>
+        <div class="data-text overflow-hidden">
+          <label class="text-muted text-uppercase fw-bold small">Contacto</label>
+          <span class="email-text text-truncate d-block text-dark fw-medium">
+            {{ estudiante?.persona?.email || 'Sin correo registrado' }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer bg-transparent border-0 p-0 pt-2 d-flex justify-content-between align-items-center">
+      
+      <div class="info-badge small px-2 py-1 rounded-pill bg-light border d-flex align-items-center gap-1">
+        <div class="status-indicator" [ngClass]="esInactivo ? 'bg-danger' : 'bg-success'"></div>
+        <span *ngIf="!esInactivo" class="fw-bold text-success text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Activo</span>
+        <span *ngIf="esInactivo" class="fw-bold text-danger text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Baja</span>
+      </div>
+      
+      <div class="footer-group d-flex gap-2">
+
+        <button class="action-btn btn-id rounded-3 border-0 shadow-sm" 
+          (click)="onCredencial($event)" 
+          title="Generar Credencial">
+          <i class="bi bi-person-badge-fill"></i> 
+        </button> 
+
+        <button class="action-btn btn-kardex rounded-3 border-0 shadow-sm" (click)="onKardex($event)" title="Expediente Académico">
+          <i class="bi bi-folder-fill"></i>
+        </button>
+
+        <button class="action-btn btn-print rounded-3 border-0 shadow-sm" (click)="onPrint($event)" title="Imprimir Boleta">
+          <i class="bi bi-printer-fill"></i>
+        </button>
+        <button class="action-btn btn-edit rounded-3 border-0 shadow-sm" (click)="onEdit($event)" title="Editar">
+          <i class="bi bi-pencil-fill"></i>
+        </button>
+        <button class="action-btn btn-delete rounded-3 border-0 shadow-sm" (click)="onDelete($event)" title="Baja/Eliminar">
+          <i class="bi bi-trash-fill"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>

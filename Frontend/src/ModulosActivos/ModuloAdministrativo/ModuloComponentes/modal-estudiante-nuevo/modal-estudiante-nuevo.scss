@@ -1,0 +1,265 @@
+/* VARIABLES INSTITUCIONALES */
+$guinda: #8C1D40;
+$guinda-dark: #65122d;
+$text-main: #1f2937;
+$text-light: #6b7280;
+$border: #e2e8f0;
+$white: #ffffff;
+$bg-input: #f8fafc;
+$input-focus-shadow: rgba(140, 29, 64, 0.15);
+
+:host {
+  display: contents;
+}
+
+/* BACKDROP & MODAL WRAPPER */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px); /* Efecto borroso moderno */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-content.premium-modal {
+  background: $white;
+  width: 100%;
+  max-width: 700px; /* Un poco más ancho para el formulario */
+  border-radius: 36px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 90vh;
+  
+  /* Animación de entrada */
+  animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --- HEADER PREMIUM (Igual a Carga Masiva) --- */
+.modal-header {
+  background: $guinda;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: $white;
+  position: relative;
+  overflow: hidden;
+
+  /* Círculo decorativo de fondo */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -5%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .brand-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-size: 1.4rem;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .header-titles {
+    flex: 1;
+    margin-left: 1.2rem;
+    
+    h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    p {
+      margin: 2px 0 0 0;
+      font-size: 0.85rem;
+      opacity: 0.85;
+      font-weight: 300;
+    }
+  }
+
+  .btn-close-custom {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 2;
+    
+    &:hover {
+      color: $white;
+      transform: rotate(90deg);
+    }
+  }
+}
+
+/* --- BODY DEL FORMULARIO --- */
+.modal-body {
+  padding: 2rem;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+.section-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: $guinda;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #f1f5f9;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+/* Estilos de Inputs Modernos */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $text-main;
+    margin-left: 4px;
+  }
+
+  &.full-width { grid-column: 1 / -1; }
+  
+  .input-wrapper {
+    position: relative;
+    
+    i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $text-light;
+      transition: color 0.2s;
+      pointer-events: none;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.6rem; /* Espacio para el icono */
+      border: 1px solid $border;
+      border-radius: 36px; /* Bordes un poco menos redondos para verse más serio */
+      background: $bg-input;
+      font-size: 0.95rem;
+      color: $text-main;
+      transition: all 0.2s ease;
+      outline: none;
+      
+      &::placeholder { color: #94a3b8; }
+
+      &:focus {
+        background: $white;
+        border-color: $guinda;
+        box-shadow: 0 0 0 4px $input-focus-shadow;
+        
+        + i { color: $guinda; }
+      }
+      
+      &:hover:not(:focus) {
+        border-color: #cbd5e1;
+      }
+    }
+  }
+}
+
+/* Separador visual */
+.separator {
+  border: none;
+  height: 1px;
+  background: #f1f5f9;
+  margin: 0 0 1.5rem 0;
+}
+
+/* --- FOOTER --- */
+.modal-footer {
+  padding: 1.25rem 2rem;
+  background: #f8fafc;
+  border-top: 1px solid $border;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+
+  button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 36px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-ghost {
+    background: white;
+    border: 1px solid $border;
+    color: $text-main;
+    &:hover { background: #f1f5f9; border-color: #cbd5e1; }
+  }
+
+  .btn-primary {
+    background: $guinda;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 6px rgba(140, 29, 64, 0.2);
+    
+    &:hover:not(:disabled) {
+      background: $guinda-dark;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(140, 29, 64, 0.3);
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  }
+}
+
+/* Animaciones */
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fadeIn 0.3s ease-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

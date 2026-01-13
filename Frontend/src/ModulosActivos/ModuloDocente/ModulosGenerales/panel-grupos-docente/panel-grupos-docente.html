@@ -1,0 +1,96 @@
+<div class="dashboard-page fade-in">
+
+  <header class="page-header">
+    <div class="header-content">
+      <h1 class="titulo-principal">Mis Clases Asignadas</h1>
+      <p class="subtitulo">Gestión académica y acceso a tus grupos activos.</p>
+    </div>
+  </header>
+
+  <section class="stats-section" *ngIf="stats || cargando">
+    <ng-container *ngIf="!cargando && stats; else loadingSkeleton">
+      <app-tarjeta-stadistic titulo="Mis Grupos" [valor]="stats.totalGrupos" detalle="Clases asignadas" color="azul" icono="bi-collection-fill"></app-tarjeta-stadistic>
+      <app-tarjeta-stadistic titulo="Total Alumnos" [valor]="stats.totalAlumnos" detalle="Estudiantes a cargo" color="verde" icono="bi-people-fill"></app-tarjeta-stadistic>
+      <app-tarjeta-stadistic titulo="Planeaciones" [valor]="stats.totalPlaneaciones" detalle="Entregadas" color="naranja" icono="bi-journal-check"></app-tarjeta-stadistic>
+      <app-tarjeta-stadistic titulo="Incidencias" [valor]="stats.totalReportes" detalle="Reportes activos" color="guinda" icono="bi-exclamation-triangle-fill"></app-tarjeta-stadistic>
+    </ng-container>
+  </section>
+
+  <ng-template #loadingSkeleton>
+    <div class="stats-section">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3,4]"></div>
+    </div>
+  </ng-template>
+
+  <div class="main-content-card">
+    
+    <div class="section-header">
+      <div class="icon-title">
+        <i class="bi bi-mortarboard-fill"></i>
+      </div>
+      <div class="text">
+        <h2>Listado de Materias</h2>
+        <p>Selecciona un grupo para ver detalles o gestionar notas.</p>
+      </div>
+    </div>
+
+    <div *ngIf="cargando" class="loader-container">
+      <div class="spinner"></div>
+      <p>Cargando asignaciones...</p>
+    </div>
+
+    <div *ngIf="!cargando && grupos.length === 0" class="empty-state">
+      <i class="bi bi-journal-x"></i>
+      <p>No tienes grupos asignados para este ciclo escolar.</p>
+    </div>
+
+    <div class="grid-cards" *ngIf="!cargando && grupos.length > 0">
+      
+      <div class="group-card" *ngFor="let grupo of grupos">
+        
+        <div class="card-top">
+          <div class="icon-circle">
+            <i class="bi bi-book-half"></i>
+          </div>
+          <span class="badge-semestre">
+            {{ grupo.materia?.grado ? grupo.materia.grado + '° SEMESTRE' : 'GENERAL' }}
+          </span>
+        </div>
+
+        <div class="card-content">
+          <h3 class="materia-name">{{ grupo.materia?.nombre || 'Materia Sin Nombre' }}</h3>
+          
+          <div class="info-line">
+            <i class="bi bi-calendar3"></i>
+            <span>Ciclo: {{ grupo.cicloEscolar }}</span>
+          </div>
+          
+          <div class="info-line">
+            <i class="bi bi-people-fill"></i>
+            <span>{{ grupo.estudianteUids?.length || 0 }} Alumnos inscritos</span>
+          </div>
+        </div>
+
+        <div class="card-actions">
+          <button class="btn-secondary" (click)="abrirModalDetalle(grupo, $event)">
+            <i class="bi bi-eye-fill"></i> Ver Detalle
+          </button>
+          
+          <button class="btn-primary" (click)="irAGestion(grupo.id)">
+            Gestionar <i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<app-modal-docente-detalle 
+  *ngIf="mostrarModalDetalle"
+  [data]="grupoSeleccionado" 
+  [tipo]="'GRUPO'"
+  (close)="mostrarModalDetalle = false">
+</app-modal-docente-detalle>

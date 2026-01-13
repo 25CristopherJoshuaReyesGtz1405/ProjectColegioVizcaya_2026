@@ -1,0 +1,113 @@
+<div class="widget-card h-100 animate-slide-up">
+  <div class="widget-header">
+    <div class="header-left">
+      <div class="icon-box blue-theme">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="text-info">
+        <h3>Gestión de Grupos</h3>
+        <p>Administración académica y listas de asistencia</p>
+      </div>
+    </div>
+
+    <div class="count-badge" *ngIf="!cargando">{{ listaGrupos.length }} Clases</div>
+
+    <div class="count-badge">
+      <button class="header-icon guinda-bg" (click)="onAdd()">
+        <i class="bi bi-cloud-plus"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="widget-body custom-scroll">
+    <div *ngIf="cargando" class="loading-state">
+      <div class="spinner-border text-primary" role="status"></div>
+    </div>
+
+    <div *ngIf="!cargando && listaGrupos.length === 0" class="empty-state">
+      <i class="bi bi-layers-half"></i>
+      <p>No hay grupos registrados en este ciclo.</p>
+    </div>
+
+    <div class="table-responsive" *ngIf="!cargando && listaGrupos.length > 0">
+      <table class="grupos-table">
+        <thead>
+          <tr>
+            <th width="30%">ASIGNATURA</th>
+            <th width="30%">DOCENTE TITULAR</th>
+            <th width="15%" class="text-center">ALUMNOS</th>
+            <th width="25%" class="text-end">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let g of listaGrupos">
+            <td>
+              <div class="materia-info">
+                <span class="materia-name">{{ g.materia?.nombre || 'Materia no encontrada' }}</span>
+                <span class="materia-badge">{{ g.materia?.grado }}° Semestre</span>
+              </div>
+            </td>
+
+            <td>
+              <div class="docente-chip" *ngIf="g.docente">
+                <div class="avatar-mini">
+                  <img *ngIf="g.docente.persona.fotoUrl" [src]="g.docente.persona.fotoUrl" />
+                  <span *ngIf="!g.docente.persona.fotoUrl" class="initial">
+                    {{ getInitials(g.docente.persona.nombre) }}
+                  </span>
+                </div>
+                <div class="docente-name">
+                  <span
+                    >{{ g.docente.persona.nombre }}
+                    {{ g.docente.persona.apellidos.split(' ')[0] }}</span
+                  >
+                </div>
+              </div>
+
+              <div class="alert-chip" *ngIf="!g.docente">
+                <i class="bi bi-exclamation-circle-fill"></i> Sin Asignar
+              </div>
+            </td>
+
+            <td class="text-center">
+              <span class="student-pill" [class.zero]="!g.estudianteUids?.length">
+                <i class="bi bi-person"></i> {{ g.estudianteUids?.length || 0 }}
+              </span>
+            </td>
+
+            <td class="text-end">
+              <div class="actions-group">
+                <button
+                  class="btn-action btn-print"
+                  (click)="onImprimir(g)"
+                  title="Imprimir Lista de Asistencia"
+                >
+                  <i
+                    class="bi"
+                    [class]="cargandoPrint ? 'bi-hourglass-split' : 'bi-printer-fill'"
+                  ></i>
+                </button>
+
+                <button
+                  class="btn-action btn-manage"
+                  (click)="onGestionar(g)"
+                  title="Agregar/Quitar Alumnos"
+                >
+                  <i class="bi bi-pencil-fill"></i>
+                </button>
+
+                <button
+                  class="btn-action btn-delete"
+                  (click)="onEliminar(g)"
+                  title="Eliminar Grupo"
+                >
+                  <i class="bi bi-trash3-fill"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,355 @@
+/* --- 1. CONFIGURACIÓN VISUAL (Variables) --- */
+:host {
+  /* Colores Institucionales y Semánticos */
+
+  --primary-color: #8C1D40;
+  --bg-page: var(--color-fondo-principal, #F4F7FE); 
+  --text-dark: var(--color-texto-principal, #2E3A59);
+  --text-medium: var(--color-texto-secundario, #5E6E82);
+  --bg-card: var(--color-fondo-secundario, #FFFFFF); 
+  --border-light: var(--color-borde, #E5E9F2);
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  --radius-lg: 16px;
+  --radius-md: 12px;
+}
+
+/* --- 2. CONTENEDOR PRINCIPAL --- */
+.dashboard-page {
+  padding: 2.5rem;
+  background-color:var(--color-fondo-principal);
+  font-family: 'Roboto', sans-serif;
+  border-radius: 40px;
+  /* Animación de entrada de la página */
+  animation: fadeInPage 0.6s ease-out forwards;
+}
+
+/* --- 3. ENCABEZADO --- */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  
+  .titulo-principal {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
+  }
+  .subtitulo {
+    font-size: 1.10rem;
+    color: var(--text-medium);
+    margin: 0;
+  }
+  .fecha-actual {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #000000;
+    background-color: #f8f8f8;
+    padding: 1.25rem;
+    border-radius: 40px;
+    box-shadow: var(--shadow-sm);
+    text-transform: capitalize;
+  }
+}
+
+/* --- 4. GRID DE ESTADÍSTICAS (KPIs) --- */
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+
+  /* Animación escalonada para las tarjetas */
+  & > * {
+    opacity: 0;
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  & > *:nth-child(1) { animation-delay: 0.1s; }
+  & > *:nth-child(2) { animation-delay: 0.2s; }
+  & > *:nth-child(3) { animation-delay: 0.3s; }
+  & > *:nth-child(4) { animation-delay: 0.4s; }
+}
+
+/* --- 5. GRID PRINCIPAL (Layout de 2 Columnas) --- */
+.main-layout {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr; /* Columna principal ancha */
+  gap: 2rem;
+  align-items: start;
+}
+
+.col-primary, .col-secondary {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* --- 6. TARJETAS WIDGET (Diseño Profesional) --- */
+.widget-card {
+  background: var(--bg-card);
+  border-radius: 40px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  &.alert-card {
+    border-top: 4px solid #EF4444;
+  }
+}
+
+.widget-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  
+  .header-info {
+    flex-grow: 1;
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin: 0;
+    }
+    p {
+      font-size: 0.85rem;
+      color: var(--text-medium);
+      margin: 0;
+    }
+  }
+
+  .btn-more {
+    background: transparent;
+    border: none;
+    color: var(--text-medium);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    border-radius: 40px;
+    transition: background-color 0.2s;
+    &:hover { background-color: var(--color-principal-suave); color: var(--primary-color); }
+  }
+}
+
+.widget-header-simple {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  &.warning-bg { background-color: #FEF2F2; }
+}
+
+.widget-body {
+  padding: 1.5rem;
+  &.p-0 { padding: 0; } /* Sin padding para listas full-width */
+}
+
+/* Icon Boxes (Cuadrados de color en header) */
+.header-icon {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  display: grid; place-items: center;
+  font-size: 1.25rem;
+  
+  &.azul-bg { background: rgba(59, 130, 246, 0.1); color: #3B82F6; }
+  &.verde-bg { background: rgba(16, 185, 129, 0.1); color: #10B981; }
+  &.guinda-bg { background: rgba(140, 29, 64, 0.1); color: #8C1D40; }
+}
+
+/* --- 7. LISTA DE ALERTAS --- */
+.alert-list {
+  list-style: none; padding: 0; margin: 0;
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px dashed var(--border-light);
+    transition: background-color 0.2s;
+    &:last-child { border-bottom: none; }
+    &:hover { background-color: #FAFAFA; }
+  }
+}
+
+.alert-content {
+  display: flex; flex-direction: column;
+  .alert-title { font-weight: 600; font-size: 0.9rem; color: var(--text-dark); }
+  .alert-desc { font-size: 0.8rem; color: var(--text-medium); margin-top: 2px; }
+}
+
+.badge {
+  padding: 0.35em 0.8em;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: white;
+  
+  &.red { background: #EF4444; }
+  &.orange { background: #F59E0B; }
+}
+
+/* --- 8. AGENDA TIMELINE --- */
+.timeline {
+  padding: 1.5rem;
+  position: relative;
+  
+  &::before { /* Línea vertical gris */
+    content: '';
+    position: absolute;
+    left: 86px; 
+    top: 2rem;
+    bottom: 2rem;
+    width: 2px;
+    background-color: var(--border-light);
+  }
+}
+
+.timeline-item {
+  display: flex;
+  gap: 1rem;
+  position: relative;
+  padding-bottom: 2rem;
+  
+  &:last-child { padding-bottom: 0; }
+
+  .time {
+    width: 60px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    text-align: right;
+    padding-top: 2px;
+  }
+
+  .marker {
+    width: 12px; height: 12px;
+    background-color: #fff;
+    border: 3px solid var(--primary-color);
+    border-radius: 50%;
+    margin: 4px 1rem 0 1rem;
+    z-index: 2;
+    box-shadow: 0 0 0 2px rgba(140, 29, 64, 0.1);
+  }
+
+  .content {
+    flex: 1;
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-color);
+    transition: transform 0.2s;
+    
+    &:hover { transform: translateX(5px); background: #f1f5f9; }
+
+    h4 { margin: 0; font-size: 0.95rem; font-weight: 600; color: var(--text-dark); }
+    p { margin: 0.3rem 0 0 0; font-size: 0.85rem; color: var(--text-medium); }
+  }
+}
+
+/* --- 9. SKELETON LOADING (Animado) --- */
+.skeleton-card {
+  background-color: #e2e8f0;
+  border-radius: var(--radius-lg);
+  height: 160px; 
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.6),
+      transparent
+    );
+    transform: translateX(-100%);
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+/* --- 10. CLASES DE ANIMACIÓN (Utilidades) --- */
+.animate-slide-up { 
+  opacity: 0; 
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+.animate-slide-in-left { 
+  opacity: 0; 
+  animation: fadeInLeft 0.6s ease-out forwards; 
+}
+
+/* Delays para efecto cascada */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.delay-700 { animation-delay: 0.7s; }
+.delay-800 { animation-delay: 0.8s; }
+
+/* --- 11. KEYFRAMES --- */
+@keyframes fadeInPage { from { opacity: 0; } to { opacity: 1; } }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* --- 12. RESPONSIVE --- */
+@media (max-width: 1024px) {
+  .main-layout {
+    grid-template-columns: 1fr; /* Una sola columna en Tablets/Móvil */
+  }
+  
+  .col-secondary {
+    order: 2; /* Sidebar abajo */
+  }
+}
+
+.lista-estudiantes-scroll {
+  max-height: 400px; /* Altura máxima del widget */
+  overflow-y: auto;  /* Scroll vertical si se pasa */
+  padding-right: 5px; /* Espacio para el scrollbar */
+  
+  /* Estilo bonito para el scrollbar */
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-thumb { background-color: #e2e8f0; border-radius: 4px; }
+}

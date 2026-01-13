@@ -1,0 +1,127 @@
+:host {
+  --primary: #8C1D40;
+  --blue-soft: #eff6ff;
+  --blue-icon: #3b82f6;
+  --text-dark: #1e293b;
+  --text-gray: #64748b;
+  --border-light: #f1f5f9;
+  --bg-card: #ffffff;
+}
+
+.widget-card {
+  background: var(--bg-card);
+  border-radius: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.04);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: all 0.3s ease;
+   width: 100.10%;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(140, 29, 64, 0.08);
+  }
+}
+
+/* HEADER */
+.widget-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .header-left { display: flex; align-items: center; gap: 1rem; }
+  
+  .icon-box.blue-theme {
+    width: 48px; height: 48px; 
+    background: var(--blue-soft); color: var(--blue-icon);
+    border-radius: 14px; display: grid; place-items: center; font-size: 1.4rem;
+  }
+
+  .text-info h3 { margin: 0; font-size: 1.1rem; font-weight: 700; color: var(--text-dark); }
+  .text-info p { margin: 0; font-size: 0.85rem; color: var(--text-gray); }
+
+  .count-badge {
+    background: #f1f5f9; color: var(--text-dark);
+    font-weight: 700; font-size: 0.8rem; padding: 4px 12px; border-radius: 20px;
+  }
+}
+
+.widget-body { flex: 1; overflow-y: auto; padding: 0; }
+
+/* TABLA */
+.grupos-table {
+  width: 100%; border-collapse: collapse;
+  
+  thead th {
+    background: #f8fafc; padding: 1rem 1.5rem; 
+    font-size: 0.75rem; font-weight: 700; text-transform: uppercase; 
+    color: var(--text-gray); text-align: left; 
+    border-bottom: 1px solid var(--border-light);
+  }
+  .text-center { text-align: center; }
+  .text-end { text-align: right; }
+
+  tbody tr {
+    border-bottom: 1px dashed var(--border-light); transition: background 0.2s;
+    &:hover { background: #fff1f2; /* Hover rosado suave */ }
+  }
+  td { padding: 0.8rem 1.5rem; vertical-align: middle; }
+}
+
+/* ELEMENTOS DE CELDA */
+.materia-info {
+  display: flex; flex-direction: column;
+  .materia-name { font-weight: 700; color: var(--text-dark); font-size: 0.95rem; }
+  .materia-badge { font-size: 0.75rem; color: var(--primary); font-weight: 600; }
+}
+
+.docente-chip {
+  display: flex; align-items: center; gap: 0.8rem;
+  .avatar-mini {
+    width: 32px; height: 32px; border-radius: 50%; overflow: hidden;
+    background: var(--blue-soft); color: var(--blue-icon);
+    display: grid; place-items: center; font-weight: 700; font-size: 0.8rem;
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+  .docente-name { font-size: 0.9rem; color: var(--text-dark); font-weight: 500; }
+}
+
+.alert-chip {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: #fef2f2; color: #dc2626; padding: 4px 10px;
+  border-radius: 20px; font-size: 0.75rem; font-weight: 700; border: 1px solid #fee2e2;
+}
+
+.student-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #f3f4f6; padding: 4px 10px; border-radius: 20px;
+  font-size: 0.8rem; font-weight: 700; color: #4b5563;
+  &.zero { background: #fff7ed; color: #ea580c; }
+}
+
+/* ACCIONES */
+.actions-group { display: inline-flex; gap: 0.5rem; }
+
+.btn-action {
+  width: 32px; height: 32px; border-radius: 8px; border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 1rem; transition: all 0.2s;
+  
+  &:hover { transform: translateY(-2px); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+}
+
+.btn-print { background: #eff6ff; color: #3b82f6; &:hover { background: #3b82f6; color: white; } }
+.btn-manage { background: #fff7ed; color: #f59e0b; &:hover { background: #f59e0b; color: white; } }
+.btn-delete { background: #fef2f2; color: #dc2626; &:hover { background: #dc2626; color: white; } }
+
+/* UTILS */
+.custom-scroll::-webkit-scrollbar { width: 6px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+.loading-state, .empty-state { padding: 3rem; text-align: center; color: #94a3b8; }
+.animate-slide-up { animation: slideUp 0.5s ease-out forwards; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

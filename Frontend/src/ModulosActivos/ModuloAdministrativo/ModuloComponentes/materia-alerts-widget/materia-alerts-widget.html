@@ -1,0 +1,78 @@
+<div class="widget-card h-100 animate-slide-up delay-200">
+  
+  <div class="widget-header">
+    <div class="header-icon warning-theme">
+      <i class="bi bi-exclamation-diamond-fill"></i>
+    </div>
+    <div class="header-info">
+      <h3>Atención Académica</h3>
+      <p>Materias con pendientes operativos</p>
+    </div>
+  </div>
+
+  <div class="widget-body custom-scroll p-0" *ngIf="!cargando">
+    
+    <div class="alert-list">
+      
+      <div class="alert-item">
+        <div class="indicator red"></div>
+        <div class="content">
+          <h4>Sin Docente Asignado</h4>
+          <p>
+            <strong class="text-danger">{{ stats.operativas.sinDocente }}</strong> 
+            {{ stats.operativas.sinDocente === 1 ? 'Materia requiere' : 'Materias requieren' }} titular
+          </p>
+        </div>
+        <button class="btn-icon-action" (click)="verDetalles('sin_docente')">
+          <i class="bi bi-person-plus"></i>
+        </button>
+      </div>
+
+      <div class="alert-item">
+        <div class="indicator orange"></div>
+        <div class="content">
+          <h4>Planeación Faltante</h4>
+          <p>
+            <strong>{{ stats.operativas.sinPlaneacion }}</strong> 
+            Materias sin instrumentación
+          </p>
+        </div>
+        <button class="btn-icon-action" (click)="verDetalles('sin_planeacion')">
+          <i class="bi bi-bell"></i>
+        </button>
+      </div>
+
+      <div class="alert-item">
+        <div class="indicator yellow"></div>
+        <div class="content">
+          <h4>Sin Estudiantes</h4>
+          <p>
+            <strong>{{ stats.operativas.sinAlumnos }}</strong> 
+            {{ stats.operativas.sinAlumnos === 1 ? 'Grupo activo' : 'Grupos activos' }} sin inscritos
+          </p>
+        </div>
+        <button class="btn-icon-action" (click)="verDetalles('sin_alumnos')">
+          <i class="bi bi-people"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-label">
+        <span>Cobertura Docente Total</span>
+        <span class="fw-bold">{{ stats.operativas.coberturaPorcentaje }}%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" [style.width.%]="stats.operativas.coberturaPorcentaje"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="widget-body p-4 text-center" *ngIf="cargando">
+    <div class="spinner-border text-secondary" role="status"></div>
+    <p class="mt-2 text-muted small">Calculando métricas...</p>
+  </div>
+
+</div>

@@ -1,0 +1,62 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "administrativos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "estatus",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "cedulaProfesional",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "estudiantes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "estatus",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "matricula",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    },
+    {
+      "collectionGroup": "materias",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "grado",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nombre",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "ASCENDING"
+        }
+      ],
+      "density": "SPARSE_ALL"
+    }
+  ],
+  "fieldOverrides": []
+}

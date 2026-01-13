@@ -1,0 +1,318 @@
+/* VARIABLES */
+:host {
+  --color-primary: #7c1313; /* Morado para diferenciar gestión administrativa */
+  --color-bg-light: #ffaaaa;
+  --color-border: #e5e7eb;
+  --text-dark: #1f2937;
+  --text-light: #6b7280;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.modal-content {
+  background: white;
+  width: 90%;
+  max-width: 800px;
+  border-radius: 36px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER */
+.modal-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .header-icon.purple-theme {
+    width: 48px;
+    height: 48px;
+    background: #f3e8ff;
+    color: var(--color-primary);
+    border-radius: 36px;
+    display: grid;
+    place-items: center;
+    font-size: 1.5rem;
+  }
+  .header-text h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+  .header-text p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-light);
+  }
+  .btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-light);
+  }
+}
+
+/* LAYOUT DEL CUERPO (Sidebar + Form) */
+.modal-body-layout {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  height: 400px;
+}
+
+/* SIDEBAR LISTA */
+.sidebar-list {
+  background: #f9fafb;
+  border-right: 1px solid var(--color-border);
+  padding: 1.5rem;
+  overflow-y: auto;
+
+  .sidebar-title {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .period-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      padding: 0.8rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+
+      &:hover {
+        background: white;
+        border-color: var(--color-border);
+        shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      &.active {
+        background: white;
+        border-color: var(--color-primary);
+        box-shadow: 0 4px 6px -1px rgba(126, 34, 206, 0.1);
+        .p-name {
+          color: var(--color-primary);
+          font-weight: 700;
+        }
+      }
+
+      &.add-new {
+        color: var(--color-primary);
+        font-weight: 600;
+        border: 1px dashed var(--color-primary);
+        justify-content: center;
+        gap: 0.5rem;
+        &:hover {
+          background: #f3e8ff;
+        }
+      }
+
+      .p-info {
+        display: flex;
+        flex-direction: column;
+      }
+      .p-name {
+        font-size: 0.9rem;
+        color: var(--text-dark);
+      }
+      .p-status {
+        font-size: 0.7rem;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+/* FORMULARIO PRINCIPAL */
+.main-form {
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-dark);
+  }
+  .input-wrapper {
+    position: relative;
+    i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+    }
+    input {
+      width: 100%;
+      padding: 0.7rem 1rem 0.7rem 2.5rem;
+      border: 1px solid var(--color-border);
+      border-radius: 36px;
+      outline: none;
+      transition: border 0.2s;
+      &:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.1);
+      }
+    }
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* SWITCH BOX DESTACADO */
+.status-control-box {
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  padding: 1.5rem;
+  border-radius: 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s;
+
+  &.is-open {
+    background: #ecfdf5;
+    border-color: #d1fae5;
+    .label {
+      color: #047857;
+    }
+  }
+
+  .label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    color: #b91c1c;
+  }
+  .desc {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin: 0;
+  }
+}
+
+/* SWITCH STYLE */
+.switch-lg {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+    &:before {
+      position: absolute;
+      content: '';
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+  }
+  input:checked + .slider {
+    background-color: #10b981;
+  } /* Verde al activar */
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+}
+
+/* FOOTER */
+.modal-footer {
+  padding: 1rem 2rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  background: #f9fafb;
+}
+
+.btn {
+  padding: 0.7rem 1.5rem;
+  border-radius: 36px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  &.btn-secondary {
+    background: white;
+    border: 1px solid var(--color-border);
+    color: var(--text-dark);
+  }
+  &.btn-primary {
+    background: var(--color-primary);
+    color: white;
+    &:hover {
+      background: #6b0303;
+    }
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

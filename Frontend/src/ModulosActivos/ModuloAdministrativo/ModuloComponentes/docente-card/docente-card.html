@@ -1,0 +1,84 @@
+<div class="docente-card fade-in" [ngClass]="{'status-inactive': esInactivo, 'status-active': !esInactivo}">
+  
+
+  <div class="card-content">
+    
+    <div class="card-header">
+      <div class="avatar-container overflow-hidden rounded-circle shadow-sm">
+        <img 
+          *ngIf="docente?.persona?.fotoUrl; else initialsTemplate" 
+          [src]="docente.persona.fotoUrl" 
+          alt="Avatar" 
+          class="avatar-img"
+        >
+        <ng-template #initialsTemplate>
+          <div class="avatar-placeholder gradient-premium">
+            {{ getInitials(docente?.persona?.nombre || '', docente?.persona?.apellidos || '') }}
+          </div>
+        </ng-template>
+        
+        <div class="status-dot shadow-sm" [title]="datosEmpleado?.estatus"></div>
+      </div>
+
+      <div class="header-text">
+        <h3 class="docente-name text-truncate" title="{{ docente?.persona?.nombre }} {{ docente?.persona?.apellidos }}">
+          <span class="prefix">Prof.</span> {{ docente?.persona?.nombre }} 
+          <span class="last-name">{{ docente?.persona?.apellidos }}</span>
+        </h3>
+        
+        <div class="chip-rol ribbon-effect">
+          <i class="bi bi-award-fill me-1"></i>
+          <span>DOCENTE TITULAR</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body p-0 py-3">
+      <div class="data-row d-flex gap-3 mb-3">
+        <div class="data-item flex-fill">
+          <div class="icon-box rounded-3 shadow-sm"><i class="bi bi-fingerprint"></i></div>
+          <div class="data-text">
+            <label class="text-muted text-uppercase fw-bold small">RFC</label>
+            <span class="fw-medium text-dark">{{ datosEmpleado?.RFC || '---' }}</span>
+          </div>
+        </div>
+
+        <div class="data-item flex-fill">
+          <div class="icon-box rounded-3 shadow-sm"><i class="bi bi-mortarboard"></i></div>
+          <div class="data-text">
+            <label class="text-muted text-uppercase fw-bold small">Cédula Prof.</label>
+            <span *ngIf="datosEmpleado?.cedulaProfesional" class="fw-medium text-dark">{{ datosEmpleado?.cedulaProfesional }}</span>
+            <span *ngIf="!datosEmpleado?.cedulaProfesional" class="text-muted fst-italic small">Sin captura</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-item full-width mt-2 pt-3 border-top">
+        <div class="icon-box rounded-3 shadow-sm"><i class="bi bi-envelope-at"></i></div>
+        <div class="data-text overflow-hidden">
+          <label class="text-muted text-uppercase fw-bold small">Contacto Institucional</label>
+          <span class="email-text text-truncate d-block text-primary fw-medium">{{ docente?.persona?.email }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer bg-transparent border-0 p-0 pt-2 d-flex justify-content-between align-items-center">
+      <div class="info-badge small px-2 py-1 rounded-pill bg-light border d-flex align-items-center gap-1">
+        <i class="bi bi-check-circle-fill text-success" *ngIf="!esInactivo"></i>
+        <i class="bi bi-x-circle-fill text-danger" *ngIf="esInactivo"></i>
+        <span *ngIf="!esInactivo" class="fw-bold text-success text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Activo</span>
+        <span *ngIf="esInactivo" class="fw-bold text-danger text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">Inactivo</span>
+      </div>
+      
+      <div class="footer-group d-flex gap-2">
+        <button class="action-btn btn-edit rounded-3 border-0 shadow-sm" (click)="onEdit($event)" title="Editar Perfil">
+          <i class="bi bi-pencil-fill"></i>
+        </button>
+        <button class="action-btn btn-delete rounded-3 border-0 shadow-sm" (click)="onDelete($event)" title="Dar de Baja">
+          <i class="bi bi-trash-fill"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

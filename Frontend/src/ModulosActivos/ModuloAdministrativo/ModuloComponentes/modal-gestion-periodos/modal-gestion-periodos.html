@@ -1,0 +1,93 @@
+<div class="modal-backdrop" (click)="close.emit()">
+  <div class="modal-content fade-in" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header">
+      <div class="header-icon purple-theme">
+        <i class="bi bi-calendar-check-fill"></i>
+      </div>
+      <div class="header-text">
+        <h2>Gestión de Periodos</h2>
+        <p class="subtitle">Configura las fechas y habilita la captura de calificaciones.</p>
+      </div>
+      <button class="btn-close" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
+    </header>
+
+    <div class="modal-body-layout">
+      
+      <aside class="sidebar-list">
+        <h6 class="sidebar-title">Historial</h6>
+        <ul class="period-list">
+          <li (click)="limpiarFormulario()" class="add-new">
+            <i class="bi bi-plus-circle"></i> Nuevo Periodo
+          </li>
+          <li *ngFor="let p of listaPeriodos" (click)="seleccionarPeriodo(p)" 
+              [class.active]="p.id === periodoForm.id">
+            <div class="p-info">
+              <span class="p-name">{{ p.nombre }}</span>
+              <span class="p-status" [ngClass]="p.estatus === 'ABIERTO' ? 'text-success' : 'text-muted'">
+                {{ p.estatus }}
+              </span>
+            </div>
+            <i class="bi bi-chevron-right"></i>
+          </li>
+        </ul>
+      </aside>
+
+      <form class="main-form" #form="ngForm">
+        
+        <h6 class="section-title">
+          {{ periodoForm.id ? 'Editando Periodo' : 'Crear Nuevo Periodo' }}
+        </h6>
+
+        <div class="form-group mb-3">
+          <label>Nombre del Periodo</label>
+          <div class="input-wrapper">
+            <i class="bi bi-tag"></i>
+            <input type="text" name="nombre" [(ngModel)]="periodoForm.nombre" 
+                   required placeholder="Ej: Parcial 2 - 2024">
+          </div>
+        </div>
+
+        <div class="form-grid mb-4">
+          <div class="form-group">
+            <label>Fecha Inicio</label>
+            <div class="input-wrapper">
+              <i class="bi bi-calendar-event"></i>
+              <input type="date" name="inicio" [(ngModel)]="periodoForm.fechaInicio" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Fecha Fin</label>
+            <div class="input-wrapper">
+              <i class="bi bi-calendar-x"></i>
+              <input type="date" name="fin" [(ngModel)]="periodoForm.fechaFin" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-control-box" [class.is-open]="periodoForm.estatus">
+          <div class="status-info">
+            <span class="label">Permisos de Captura</span>
+            <p class="desc" *ngIf="periodoForm.estatus">Los docentes <strong>PUEDEN</strong> subir calificaciones actualmente.</p>
+            <p class="desc" *ngIf="!periodoForm.estatus">El sistema está <strong>CERRADO</strong> para modificaciones.</p>
+          </div>
+          
+          <label class="switch-lg">
+            <input type="checkbox" name="estatus" [(ngModel)]="periodoForm.estatus">
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="close.emit()">Cerrar</button>
+      <button class="btn btn-primary purple-btn" (click)="guardar()" [disabled]="!form.valid || cargando">
+        <span *ngIf="!cargando"><i class="bi bi-save"></i> Guardar Configuración</span>
+        <span *ngIf="cargando"><i class="bi bi-hourglass-split"></i> Procesando...</span>
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<nav class="sidebar" [class.colapsado]="estaColapsado">
+  <div class="sidebar-header">
+    <h1 class="school-name">Colegio Vizcaya De Durango</h1>
+    <img   routerLink="/admin/home"  src="https://iconape.com/wp-content/png_logo_vector/colegio-vizcaya-logo.png" alt="Logo Colegio Vizcaya" class="logo">
+  </div>
+
+  <hr class="separator">
+
+  <div class="nav-menu">
+    <a routerLink="/admin/student" routerLinkActive="active" [title]="estaColapsado ? 'Mis Grupos' : ''">
+      <i class="bi bi-backpack2"></i>
+      <span class="link-text">Estudiantes Generales</span>
+    </a>
+    <a routerLink="/administrativo/docentes" routerLinkActive="active" [title]="estaColapsado ? 'Mis Grupos' : ''">
+      <i class="bi bi-people-fill"></i>
+      <span class="link-text">Docentes Activos </span>
+    </a>
+    <a routerLink="/admin/groups" routerLinkActive="active" [title]="estaColapsado ? 'Calificaciones' : ''">
+      <i class="bi bi-people-fill"></i>
+      <span class="link-text">Grupos Generales</span>
+    </a>
+    <a routerLink="/admin/subject" routerLinkActive="active" [title]="estaColapsado ? 'Asistencia' : ''">
+      <i class="bi bi-clipboard2-check-fill"></i>
+      <span class="link-text">Materias Activas</span>
+    </a>
+    </div>
+
+  <div class="sidebar-footer">
+    <p class="slogan">Integrando Valores, Construimos El Mañana...</p>
+  </div>
+
+</nav>

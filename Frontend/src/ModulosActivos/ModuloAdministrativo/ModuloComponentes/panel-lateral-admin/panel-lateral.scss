@@ -1,0 +1,130 @@
+/* --- Paleta de Colores Institucional --- */
+:host {
+  --color-guinda-oscuro: #5a1a21;
+  --color-guinda-claro: #8a2a34;
+  --color-texto-claro: #f0e6e6;
+  --color-texto-activo: #ffffff;
+  --color-fondo-hover: rgba(255, 255, 255, 0.08);
+  --color-activo: rgba(255, 255, 255, 0.15);
+  --fuente-principal: 'Roboto', sans-serif;
+}
+
+/* =============================================
+   1. ESTRUCTURA PRINCIPAL DEL SIDEBAR
+   ============================================= */
+.sidebar {
+  width: 300px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column; 
+  position: relative;
+
+  
+  /* --- FONDO DEGRADADO GUINDA --- */
+  background: linear-gradient(180deg, var(--color-guinda-oscuro) 0%, var(--color-guinda-claro) 100%);
+  color: var(--color-texto-claro);
+  
+  transition: width 0.3s ease-in-out;
+}
+
+/* =============================================
+   2. ENCABEZADO (LOGO Y NOMBRE)
+   ============================================= */
+.sidebar-header {
+  padding: 1.5rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+.school-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-texto-activo);
+  margin: 0 0 1rem 0;
+}
+.logo { 
+  margin: 1.5rem;
+  height: 160px; 
+  filter: brightness(0) invert(2); /* Pone el logo en blanco si es oscuro */
+}
+
+/* --- BARRA DE SEPARACIÓN --- */
+.separator {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  margin: 0 1.5rem;
+}
+
+/* =============================================
+   3. MENÚ DE NAVEGACIÓN
+   ============================================= */
+.nav-menu {
+  flex-grow: 2;
+  overflow-y: auto;
+  display: flex;
+  align-self: center;
+  align-content: center;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+}
+
+.nav-menu a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 24px;
+  text-decoration: none;
+  color: var(--color-texto-claro);
+  font-weight: 500;
+  
+  /* --- TIPOGRAFÍA MÁS GRANDE --- */
+  font-size: 1.05rem; 
+
+  cursor: pointer; // Esto hace que el cursor se convierta en "manita"
+  transition: all 0.2s ease;
+}
+
+.nav-menu a i { 
+  font-size: 1.3rem;
+  opacity: 0.8;
+}
+
+/* --- EFECTOS HOVER Y ACTIVO --- */
+.nav-menu a:hover {
+  background-color: var(--color-fondo-hover);
+  color: var(--color-texto-activo);
+}
+
+.nav-menu a.active {
+  background-color: var(--color-activo);
+  color: var(--color-texto-activo);
+  font-weight: 600;
+}
+
+
+/* =============================================
+   4. PIE DE PÁGINA (ESLOGAN)
+   ============================================= */
+.sidebar-footer {
+  padding: 1.5rem;
+  text-align: center;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+.slogan {
+  margin: 0;
+  color: var(--color-texto-claro);
+  opacity: 0.8;
+  
+  /* --- ESLOGAN EN CURSIVA Y MÁS GRANDE --- */
+  font-style: italic;
+  font-size: 1.2rem;
+}
+
+
+/* =============================================
+   5. ESTILOS PARA EL MODO COLAPSADO
+   ============================================= */
+.sidebar.colapsado {
+}

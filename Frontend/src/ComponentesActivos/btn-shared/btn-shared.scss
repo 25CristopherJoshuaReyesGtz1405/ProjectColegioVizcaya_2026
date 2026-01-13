@@ -1,0 +1,39 @@
+.btn-custom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 50px; // Totalmente redondeado
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  i {
+    margin-right: 0.5rem;
+  }
+}
+
+/* Estilo para el botón sólido */
+.solid {
+  background-color: #be0303;
+  color: white;
+}
+.solid:hover:not(:disabled) {
+  background-color: #b66262;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 20px rgba(79, 70, 229, 0.2);
+}
+
+/* Estilo para el botón de contorno */
+.outline {
+  background-color: transparent;
+  color: #be0303;
+  border-color: #ff5353;
+}
+.outline:hover:not(:disabled) {
+  background-color: #cc000a;
+  color: rgb(255, 255, 255);
+}

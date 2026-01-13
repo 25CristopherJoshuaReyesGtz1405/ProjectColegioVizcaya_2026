@@ -1,0 +1,122 @@
+<header class="topbar-docente" *ngIf="usuario$ | async as usuario">
+  <div class="brand-area">
+    <div class="user-avatar-ring">
+      <img *ngIf="fotoUrl" [src]="fotoUrl" alt="Avatar" />
+      <span *ngIf="!fotoUrl">{{ usuario.persona.nombre.charAt(0) }}</span>
+    </div>
+    <div class="welcome-text">
+      <h1>¡Hola, Prof. {{ usuario.persona.nombre }}!</h1>
+      <span class="badge-rol">Docente Titular</span>
+    </div>
+  </div>
+
+  <div class="search-area">
+    <div class="search-box">
+      <i class="bi bi-search"></i>
+      <input
+        type="text"
+        placeholder="Buscar alumno, grupo..."
+        [(ngModel)]="terminoBusqueda"
+        (input)="buscar(terminoBusqueda)"
+        (focus)="mostrarResultados = true"
+        (blur)="cerrarBusqueda()"
+      />
+    </div>
+
+    <div
+      class="search-results-card animate-fade-in"
+      *ngIf="mostrarResultados && terminoBusqueda.length > 1 && (resultados$ | async) as res"
+    >
+      <div class="result-section" *ngIf="res.grupos.length > 0">
+        <h6 class="section-title">GRUPOS</h6>
+        <div class="result-item" *ngFor="let g of res.grupos" (click)="abrirResultado(g, 'GRUPO')">
+          <div class="icon-sq bg-blue"><i class="bi bi-collection-fill"></i></div>
+          <div class="info">
+            <span class="main">{{ g.materia }}</span>
+            <span class="sub">{{ g.grado }}° Semestre</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-section" *ngIf="res.estudiantes.length > 0">
+        <h6 class="section-title">ESTUDIANTES</h6>
+        <div class="result-item" *ngFor="let e of res.estudiantes" (click)="abrirResultado(e, 'ESTUDIANTE')">
+          <div class="avatar-circle">
+            <img *ngIf="e.fotoUrl" [src]="e.fotoUrl" />
+            <span *ngIf="!e.fotoUrl">{{ e.nombre.charAt(0) }}</span>
+          </div>
+          <div class="info">
+            <span class="main">{{ e.nombre }} {{ e.apellidos }}</span>
+            <span class="sub">{{ e.matricula }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-results" *ngIf="res.grupos.length === 0 && res.estudiantes.length === 0">
+        <p>No se encontraron coincidencias.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions-area">
+    <div class="tool-buttons">
+      <button class="btn-icon" (click)="toggleTheme()" title="Cambiar Tema">
+        <i class="bi" [ngClass]="isDarkMode ? 'bi-moon-stars-fill' : 'bi-sun-fill'"></i>
+      </button>
+      <button class="btn-icon notification" title="Notificaciones">
+        <i class="bi bi-bell-fill"></i>
+        <span class="dot"></span>
+      </button>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="profile-wrapper" (click)="toggleProfileMenu()">
+      <div class="profile-info">
+        <span class="name"
+          >{{ usuario.persona.nombre }} {{ usuario.persona.apellidos.split(' ')[0] }}</span
+        >
+        <span class="email">{{ usuario.persona.email }}</span>
+      </div>
+      <i class="bi bi-chevron-down arrow" [class.open]="isProfileMenuOpen"></i>
+
+      <div class="dropdown-menu-card" *ngIf="isProfileMenuOpen">
+        <div class="menu-header">
+          <p>Cuenta Institucional</p>
+        </div>
+
+        <div class="menu-body">
+          <a (click)="abrirExpediente()" class="menu-item">
+            <i class="bi bi-person-vcard"></i> Mi Expediente
+          </a>
+          <a routerLink="/docente/configuracion" class="menu-item">
+            <i class="bi bi-sliders"></i> Configuración
+          </a>
+          <a href="https://support.colegiovizcaya.edu.mx" target="_blank" class="menu-item">
+            <i class="bi bi-question-circle"></i> Soporte
+          </a>
+        </div>
+
+        <div class="menu-footer">
+          <button (click)="logout()" class="btn-logout">
+            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<app-modal-docente-detalle
+  *ngIf="mostrarDetalleBusqueda"
+  [data]="itemSeleccionado"
+  [tipo]="tipoSeleccionado"
+  (close)="mostrarDetalleBusqueda = false"
+>
+</app-modal-docente-detalle>
+
+<app-modal-expediente-docente 
+  *ngIf="mostrarModalExpediente" 
+  [docente]="(usuario$ | async)!" 
+  (close)="mostrarModalExpediente = false">
+</app-modal-expediente-docente>

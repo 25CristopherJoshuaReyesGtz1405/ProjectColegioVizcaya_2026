@@ -1,0 +1,247 @@
+:host {
+  --primary: #8C1D40;       /* Guinda Institucional */
+  --primary-soft: #fff1f2;  /* Rosa muy pálido para fondos/hover */
+  --primary-light: #fda4af; /* Rosa medio para bordes suaves */
+  --text-dark: #1e293b;     /* Azul oscuro casi negro */
+  --text-gray: #64748b;     /* Gris para textos secundarios */
+  --bg-gray: #f8fafc;       /* Fondo gris muy claro para headers */
+  --border-light: #f1f5f9;
+}
+
+.widget-card {
+  background: #ffffff;
+  border-radius: 24px; /* Bordes más redondeados como en la imagen */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0,0,0,0.04);
+  overflow: hidden;
+  width: 97.10%;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(140, 29, 64, 0.08);
+  }
+}
+
+/* --- ENCABEZADO --- */
+.widget-header {
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-light);
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .icon-box {
+    width: 48px;
+    height: 48px;
+    background-color: var(--primary-soft); /* Fondo rosa suave */
+    color: var(--primary);
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-size: 1.4rem;
+  }
+
+  .text-info {
+    h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--text-gray);
+    }
+  }
+
+  .btn-action-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: var(--text-gray);
+    display: grid;
+    place-items: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: var(--primary-light);
+    }
+  }
+}
+
+.widget-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 2rem; /* Padding generoso a los lados */
+}
+
+/* --- TABLA --- */
+.table-responsive {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border-light); /* Borde sutil alrededor de la tabla */
+}
+
+.materias-table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  thead {
+    background-color: var(--bg-gray);
+    
+    th {
+      padding: 1rem 1.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-gray);
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .text-center { text-align: center; }
+  }
+
+  tbody tr {
+    transition: background-color 0.2s ease;
+    border-bottom: 1px dashed var(--border-light);
+
+    &:last-child { border-bottom: none; }
+
+    /* EFECTO HOVER ROSA SUAVE (Como en la imagen) */
+    &:hover {
+      background-color: var(--primary-soft); 
+    }
+  }
+
+  td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+  }
+}
+
+/* --- BADGES Y TEXTOS --- */
+.badge-clave {
+  background-color: #f1f5f9;
+  color: #475569;
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+
+.text-asignatura {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.circle-grado {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--primary); /* Borde Guinda */
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+
+/* --- UTILIDADES --- */
+.loading-state, .empty-state {
+  padding: 3rem;
+  text-align: center;
+  color: var(--text-gray);
+  
+  i { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
+}
+
+/* Scrollbar fino */
+.custom-scroll::-webkit-scrollbar { width: 6px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+/* Animación de entrada */
+.animate-slide-up { animation: slideUp 0.5s ease-out forwards; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+.actions-group {
+  display: inline-flex;
+  gap: 0.5rem;
+  opacity: 0.7; /* Ligeramente transparentes por defecto */
+  transition: opacity 0.2s;
+}
+
+/* Al pasar el mouse sobre la fila, los botones se vuelven totalmente visibles */
+tr:hover .actions-group {
+  opacity: 1;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--text-gray);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Efecto Hover Individual */
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  /* Colores específicos al hover */
+  &.btn-print:hover {
+    background-color: #eff6ff;
+    color: #3b82f6; /* Azul */
+  }
+  
+  &.btn-edit:hover {
+    background-color: #fffbeb;
+    color: #f59e0b; /* Naranja */
+  }
+
+  &.btn-delete:hover {
+    background-color: #fef2f2;
+    color: #ef4444; /* Rojo */
+  }
+}
+
+/* Ajuste del badge contador en el header (si lo agregaste) */
+.count-badge {
+  background: #f1f5f9;
+  color: var(--text-dark);
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+}

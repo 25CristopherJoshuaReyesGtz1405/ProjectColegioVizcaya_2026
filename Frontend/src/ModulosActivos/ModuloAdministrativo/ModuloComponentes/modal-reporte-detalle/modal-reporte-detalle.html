@@ -1,0 +1,104 @@
+<div class="modal-backdrop fade-in" (click)="close.emit()">
+  <div class="modal-content premium-card" (click)="$event.stopPropagation()">
+    
+    <div class="ribbon" 
+         [ngClass]="{
+           'high': reporte?.severidad === 'ALTA', 
+           'medium': reporte?.severidad === 'MEDIA', 
+           'low': reporte?.severidad === 'BAJA'
+         }">
+      <span>{{ reporte?.severidad || 'FALTA' }}</span>
+    </div>
+
+    <header class="modal-header">
+      <div class="header-branding">
+        <img src="https://images.seeklogo.com/logo-png/30/2/colegio-vizcaya-logo-png_seeklogo-307798.png" alt="Logo" class="logo-img">
+        <div class="header-text">
+          <h2>Reporte de Incidencia</h2>
+          <span class="folio-badge">FOLIO #{{ reporte?.id || '000' }}</span>
+        </div>
+      </div>
+      <button class="btn-close" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
+    </header>
+
+    <div class="modal-body custom-scroll">
+      
+      <div class="student-profile-section">
+        <div class="avatar-container">
+          <div class="avatar-placeholder gradient-student">
+            <i class="bi bi-person-fill"></i>
+          </div>
+        </div>
+        <div class="student-info">
+          <label class="meta-label">Alumno(a) Implicado</label>
+          <h3 class="student-name">{{ reporte?.estudiante || 'Nombre del Alumno' }}</h3>
+          <span class="grade-badge">{{ reporte?.grado || 'Grado Desconocido' }}</span>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="details-grid">
+        <div class="detail-item">
+          <div class="icon-box"><i class="bi bi-calendar-event"></i></div>
+          <div class="data-text">
+            <label>Fecha</label>
+            <span class="fw-bold" *ngIf="reporte?.fecha">
+              {{ reporte.fecha | date:'dd/MM/yyyy' }}
+            </span>
+            <span class="fw-bold text-muted" *ngIf="!reporte?.fecha">--/--/----</span>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <div class="icon-box"><i class="bi bi-clock"></i></div>
+          <div class="data-text">
+            <label>Hora</label>
+            <span class="fw-bold" *ngIf="reporte?.fecha">
+              {{ reporte.fecha | date:'shortTime' }}
+            </span>
+            <span class="fw-bold text-muted" *ngIf="!reporte?.fecha">--:--</span>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <div class="icon-box"><i class="bi bi-bookmarks"></i></div>
+          <div class="data-text">
+            <label>Tipo</label>
+            <span class="fw-bold">{{ reporte?.tipo || 'Conducta' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="description-section">
+        <label class="section-title"><i class="bi bi-text-paragraph"></i> Descripción de los Hechos</label>
+        <div class="text-content">
+          <p>{{ reporte?.descripcion || 'Sin descripción detallada.' }}</p>
+        </div>
+      </div>
+
+      <div class="signatures-section">
+        <div class="signature-block">
+          <div class="line"></div>
+          <span>Docente / Reportante</span>
+        </div>
+        <div class="signature-block">
+          <div class="line"></div>
+          <span>Dirección / Control Escolar</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-icon-delete" (click)="confirmarEliminar()" title="Eliminar Reporte">
+        <i class="bi bi-trash3-fill"></i>
+      </button>
+      <div class="spacer"></div> 
+      <button class="btn-print" (click)="imprimir()">
+        <i class="bi bi-printer-fill"></i> Imprimir Expediente
+      </button>
+    </div>
+
+  </div>
+</div>

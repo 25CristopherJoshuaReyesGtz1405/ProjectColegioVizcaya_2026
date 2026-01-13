@@ -1,0 +1,365 @@
+// VARIABLES (Mismas que modal-planeacion)
+$guinda: #8C1D40;
+$guinda-dark: #65122d;
+$guinda-light: #fdf2f4;
+$text-main: #1f2937;
+$text-light: #6b7280;
+$border: #e5e7eb;
+$white: #ffffff;
+$bg-input: #f9fafb;
+$focus-ring: rgba(140, 29, 64, 0.15);
+
+/* BACKDROP & MODAL BASE */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal-content.premium-modal {
+    background: $white;
+    width: 100%;
+    max-width: 580px; // Un poco más estrecho que el de planeación
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* HEADER PREMIUM (Guinda) */
+.modal-header.guinda-header {
+    background: linear-gradient(135deg, $guinda, $guinda-dark);
+    color: $white;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+
+    .header-content {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+
+        .header-icon {
+            background-color: rgba($white, 0.2);
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            font-size: 1.5rem;
+        }
+
+        .header-text {
+            h2 {
+                margin: 0;
+                font-size: 1.2rem;
+                font-weight: 700;
+            }
+
+            .subtitle {
+                margin: 0;
+                font-size: 0.875rem;
+                opacity: 0.9;
+            }
+        }
+    }
+
+    .btn-close-white {
+        background: none;
+        border: none;
+        color: rgba($white, 0.7);
+        font-size: 1.25rem;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+            color: $white;
+        }
+    }
+}
+
+/* BODY */
+.modal-body {
+    padding: 2rem;
+}
+
+.section-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: $guinda;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    border-bottom: 2px solid rgba($guinda, 0.1);
+    padding-bottom: 0.5rem;
+    width: fit-content;
+}
+
+/* GRID DE TARJETAS (Tipo de Evaluación) */
+.cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.type-card {
+    position: relative;
+    background: $white;
+    border: 1px solid $border;
+    border-radius: 16px;
+    padding: 1.2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+
+    &:hover {
+        border-color: $guinda;
+        background: rgba($guinda, 0.02);
+        transform: translateY(-2px);
+    }
+
+    &.selected {
+        border-color: $guinda;
+        background: $guinda-light;
+        box-shadow: 0 0 0 2px $guinda; // Anillo sólido
+
+        .card-label {
+            font-weight: 700;
+            color: $guinda;
+        }
+    }
+
+    .card-icon {
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+    }
+
+    .card-label {
+        font-size: 0.85rem;
+        color: $text-main;
+        transition: color 0.2s;
+    }
+
+    .check-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        width: 24px;
+        height: 24px;
+        background: $guinda;
+        color: white;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        border: 2px solid $white;
+        animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+        i {
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+    }
+}
+
+/* FORMULARIO E INPUTS (Estilo idéntico a planeación) */
+.form-grid {
+    display: flex;
+    gap: 1rem;
+}
+
+.flex-grow {
+    flex: 1;
+}
+
+.w-30 {
+    width: 35%;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: $text-main;
+
+        .required {
+            color: $guinda;
+        }
+    }
+
+    .input-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+        border: 1px solid $border;
+        border-radius: 36px;
+        background: $white;
+        transition: all 0.2s ease;
+        overflow: hidden;
+        height: 48px;
+
+        .icon {
+            position: absolute;
+            left: 1rem;
+            color: $text-light;
+        }
+
+        input {
+            width: 100%;
+            height: 100%;
+            padding: 0 1rem 0 2.8rem;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 0.95rem;
+            color: $text-main;
+
+            &::placeholder {
+                color: rgba($text-light, 0.7);
+            }
+        }
+
+        &:focus-within {
+            border-color: $guinda;
+            box-shadow: 0 0 0 3px $focus-ring;
+
+            .icon {
+                color: $guinda;
+            }
+        }
+    }
+}
+
+/* ALERTA */
+.info-alert {
+  margin-top: 1.5rem; 
+  padding: 0.8rem 1rem; 
+  border-radius: 12px;
+  background: #eff6ff; 
+  color: #1e40af; 
+  border: 1px solid #dbeafe;
+  
+  /* 1. FLEXBOX PARA ALINEAR */
+  display: flex; 
+  align-items: center; /* Centra verticalmente icono y texto */
+  gap: 0.8rem;         /* Espacio horizontal entre ellos */
+  
+  font-size: 0.85rem; 
+  line-height: 1.4;
+
+  i { 
+    font-size: 1.2rem;
+    display: flex; /* Asegura que el icono no tenga espacios extra */
+  }
+
+  /* 2. LA SOLUCIÓN CLAVE: Quitar margen al texto */
+  p { 
+    margin: 0; 
+    padding: 0;
+  }
+}
+
+/* FOOTER */
+.modal-footer {
+    padding: 1.2rem 2rem;
+    background-color: $bg-input;
+    border-top: 1px solid $border;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+
+    .btn-ghost {
+        padding: 0.7rem 1.5rem;
+        background: transparent;
+        border: 1px solid $border;
+        color: $text-main;
+        font-weight: 600;
+        border-radius: 36px;
+        cursor: pointer;
+
+        &:hover {
+            background: white;
+            border-color: $text-light;
+        }
+    }
+
+    .btn-solid {
+        padding: 0.7rem 1.5rem;
+        background: linear-gradient(135deg, $guinda, $guinda-dark);
+        border: none;
+        color: white;
+        font-weight: 600;
+        border-radius: 36px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        &:hover {
+            box-shadow: 0 4px 12px rgba($guinda, 0.3);
+            transform: translateY(-1px);
+        }
+
+        &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+    }
+}
+
+/* ANIMACIONES */
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}

@@ -1,0 +1,83 @@
+<div class="modal-backdrop fade-in" (click)="close.emit()">
+  <div class="modal-content large-modal" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header">
+      <div class="header-info">
+        <span class="badge-ciclo">{{ grupo.cicloEscolar }}</span>
+        <h2>{{ grupo.materia.nombre }}</h2>
+        <p class="docente-text">
+          <i class="bi bi-person-video3"></i> 
+          {{ grupo.docente ? grupo.docente.persona.nombre + ' ' + grupo.docente.persona.apellidos : 'Sin Docente' }}
+        </p>
+      </div>
+      <button class="btn-close" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
+    </header>
+
+    <div class="modal-body custom-scroll">
+      
+      <div class="add-section">
+        <label>Inscribir Nuevo Alumno</label>
+        <div class="search-box">
+          <i class="bi bi-search"></i>
+          <input type="text" 
+                 placeholder="Buscar por nombre o matrícula..." 
+                 [(ngModel)]="terminoBusqueda"
+                 (keyup)="buscarAlumnos()">
+        </div>
+
+        <div class="search-results" *ngIf="resultadosBusqueda.length > 0">
+          <div class="result-item" *ngFor="let r of resultadosBusqueda">
+            <div class="student-mini-info">
+              <strong>{{ r.persona.nombre }} {{ r.persona.apellidos }}</strong>
+              <span>{{ r.rol?.uid }}</span>
+            </div>
+            <button class="btn-add-icon" (click)="agregarAlumno(r)" [disabled]="procesandoAccion">
+              <i class="bi bi-plus-lg"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="list-section">
+        <div class="list-header">
+          <h3>Alumnos Inscritos</h3>
+          <span class="count-badge">{{ alumnosInscritos.length }}</span>
+        </div>
+
+        <div *ngIf="cargandoLista" class="text-center py-4">
+          <div class="spinner-border text-primary spinner-border-sm"></div>
+        </div>
+
+        <ul class="student-list" *ngIf="!cargandoLista">
+          <li *ngFor="let alumno of alumnosInscritos" class="student-row animate-slide-in">
+            
+            <div class="student-avatar">
+              <img *ngIf="alumno.persona.fotoUrl" [src]="alumno.persona.fotoUrl">
+              <div *ngIf="!alumno.persona.fotoUrl" class="avatar-placeholder">
+                {{ alumno.persona.nombre.charAt(0) }}
+              </div>
+            </div>
+
+            <div class="student-details">
+              <span class="name">{{ alumno.persona.nombre }} {{ alumno.persona.apellidos }}</span>
+              <span class="matricula">{{ alumno.rol?.uid }}</span>
+            </div>
+
+            <button class="btn-remove" (click)="quitarAlumno(alumno)" [disabled]="procesandoAccion" title="Dar de baja del grupo">
+              <i class="bi bi-trash"></i>
+            </button>
+
+          </li>
+          
+          <li *ngIf="alumnosInscritos.length === 0" class="empty-row">
+            <i class="bi bi-inbox"></i> Grupo vacío
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+</div>

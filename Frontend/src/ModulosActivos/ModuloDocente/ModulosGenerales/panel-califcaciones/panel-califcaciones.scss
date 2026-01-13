@@ -1,0 +1,440 @@
+// VARIABLES INSTITUCIONALES
+$guinda: #8C1D40;
+$guinda-dark: #65122d;
+$guinda-light: #fdf2f4;
+$text-main: #111827;
+$text-light: #6b7280;
+$white: #ffffff;
+$bg-body: #f3f4f6;
+$border: #e5e7eb;
+
+ 
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+
+  /* Animación escalonada para las tarjetas */
+  & > * {
+    opacity: 0;
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  & > *:nth-child(1) { animation-delay: 0.1s; }
+  & > *:nth-child(2) { animation-delay: 0.2s; }
+  & > *:nth-child(3) { animation-delay: 0.3s; }
+  & > *:nth-child(4) { animation-delay: 0.4s; }
+}
+
+/* --- 5. GRID PRINCIPAL (Layout de 2 Columnas) --- */
+.main-layout {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr; /* Columna principal ancha */
+  gap: 2rem;
+  align-items: start;
+}
+
+.col-primary, .col-secondary {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.dashboard-page {
+  padding: 2.5rem;
+  background-color:var(--color-fondo-principal);
+  font-family: 'Roboto', sans-serif;
+  border-radius: 40px;
+  /* Animación de entrada de la página */
+  animation: fadeInPage 0.6s ease-out forwards;
+}
+
+/* --- 3. ENCABEZADO --- */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  
+  .titulo-principal {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
+  }
+  .subtitulo {
+    font-size: 1.10rem;
+    color: var(--text-medium);
+    margin: 0;
+  }
+  .fecha-actual {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #000000;
+    background-color: #f8f8f8;
+    padding: 1.25rem;
+    border-radius: 40px;
+    box-shadow: var(--shadow-sm);
+    text-transform: capitalize;
+  }
+}
+
+/* --- 4. GRID DE ESTADÍSTICAS (KPIs) --- */
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+
+  /* Animación escalonada para las tarjetas */
+  & > * {
+    opacity: 0;
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  
+  & > *:nth-child(1) { animation-delay: 0.1s; }
+  & > *:nth-child(2) { animation-delay: 0.2s; }
+  & > *:nth-child(3) { animation-delay: 0.3s; }
+  & > *:nth-child(4) { animation-delay: 0.4s; }
+}
+
+/* --- 5. GRID PRINCIPAL (Layout de 2 Columnas) --- */
+.main-layout {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr; /* Columna principal ancha */
+  gap: 2rem;
+  align-items: start;
+}
+
+.col-primary, .col-secondary {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* --- 6. TARJETAS WIDGET (Diseño Profesional) --- */
+.widget-card {
+  background: var(--bg-card);
+  border-radius: 40px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  &.alert-card {
+    border-top: 4px solid #EF4444;
+  }
+}
+
+.widget-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  
+  .header-info {
+    flex-grow: 1;
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin: 0;
+    }
+    p {
+      font-size: 0.85rem;
+      color: var(--text-medium);
+      margin: 0;
+    }
+  }
+
+  .btn-more {
+    background: transparent;
+    border: none;
+    color: var(--text-medium);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    border-radius: 40px;
+    transition: background-color 0.2s;
+    &:hover { background-color: var(--color-principal-suave); color: var(--primary-color); }
+  }
+}
+
+.widget-header-simple {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  &.warning-bg { background-color: #FEF2F2; }
+}
+
+.widget-body {
+  padding: 1.5rem;
+  &.p-0 { padding: 0; } /* Sin padding para listas full-width */
+}
+
+
+// CONSTANTES PREMIUM
+$radius-pill: 36px; 
+$radius-card: 24px;
+$shadow-card: 0 20px 40px -10px rgba(0, 0, 0, 0.06);
+
+
+
+/* Botón Imprimir (Círculo elegante) */
+.btn-print {
+  color: $guinda; border: none;
+  padding: 0.7rem 1.5rem; border-radius: $radius-pill;
+  font-weight: 700; font-size: 0.9rem; cursor: pointer;
+  display: flex; align-items: center; gap: 0.6rem;
+  transition: all 0.3s;
+
+  &:hover:not(:disabled) { background: $guinda; color: $white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba($guinda, 0.2); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+} 
+
+.main-container { max-width: 1100px; margin: 0 auto; }
+
+/* 1. PANEL CONTROL */
+.control-card {
+  background: $white; border-radius: $radius-card;
+  padding: 2rem; position: relative; overflow: hidden;
+  box-shadow: $shadow-card; margin-bottom: 2rem;
+  border: 1px solid $white;
+
+  .card-decoration {
+    position: absolute; top: -50px; right: -50px;
+    width: 200px; height: 200px; background: radial-gradient(circle, rgba($guinda, 0.05), transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+}
+
+.header-row {
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+  
+  .title-block {
+    display: flex; align-items: center; gap: 1rem;
+    .icon-box {
+      width: 48px; height: 48px; border-radius: 16px;
+      background: linear-gradient(135deg, $guinda, $guinda-dark); color: $white;
+      display: grid; place-items: center; font-size: 1.5rem;
+      box-shadow: 0 8px 16px rgba($guinda, 0.25);
+    }
+    h2 { margin: 0; font-size: 1.4rem; font-weight: 800; color: $text-main; letter-spacing: -0.5px; }
+    p { margin: 0; font-size: 0.9rem; color: $text-light; }
+  }
+}
+
+/* BOTÓN NUEVO */
+.btn-new-pill {
+  background: $guinda-light; color: $guinda; border: none;
+  padding: 0.7rem 1.5rem; border-radius: $radius-pill;
+  font-weight: 700; font-size: 0.9rem; cursor: pointer;
+  display: flex; align-items: center; gap: 0.6rem;
+  transition: all 0.3s;
+
+  &:hover:not(:disabled) { background: $guinda; color: $white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba($guinda, 0.2); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+/* FILTROS */
+.filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+
+.input-pill {
+  position: relative; height: 52px; border-radius: $radius-pill;
+  background: $bg-body; border: 1px solid transparent;
+  display: flex; align-items: center; transition: all 0.3s;
+
+  &:hover { background-color: #eef2f6; }
+  &:focus-within {
+    background-color: $white; border-color: $guinda;
+    box-shadow: 0 0 0 4px rgba($guinda, 0.1);
+    .icon { color: $guinda; }
+  }
+
+  .icon { position: absolute; left: 1.2rem; font-size: 1.1rem; color: $text-light; transition: 0.3s; }
+  
+  select {
+    width: 100%; height: 100%; border: none; background: transparent;
+    padding: 0 2.5rem 0 3rem; font-size: 0.95rem; font-weight: 600; color: $text-main;
+    outline: none; cursor: pointer; appearance: none;
+  }
+  .arrow { position: absolute; right: 1.5rem; color: $text-light; pointer-events: none; font-size: 0.8rem; }
+  
+  &.wide { grid-column: span 2; @media(max-width: 768px){ grid-column: span 1; } }
+}
+
+/* 2. HOJA DE CALIFICACIONES */
+.sheet-card {
+  background: $white; border-radius: $radius-card;
+  box-shadow: $shadow-card; overflow: hidden;
+  border: 1px solid $white;
+}
+
+.sheet-header {
+  padding: 1.5rem 2rem; border-bottom: 1px solid $border;
+  display: flex; justify-content: space-between; align-items: center;
+
+  .info {
+    h3 { margin: 0; font-size: 1.1rem; font-weight: 700; color: $text-main; }
+    .badge-status {
+      font-size: 0.7rem; font-weight: 800; color: #059669;
+      background: #ecfdf5; padding: 4px 10px; border-radius: 20px;
+      letter-spacing: 0.5px; display: inline-block; margin-bottom: 4px;
+      
+      &.closed { background: #fee2e2; color: #ef4444; }
+    }
+  }
+}
+
+.actions-group { display: flex; gap: 0.8rem; }
+
+/* BOTONES */
+.btn-save-pill, .btn-finalize {
+  border: none; padding: 0.8rem 1.8rem; border-radius: $radius-pill;
+  font-weight: 700; font-size: 0.9rem; cursor: pointer;
+  display: flex; align-items: center; gap: 0.6rem; transition: all 0.3s;
+}
+
+.btn-save-pill {
+  background: linear-gradient(135deg, $guinda, $guinda-dark); color: $white;
+  box-shadow: 0 4px 15px rgba($guinda, 0.3);
+  &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba($guinda, 0.4); }
+  &:disabled { opacity: 0.7; cursor: not-allowed; box-shadow: none; }
+}
+
+.btn-finalize {
+  background: #1e293b; color: white;
+  &:hover { background: #0f172a; transform: translateY(-2px); }
+}
+
+/* TABLA */
+.premium-table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  
+  thead th {
+    background: #fcfcfc; padding: 1rem 1.5rem; text-align: left;
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;
+    color: #6b7280; font-weight: 800; border-bottom: 1px solid $border;
+  }
+  
+  .col-id { width: 50px; color: #9ca3af; text-align: center; }
+  .col-grade { width: 100px; text-align: center; }
+  .text-center { text-align: center; }
+  .font-mono { font-family: monospace; font-size: 0.95rem; }
+  .font-bold { font-weight: 800; font-size: 1rem; }
+  .text-muted { color: #9ca3af; }
+
+  tbody tr {
+    transition: background 0.2s;
+    &:hover { background: #fafafa; }
+    &.is-modified { background: #fffbeb; td:first-child { box-shadow: inset 4px 0 0 #f59e0b; } }
+  }
+  td { padding: 0.8rem 1.5rem; vertical-align: middle; border-bottom: 1px solid $border; }
+}
+
+/* PERFIL ALUMNO */
+.student-profile {
+  display: flex; align-items: center; gap: 1rem;
+  .avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: $guinda-light; color: $guinda;
+    display: grid; place-items: center; font-weight: 700;
+    img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  }
+  .data {
+    display: flex; flex-direction: column;
+    .name { font-size: 0.95rem; color: $text-main; }
+    .matricula { font-size: 0.8rem; color: $text-light; font-family: monospace; }
+  }
+}
+
+/* INPUTS */
+.grade-input-box input {
+  width: 60px; padding: 0.5rem; text-align: center;
+  border-radius: 12px; border: 1px solid $border;
+  font-weight: 700; font-size: 1rem; outline: none; transition: 0.2s;
+  background: $white;
+  &:focus { border-color: $guinda; box-shadow: 0 0 0 3px rgba($guinda, 0.1); }
+  
+  &.nota-reprobatoria { color: #ef4444; background: #fef2f2; border-color: #fee2e2; }
+  &.nota-excelente { color: #059669; background: #ecfdf5; border-color: #d1fae5; }
+  
+  &:disabled { background: #f3f4f6; color: #9ca3af; border-color: #e5e7eb; cursor: not-allowed; }
+}
+
+.obs-input {
+  width: 100%; padding: 0.6rem 1rem; border-radius: 12px;
+  border: 1px solid transparent; background: transparent;
+  color: $text-main; outline: none; transition: 0.2s;
+  &:hover:not(:disabled) { background: $bg-body; }
+  &:focus { background: $white; border-color: $border; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  &:disabled { color: #9ca3af; cursor: not-allowed; }
+}
+
+/* ESTATUS */
+.status-badge {
+  display: inline-block; padding: 4px 12px; border-radius: 20px;
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px;
+  text-transform: uppercase;
+  
+  &.status-excelente { background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; }
+  &.status-regular { background: #eff6ff; color: #3b82f6; border: 1px solid #dbeafe; }
+  &.status-suficiente { background: #fffbeb; color: #d97706; border: 1px solid #fcd34d; }
+  &.status-reprobado { background: #fef2f2; color: #ef4444; border: 1px solid #fee2e2; }
+}
+
+/* ESTADO INICIAL (PLACEHOLDER) */
+.placeholder-state {
+  text-align: center; padding: 5rem 2rem; color: $text-light; opacity: 0.8;
+  
+  .icon-big {
+    font-size: 3rem; color: $guinda; opacity: 0.2; margin-bottom: 1.5rem;
+    animation: float 3s ease-in-out infinite;
+  }
+  h3 { font-size: 1.2rem; color: $text-main; margin: 0 0 0.5rem 0; font-weight: 700; }
+  p { font-size: 0.95rem; max-width: 400px; margin: 0 auto; }
+}
+
+.empty-state {
+  text-align: center; padding: 3rem; color: $text-light;
+  i { font-size: 2rem; opacity: 0.3; display: block; margin-bottom: 0.5rem; }
+}
+
+.loader-container {
+  text-align: center; padding: 4rem; color: $guinda; font-weight: 600;
+  display: flex; flex-direction: column; align-items: center; gap: 1rem;
+}
+
+.spinner, .spinner-mini {
+  border: 2px solid rgba($guinda, 0.2); border-top-color: $guinda;
+  border-radius: 50%; animation: spin 0.8s infinite linear;
+}
+.spinner { width: 30px; height: 30px; }
+.spinner-mini { width: 16px; height: 16px; border-color: rgba(255,255,255,0.3); border-top-color: white; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.fade-in { animation: fadeIn 0.6s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+.animate-slide-up { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

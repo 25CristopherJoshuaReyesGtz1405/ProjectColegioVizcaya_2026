@@ -1,0 +1,53 @@
+<app-notificaciones-shared></app-notificaciones-shared>
+
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-header">
+      <h2 class="ColorPrincipal">Colegio Vizcaya Durango</h2>
+      <h3 class="ColorPrincipal">Innovación Educativa...</h3>
+      <br>
+      <img
+        src="https://vectorseek.com/wp-content/uploads/2023/09/Colegio-Vizcaya-Logo-Vector.svg--300x283.png"
+        alt="Logo Colegio Vizcaya"
+        class="logo"
+      />
+    </div>
+
+    <div *ngIf="!correoEnviado; else mensajeEnviado" class="fade-in">
+        <div class="form-header">
+          <h2 class="ColorPrincipal_1" >Recuperar Contraseña</h2>
+          <p class="ColorPrincipal_1">Ingresa tu correo para recibir un enlace de recuperación.</p>
+        </div>
+
+        <form (ngSubmit)="solicitarReseteo()">
+          <app-campo-entrada-shared
+            label="Correo Electrónico Institucional"
+            type="email"
+            iconClass="bi bi-envelope"
+            [(ngModel)]="correo"
+            name="correo"> </app-campo-entrada-shared>
+          
+          <div class="d-grid mt-4">
+            <app-btn-shared
+              text="Enviar Enlace"
+              variant="solid"
+              [disabled]="estaCargando">
+            </app-btn-shared>
+          </div>
+        </form>
+      </div>
+
+      <ng-template #mensajeEnviado>
+        <div class="success-message fade-in">
+          <i class="bi bi-envelope-check-fill success-icon"></i>
+          <h2 class="ColorPrincipal_1">Revisa tu Correo</h2>
+          <p class="ColorPrincipal_1">Hemos enviado un enlace a <strong>{{correo}}</strong>. Sigue las instrucciones para crear una nueva contraseña.</p>
+        </div>
+      </ng-template>
+
+      <div class="back-to-login">
+        <a (click)="volverInicioSesion()">Volver a Iniciar Sesión</a>
+      </div>
+
+  </div>
+</div>
