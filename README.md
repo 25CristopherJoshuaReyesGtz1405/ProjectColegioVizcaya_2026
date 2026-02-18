@@ -105,11 +105,11 @@ El proyecto utiliza una **Arquitectura Modelo 1 (Backend Dedicado + Frontend)** 
 ---
 
 ## 📄 Licencia
-* **Versión:** 1.3
-* **Estado:** Funcional (~90% implementado).
+* **Versión:** 2.1
+* **Estado:** Funcional (~60% implementado).
 * **Christopher Joshua Reyes Gutiérrez** - *Developer (Diseño técnico, implementación full-stack e integración)*.
 * **Christian Gibran Espituñal Villanueva** - *Project Manager (Análisis de requerimientos, documentación y gestión)*.
 * **Licencia:** Privada / Uso exclusivo para el Colegio Vizcaya de las Américas.
 ---
 
-*Desarrollado como proyecto de Residencia Profesional para la carrera de Ingeniería en Sistemas Computacionales.*
+*Desarrollado como Proyecto de Residencia Profesional para la carrera de Ingeniería en Sistemas Computacionales.*
