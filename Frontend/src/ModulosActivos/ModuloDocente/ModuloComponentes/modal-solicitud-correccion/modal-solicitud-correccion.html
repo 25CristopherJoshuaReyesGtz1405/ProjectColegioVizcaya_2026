@@ -1,0 +1,82 @@
+<div class="modal-backdrop fade-in" (click)="cerrar()">
+  <div class="modal-card scale-in" (click)="$event.stopPropagation()">
+    
+    <!-- HEADER -->
+    <div class="modal-header">
+      <div class="icon-box">
+        <i class="bi bi-shield-check"></i>
+      </div>
+      <div class="header-text">
+        <h2>Solicitud de Corrección</h2>
+        <p>Generar un ticket para modificación de calificación.</p>
+      </div>
+      <button class="btn-close" (click)="cerrar()"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <!-- BODY -->
+    <div class="modal-body custom-scroll" *ngIf="dataContext">
+      
+      <!-- TARJETA ALUMNO -->
+      <div class="student-card">
+        <div class="avatar">{{ dataContext.alumno.nombre.charAt(0) }}</div>
+        <div class="info">
+          <h3>{{ dataContext.alumno.nombre }}</h3>
+          <p>{{ dataContext.alumno.matricula }} • {{ dataContext.materiaNombre }}</p>
+        </div>
+      </div>
+
+      <!-- COMPARATIVA VISUAL (ANTES -> DESPUÉS) -->
+      <div class="comparison-container">
+        <div class="grade-box current">
+          <span class="label">Nota Actual</span>
+          <div class="value">{{ dataContext.alumno.notas[dataContext.rubro.id] || 0 }}</div>
+          <span class="rubro-tag">{{ dataContext.rubro.nombre }}</span>
+        </div>
+
+        <div class="arrow-separator">
+          <i class="bi bi-arrow-right-circle-fill"></i>
+        </div>
+
+        <div class="grade-box new">
+          <span class="label">Nueva Nota</span>
+          <div class="input-wrapper">
+            <input type="number" [(ngModel)]="calificacionNueva" placeholder="-" min="0" max="10" step="0.1">
+          </div>
+          <span class="hint">Ingresa valor</span>
+        </div>
+      </div>
+
+      <!-- FORMULARIO -->
+      <div class="form-group">
+        <label>Causa del cambio</label>
+        <div class="select-style">
+          <select [(ngModel)]="tipoCausa">
+            <option *ngFor="let c of causas" [value]="c.id">{{ c.label }}</option>
+          </select>
+          <i class="bi bi-chevron-down"></i>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Explicación detallada</label>
+        <textarea [(ngModel)]="motivo" rows="3" placeholder="Describe el motivo para que Dirección apruebe el cambio..."></textarea>
+      </div>
+
+      <div class="warning-box">
+        <i class="bi bi-info-circle-fill"></i>
+        <p>Esta solicitud quedará pendiente de aprobación. La calificación en la boleta no cambiará hasta que Dirección la autorice.</p>
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="cerrar()">Cancelar</button>
+      <button class="btn-submit" (click)="enviar()" [disabled]="procesando">
+        <span *ngIf="!procesando">Enviar a Dirección</span>
+        <span *ngIf="procesando">Enviando...</span>
+      </button>
+    </div>
+
+  </div>
+</div>

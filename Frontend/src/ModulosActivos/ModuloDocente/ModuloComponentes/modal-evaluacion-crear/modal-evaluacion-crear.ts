@@ -75,8 +75,7 @@ export class ModalEvaluacionCrear {
       },
       error: (err) => {
         this.cargando = false;
-        console.error(err);
-        this.notificaciones.mostrar('error', 'Error', 'No se pudo crear la evaluación.');
+        this.notificaciones.mostrar('error', 'Error', err.message || 'No se pudo crear el rubro.');
       }
     });
   }

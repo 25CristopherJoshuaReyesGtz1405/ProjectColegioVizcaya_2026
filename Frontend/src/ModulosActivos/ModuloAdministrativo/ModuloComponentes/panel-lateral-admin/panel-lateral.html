@@ -1,32 +1,53 @@
-<nav class="sidebar" [class.colapsado]="estaColapsado">
+<nav class="sidebar premium-sidebar" [class.colapsado]="estaColapsado">
+  
   <div class="sidebar-header">
-    <h1 class="school-name">Colegio Vizcaya De Durango</h1>
-    <img   routerLink="/admin/home"  src="https://iconape.com/wp-content/png_logo_vector/colegio-vizcaya-logo.png" alt="Logo Colegio Vizcaya" class="logo">
+    <div class="header-text" [class.hidden]="estaColapsado">
+      <h2 class="school-name">Colegio Vizcaya</h2>
+      <h2 class="school-name">Durango</h2>
+    </div>
+    <div class="logo-container" routerLink="/admin/home" title="Ir al Inicio">
+      <img src="https://iconape.com/wp-content/png_logo_vector/colegio-vizcaya-logo.png" alt="Logo Colegio Vizcaya" class="logo">
+    </div>
+    <div class="header-text" [class.hidden]="estaColapsado">
+      <span class="school-subtitle">Administración General</span>
+    </div>
   </div>
 
-  <hr class="separator">
-
-  <div class="nav-menu">
-    <a routerLink="/admin/student" routerLinkActive="active" [title]="estaColapsado ? 'Mis Grupos' : ''">
-      <i class="bi bi-backpack2"></i>
-      <span class="link-text">Estudiantes Generales</span>
+  <div class="nav-menu custom-scroll">
+    <span class="menu-label" [class.hidden]="estaColapsado">Gestión Principal Colegio</span>
+    
+    <a routerLink="/admin/student" routerLinkActive="active" class="nav-item" [title]="estaColapsado ? 'Estudiantes Generales' : ''">
+      <div class="active-indicator"></div>
+      <div class="icon-box"><i class="bi bi-person-vcard"></i></div>
+      <span class="link-text" [class.hidden]="estaColapsado">Estudiantes Generales</span>
     </a>
-    <a routerLink="/administrativo/docentes" routerLinkActive="active" [title]="estaColapsado ? 'Mis Grupos' : ''">
-      <i class="bi bi-people-fill"></i>
-      <span class="link-text">Docentes Activos </span>
+    
+    <a routerLink="/administrativo/docentes" routerLinkActive="active" class="nav-item" [title]="estaColapsado ? 'Docentes Activos' : ''">
+      <div class="active-indicator"></div>
+      <div class="icon-box"><i class="bi bi-person-video3"></i></div>
+      <span class="link-text" [class.hidden]="estaColapsado">Docentes Activos</span>
     </a>
-    <a routerLink="/admin/groups" routerLinkActive="active" [title]="estaColapsado ? 'Calificaciones' : ''">
-      <i class="bi bi-people-fill"></i>
-      <span class="link-text">Grupos Generales</span>
+    
+    <a routerLink="/admin/groups" routerLinkActive="active" class="nav-item" [title]="estaColapsado ? 'Grupos y Asignaciones' : ''">
+      <div class="active-indicator"></div>
+      <div class="icon-box"><i class="bi bi-collection"></i></div>
+      <span class="link-text" [class.hidden]="estaColapsado">Grupos / Asignaciones</span>
     </a>
-    <a routerLink="/admin/subject" routerLinkActive="active" [title]="estaColapsado ? 'Asistencia' : ''">
-      <i class="bi bi-clipboard2-check-fill"></i>
-      <span class="link-text">Materias Activas</span>
+    
+    <a routerLink="/admin/subject" routerLinkActive="active" class="nav-item" [title]="estaColapsado ? 'Catálogo de Materias' : ''">
+      <div class="active-indicator"></div>
+      <div class="icon-box"><i class="bi bi-journal-bookmark"></i></div>
+      <span class="link-text" [class.hidden]="estaColapsado">Catálogo de Materias</span>
     </a>
-    </div>
+  </div>
 
   <div class="sidebar-footer">
-    <p class="slogan">Integrando Valores, Construimos El Mañana...</p>
+    <div class="footer-card" [class.icon-only]="estaColapsado">
+      <i class="bi bi-shield-check shield-icon" [title]="estaColapsado ? 'Colegio Vizcaya' : ''"></i>
+      <div class="footer-text" [class.hidden]="estaColapsado">
+        <p class="slogan">Integrando Valores,<br>Construimos El Mañana.</p>
+      </div>
+    </div>
   </div>
 
 </nav>

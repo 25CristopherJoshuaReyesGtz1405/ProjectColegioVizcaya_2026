@@ -7,6 +7,9 @@ import { Grupo, Evaluacion, AsistenciaDia, Planeacion, ReporteIndisciplina, Perf
   providedIn: 'root'
 })
 export class DocentesService {
+  crearDocente(payload: { email: string; password: string; tipoRol: string; datosPersona: { nombre: string; apellidos: string; curp: string; sexo: string; email: string; fotoUrl: string; }; datosRol: { RFC: string; cedulaProfesional: string; especialidad: string; telefono: string; fechaIngreso: Date; rol: string; estatus: string; }; }): Observable<any> {
+    throw new Error('Method not implemented.');
+  }
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:3000/api/docentes';
 
@@ -15,6 +18,60 @@ export class DocentesService {
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
+  /**
+   * Llama al backend para actualizar de forma segura y registrar logs.
+   */
+  actualizarEvaluacion(grupoId: string, evaluacionId: string, datos: { nombre?: string, porcentaje?: number }): Observable<any> {
+    // Necesitamos el UID del usuario actual para la API
+    // Asumimos que authService lo provee o lo sacamos del localStorage/State
+    const docenteUid = localStorage.getItem('user_uid'); 
+
+    return this.http.put(`${this.apiUrl}/grupos/${grupoId}/evaluaciones/${evaluacionId}`, {
+      ...datos,
+      headers: this.getHeaders()
+    });
+  }
+
+  /**
+   * Llama al backend para eliminar el rubro y el acta en cascada.
+   */
+  eliminarEvaluacion(grupoId: string, evaluacionId: string): Observable<any> {
+    const docenteUid = localStorage.getItem('user_uid');
+
+    // Usamos 'request' con body para enviar el UID en un DELETE (o params según tu server)
+    return this.http.delete(`${this.apiUrl}/grupos/${grupoId}/evaluaciones/${evaluacionId}`, {
+      headers: this.getHeaders()
+    });
+  }
+  
+  /**
+   * (NUEVO) Enviar solicitud de rectificación a Dirección
+   * Conecta con: POST /api/docente/solicitud-rectificacion
+   */
+  enviarSolicitudRectificacion(payload: {
+    uidAlumno: string;
+    nombreAlumno: string;
+    idMateria: string;    // ID de la Evaluación (Rubro)
+    nombreMateria: string; // Nombre de la Materia o del Rubro
+    calificacionAnterior: number;
+    calificacionNueva: number;
+    motivo: string;
+    nombreDocente: string;
+  }): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/solicitud-rectificacion`, 
+      payload, 
+      { headers: this.getHeaders() }
+    );
+  }
+
+  getPromediosAnteriores(grupoId: string, periodoId: string): Observable<Record<string, number>> {
+    return this.http.get<Record<string, number>>(
+      `${this.apiUrl}/grupos/${grupoId}/promedios/${periodoId}`,
+      { headers: this.getHeaders() }
+    );
+  }
+  
   // --- Gestión Académica ---
 
   /** (RF 3.1) Obtiene los grupos asignados al docente logueado */
@@ -184,6 +241,55 @@ export class DocentesService {
     });
   }
 
+  // ==========================================
+  //  ASISTENCIA INTELIGENTE
+  // ==========================================
+
+  /**
+   * Obtiene el Historial Térmico, Faltas Consecutivas y Porcentaje Global
+   */
+  getEstadisticasAsistencia(grupoId: string, periodoId: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/grupo/${grupoId}/periodo/${periodoId}/estadisticas-asistencia`, 
+      { headers: this.getHeaders() }
+    );
+  }
+
+  /**
+   * Guarda el pase de lista de un día en específico
+   */
+  guardarAsistenciaInteligente(grupoId: string, periodoId: string, fecha: string, registro: any): Observable<any> {
+    const payload = {
+      periodoId: periodoId,
+      fecha: fecha,
+      registro: registro 
+    };
+    return this.http.post<any>(
+      `${this.apiUrl}/grupo/${grupoId}/asistencia-inteligente`, 
+      payload, 
+      { headers: this.getHeaders() }
+    );
+  }
+
+  /** (NUEVO) Obtiene el historial de solicitudes de corrección del docente */
+  getMisSolicitudes(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/mis-solicitudes`, { headers: this.getHeaders() });
+  }
+
+  getExpediente360(grupoId: string, estudianteUid: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/grupo/${grupoId}/expediente/${estudianteUid}`, { headers: this.getHeaders() });
+  }
+
+  /** (NUEVO) Obtiene el tablero de avisos institucionales */
+  getAvisosInstitucionales(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/avisos`, { headers: this.getHeaders() });
+  }
+
+  /** (NUEVO) Obtiene los alumnos con riesgo académico */
+  getAlertasTempranas(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/alertas`, { headers: this.getHeaders() });
+  }
+
   /**
    * Da de baja lógica a un docente
    */
@@ -212,4 +318,8 @@ export class DocentesService {
       headers: this.getHeaders() 
     });
   }
+
+  buscarDocentesGlobal(termino: string) {
+  return this.http.get<PerfilUsuarioDTO[]>(`${this.apiUrl}/buscar/global?q=${termino}`);
+}
 }

@@ -1,0 +1,252 @@
+<div class="drawer-backdrop" [class.show]="isOpen" (click)="cerrar()"></div>
+
+<aside class="floating-drawer" [class.open]="isOpen" (click)="$event.stopPropagation()">
+  <div class="drawer-header guinda-gradient" *ngIf="grupo">
+    <div class="header-content">
+      <div class="header-top-row">
+        <span class="badge-light"
+          >{{ grupo.cicloEscolar }} | {{ grupo.materia?.grado }}° "{{
+            grupo.letraGrupo || 'A'
+          }}"</span
+        >
+        <button class="btn-close-drawer" (click)="cerrar()"><i class="bi bi-x-lg"></i></button>
+      </div>
+
+      <h2 class="materia-title animate-fade-up">{{ grupo.materia?.nombre }}</h2>
+
+      <div
+        class="teacher-control-card animate-fade-up delay-100"
+        [class.no-teacher]="!grupo.empleadoUid || grupo.empleadoUid === 'null'"
+      >
+        <div class="teacher-info">
+          <div class="icon-box"><i class="bi bi-person-video3"></i></div>
+          <div class="text-data">
+            <span class="label">Docente Titular</span>
+            <span class="name">{{
+              grupo.docente
+                ? grupo.docente.persona.nombre + ' ' + grupo.docente.persona.apellidos
+                : 'Sin Asignar'
+            }}</span>
+          </div>
+        </div>
+
+        <div class="teacher-actions">
+          <button
+            class="btn-action-primary"
+            (click)="mostrarDropdownDocentes = !mostrarDropdownDocentes"
+          >
+            <i
+              class="bi"
+              [ngClass]="
+                !grupo.empleadoUid || grupo.empleadoUid === 'null'
+                  ? 'bi-plus-circle-fill'
+                  : 'bi-arrow-repeat'
+              "
+            ></i>
+            {{ !grupo.empleadoUid || grupo.empleadoUid === 'null' ? 'Asignar' : 'Cambiar' }}
+          </button>
+
+          <div class="docentes-dropdown custom-scroll" *ngIf="mostrarDropdownDocentes">
+            <div class="dropdown-header-mini">Gestión de Titular</div>
+
+            <div
+              class="docente-item action-remove"
+              *ngIf="grupo.empleadoUid && grupo.empleadoUid !== 'null'"
+              (click)="removerDocente()"
+            >
+              <div class="icon-box-red"><i class="bi bi-person-x-fill"></i></div>
+              <div class="doc-info">
+                <span class="doc-name text-red">Remover Titular actual</span>
+                <span class="doc-carga">Dejar el grupo vacío</span>
+              </div>
+            </div>
+
+            <div
+              class="docente-item"
+              *ngFor="let doc of todosLosDocentes"
+              (click)="asignarDocente(doc)"
+            >
+              <img [src]="doc.persona.fotoUrl || 'assets/default-teacher.png'" class="doc-avatar" />
+              <div class="doc-info">
+                <span class="doc-name">{{ doc.persona.nombre }} {{ doc.persona.apellidos }}</span>
+                <span class="doc-carga">
+                  Carga: {{ getCargaDocente(doc.persona.uid) }} grupos
+                  <div class="carga-bar">
+                    <div
+                      class="carga-fill"
+                      [style.width]="(getCargaDocente(doc.persona.uid) / 5) * 100 + '%'"
+                    ></div>
+                  </div>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer-body custom-scroll" *ngIf="grupo">
+    <div class="vital-signs-grid animate-fade-up delay-200">
+      <div
+        class="vital-card bg-blue-light"
+        [ngClass]="{ 'border-critical': promedioCalculado > 0 && promedioCalculado < 7 }"
+      >
+        <i
+          class="bi"
+          [ngClass]="
+            promedioCalculado >= 7 ? 'bi-graph-up-arrow text-blue' : 'bi-graph-down-arrow text-red'
+          "
+        ></i>
+        <div>
+          <span class="value">{{
+            promedioCalculado > 0 ? (promedioCalculado | number: '1.1-1') : '--'
+          }}</span>
+          <span class="label">Promedio Gral.</span>
+        </div>
+      </div>
+
+      <div
+        class="vital-card bg-green-light"
+        [ngClass]="{ 'border-critical': asistenciaCalculada > 0 && asistenciaCalculada < 80 }"
+      >
+        <i
+          class="bi"
+          [ngClass]="
+            asistenciaCalculada >= 80
+              ? 'bi-check-circle-fill text-verde'
+              : 'bi-exclamation-triangle-fill text-warning'
+          "
+        ></i>
+        <div>
+          <span class="value">{{
+            asistenciaCalculada > 0 ? (asistenciaCalculada | number: '1.0-0') + '%' : '--'
+          }}</span>
+          <span class="label">Asistencia</span>
+        </div>
+      </div>
+
+      <div
+        class="vital-card"
+        [ngClass]="
+          (grupo.estudianteUids?.length || 0) < 5
+            ? 'bg-orange-light border-critical'
+            : 'bg-guinda-light'
+        "
+      >
+        <i
+          class="bi bi-people-fill"
+          [ngClass]="(grupo.estudianteUids?.length || 0) < 5 ? 'text-warning' : 'text-guinda'"
+        ></i>
+        <div>
+          <span class="value"
+            >{{ grupo.estudianteUids?.length || 0 }} <small class="text-muted">/ 30</small></span
+          >
+          <span class="label">Ocupación</span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider animate-fade-up delay-300" />
+
+    <div class="spotlight-section animate-fade-up delay-400">
+      <div class="section-header">
+        <h4>Padrón de Alumnos</h4>
+        <span class="badge-count">{{ alumnosInscritosDetalle.length }}</span>
+      </div>
+
+      <div class="spotlight-container" [class.active]="mostrarSpotlight">
+        <div class="search-input-wrapper">
+          <i class="bi bi-search"></i>
+          <input
+            type="text"
+            placeholder="Escribe nombre o matrícula para inscribir..."
+            [(ngModel)]="busquedaSpotlight"
+            (focus)="mostrarSpotlight = true"
+          />
+          <button
+            class="btn-close-search"
+            *ngIf="busquedaSpotlight"
+            (click)="busquedaSpotlight = ''"
+          >
+            <i class="bi bi-x-circle-fill"></i>
+          </button>
+        </div>
+
+        <div class="spotlight-dropdown" *ngIf="mostrarSpotlight">
+          <ng-container *ngIf="busquedaSpotlight.trim().length > 0">
+            <div
+              class="dropdown-item"
+              *ngFor="let res of resultadosSpotlight"
+              (click)="inscribirAlumno(res)"
+            >
+              <img [src]="res.persona.fotoUrl || 'assets/default-avatar.png'" class="mini-avatar" />
+              <div class="info">
+                <span class="name">{{ res.persona.nombre }} {{ res.persona.apellidos }}</span>
+                <span class="matricula">{{ $any(res.rol)?.matricula || 'Nuevo Ingreso' }}</span>
+              </div>
+              <button class="btn-add" [disabled]="estaGuardando">
+                <i class="bi" [ngClass]="estaGuardando ? 'bi-hourglass-split' : 'bi-plus-lg'"></i>
+              </button>
+            </div>
+            <div class="dropdown-empty" *ngIf="resultadosSpotlight.length === 0">
+              No hay coincidencias o el alumno ya está inscrito.
+            </div>
+          </ng-container>
+          <div class="dropdown-empty text-center" *ngIf="busquedaSpotlight.trim().length === 0">
+            <i
+              class="bi bi-keyboard text-muted"
+              style="font-size: 1.5rem; display: block; margin-bottom: 5px"
+            ></i>
+            Escribe arriba para buscar.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="students-list mt-3 animate-fade-up delay-500">
+      <div class="empty-state-mini" *ngIf="alumnosInscritosDetalle.length === 0">
+        <i class="bi bi-person-bounding-box text-muted"></i>
+        <p>Aula vacía. Usa el buscador de arriba para inscribir alumnos.</p>
+      </div>
+
+      <div class="student-row" *ngFor="let al of alumnosInscritosDetalle">
+        <img [src]="al.persona.fotoUrl || 'assets/default-avatar.png'" class="student-avatar" />
+        <div class="student-info">
+          <div class="name-group">
+            <h5 class="name">{{ al.persona.nombre }} {{ al.persona.apellidos }}</h5>
+            <span class="risk-badge" *ngIf="evaluarRiesgoAlumno(al)" title="Riesgo Académico"
+              ><i class="bi bi-exclamation-triangle-fill"></i> Riesgo</span
+            >
+          </div>
+          <span class="matricula"
+            >{{ $any(al.rol)?.matricula || 'S/N' }} | {{ $any(al.rol)?.grado }}° Semestre</span
+          >
+        </div>
+        <button
+          class="btn-remove"
+          title="Dar de baja de materia"
+          (click)="removerAlumno(al)"
+          [disabled]="estaGuardando"
+        >
+          <i class="bi bi-person-dash-fill"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer-footer">
+    <button class="btn-outline" (click)="cerrar()">Cerrar Panel</button>
+    <button
+      class="btn-guinda shadow-btn"
+      [disabled]="alumnosInscritosDetalle.length === 0 || generandoPDF"
+      (click)="descargarListaAsistencia()"
+    >
+      <i
+        class="bi"
+        [ngClass]="generandoPDF ? 'bi-hourglass-split spin-icon' : 'bi-file-earmark-pdf-fill'"
+      ></i>
+      {{ generandoPDF ? 'Generando...' : 'Lista Asistencia' }}
+    </button>
+  </div>
+</aside>

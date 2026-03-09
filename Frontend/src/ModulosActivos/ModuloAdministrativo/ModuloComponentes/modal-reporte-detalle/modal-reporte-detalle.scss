@@ -1,339 +1,73 @@
-/* VARIABLES (Mismas que en las tarjetas) */
-:host {
-  --primary: #8c1d40; /* Guinda */
-  --primary-light: #fdf2f4;
-  --text-dark: #1e293b;
-  --text-gray: #64748b;
-  --bg-white: #ffffff;
-  --border: #e2e8f0;
-  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-}
+/* --- VARIABLES INSTITUCIONALES --- */
+$guinda: #8c1d40; $guinda-dark: #65122d; $red: #ef4444; $red-dark: #b91c1c;
+$gold: #d97706; $blue: #2563eb; $text-dark: #1e293b; $text-muted: #64748b;
+$bg-white: #ffffff; $bg-light: #f8fafc; $border: #e2e8f0;
 
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(4px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 36px;
-  z-index: 1200;
-  padding: 1rem;
-}
+/* --- MODAL BASE --- */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(6px); display: flex; justify-content: center; align-items: center; z-index: 1200; padding: 1rem; }
+.modal-content { background: $bg-white; width: 100%; max-width: 550px; border-radius: 36px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3); position: relative; overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; }
 
-.modal-content {
-  background: var(--bg-white);
-  width: 100%;
-  max-width: 550px;
-  border-radius: 36px;
-  box-shadow: var(--shadow-card);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  max-height: 90vh;
-}
-
-/* --- CINTA DE SEVERIDAD --- */
+/* --- CINTA DE SEVERIDAD (ESQUINA SUPERIOR IZQUIERDA) --- */
 .ribbon {
-  position: absolute;
-  top: 20px;
-  left: -35px;
-  transform: rotate(-45deg);
-  padding: 6px 40px;
-  color: white;
-  font-weight: 800;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  z-index: 10;
-
-  &.high {
-    background: #dc2626;
-  } /* Rojo */
-  &.medium {
-    background: #f59e0b;
-  } /* Naranja */
-  &.low {
-    background: #3b82f6;
-  } /* Azul */
+  position: absolute; top: 22px; left: -35px; transform: rotate(-45deg); padding: 5px 40px; color: white; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); z-index: 10; text-align: center;
+  &.high { background: linear-gradient(90deg, $red, $red-dark); }
+  &.medium { background: linear-gradient(90deg, #f59e0b, #d97706); }
+  &.low { background: linear-gradient(90deg, #3b82f6, #2563eb); }
 }
 
 /* --- HEADER --- */
 .modal-header {
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  background: #fff;
-
-  .header-branding {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-left: 1rem; /* Espacio para la cinta */
-    .logo-img {
-      height: 45px;
-      opacity: 0.9;
-    }
-    .header-text {
-      h2 {
-        margin: 0;
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: var(--text-dark);
-        line-height: 1.2;
-      }
-      .folio-badge {
-        font-family: monospace;
-        font-size: 0.8rem;
-        color: var(--text-gray);
-        background: #f1f5f9;
-        padding: 2px 6px;
-        border-radius: 4px;
-        letter-spacing: 1px;
-      }
-    }
+  padding: 1.8rem 2rem 1.5rem; border-bottom: 1px solid $border; display: flex; justify-content: space-between; align-items: flex-start; background: $bg-white;
+  .header-branding { display: flex; align-items: center; gap: 1rem; margin-left: 2.5rem; /* Espacio para la cinta */
+    .shield-icon { width: 45px; height: 45px; background: #fdf2f4; color: $guinda; border-radius: 12px; display: grid; place-items: center; font-size: 1.5rem; }
+    .header-text { h2 { margin: 0; font-size: 1.3rem; font-weight: 800; color: $text-dark; line-height: 1.2; } .folio-badge { display: inline-block; margin-top: 4px; font-family: monospace; font-size: 0.75rem; font-weight: 700; color: $text-muted; background: $bg-light; padding: 3px 8px; border-radius: 6px; letter-spacing: 1px; border: 1px solid $border; } }
   }
-
-  .btn-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #cbd5e1;
-    cursor: pointer;
-    transition: color 0.2s;
-    &:hover {
-      color: var(--text-dark);
-    }
-  }
+  .btn-close-premium { background: transparent; border: none; font-size: 1.4rem; color: #cbd5e1; cursor: pointer; transition: 0.3s; &:hover { color: $text-dark; transform: rotate(90deg); } }
 }
 
-.modal-body {
-  padding: 2rem;
-  overflow-y: auto;
-}
+.modal-body { padding: 2rem; overflow-y: auto; background: $bg-white; }
 
-/* --- SECCIÓN ALUMNO (Estilo Tarjeta) --- */
+/* --- PERFIL DEL ALUMNO --- */
 .student-profile-section {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-
-  .avatar-placeholder {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    color: white;
-    font-size: 1.8rem;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(
-      135deg,
-      var(--primary),
-      #be185d
-    ); /* Mismo degradado que Student Card */
-    box-shadow: 0 4px 10px rgba(140, 29, 64, 0.2);
-    border: 3px solid white;
+  display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.5rem;
+  .avatar-container { width: 65px; height: 65px; border-radius: 50%; overflow: hidden; box-shadow: 0 4px 10px rgba(140, 29, 64, 0.15); border: 3px solid white; flex-shrink: 0;
+    .avatar-img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-placeholder { width: 100%; height: 100%; display: grid; place-items: center; color: white; font-size: 1.8rem; background: linear-gradient(135deg, $guinda, $guinda-dark); }
   }
-
-  .student-info {
-    .meta-label {
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      color: var(--text-gray);
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      display: block;
-      margin-bottom: 2px;
-    }
-    .student-name {
-      margin: 0;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--text-dark);
-    }
-    .grade-badge {
-      display: inline-block;
-      background: var(--primary);
-      color: white;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 6px;
-      margin-top: 4px;
-    }
-  }
+  .student-info { flex: 1; .meta-label { font-size: 0.65rem; text-transform: uppercase; color: $text-muted; font-weight: 800; letter-spacing: 0.5px; display: block; margin-bottom: 2px; } .student-name { margin: 0; font-size: 1.15rem; font-weight: 800; color: $text-dark; line-height: 1.2; } .grade-badge { display: inline-block; background: $guinda; color: white; font-size: 0.7rem; font-weight: 800; padding: 3px 10px; border-radius: 8px; margin-top: 6px; box-shadow: 0 2px 4px rgba($guinda, 0.3); } }
 }
 
-.divider {
-  border: 0;
-  height: 1px;
-  background: var(--border);
-  margin: 0 0 1.5rem 0;
-}
+.divider { border: 0; height: 1px; background: $border; margin: 0 0 1.8rem 0; }
 
 /* --- GRID DE DETALLES --- */
-.details-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.detail-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  .icon-box {
-    width: 36px;
-    height: 36px;
-    background: var(--primary-light);
-    color: var(--primary);
-    border-radius: 10px;
-    display: grid;
-    place-items: center;
-    font-size: 1.1rem;
-  }
-
-  .data-text {
-    label {
-      font-size: 0.7rem;
-      color: var(--text-gray);
-      text-transform: uppercase;
-      font-weight: 600;
-      display: block;
-    }
-    span {
-      font-size: 0.9rem;
-      color: var(--text-dark);
-    }
-  }
+.details-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.detail-item { display: flex; flex-direction: column; gap: 0.6rem; align-items: center; text-align: center; padding: 1rem 0.5rem; background: $bg-light; border-radius: 16px; border: 1px solid transparent; transition: 0.3s; &:hover { border-color: rgba($guinda, 0.2); background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+  .icon-box { width: 38px; height: 38px; background: white; color: $guinda; border-radius: 12px; display: grid; place-items: center; font-size: 1.1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+  .data-text { label { font-size: 0.65rem; color: $text-muted; text-transform: uppercase; font-weight: 800; display: block; margin-bottom: 2px; } span { font-size: 0.9rem; color: $text-dark; } }
 }
 
 /* --- DESCRIPCIÓN --- */
 .description-section {
-  .section-title {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 0.5rem;
-    display: block;
-    i {
-      margin-right: 5px;
-    }
-  }
-
-  .text-content {
-    background: #fff5f5; /* Tinte rojo muy suave para reporte */
-    border: 1px solid #fed7d7;
-    border-left: 4px solid #fc8181;
-    padding: 1rem;
-    border-radius: 8px;
-    p {
-      margin: 0;
-      font-size: 0.95rem;
-      color: #742a2a;
-      line-height: 1.6;
-      font-style: italic;
-    }
-  }
+  .section-title { font-size: 0.85rem; font-weight: 800; color: $guinda; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
+  .text-content { background: #fff1f2; border: 1px solid #ffe4e6; border-left: 4px solid $red; padding: 1.2rem; border-radius: 12px; p { margin: 0; font-size: 0.95rem; color: #881337; line-height: 1.6; font-style: italic; font-weight: 500; } }
 }
 
 /* --- FIRMAS --- */
-.signatures-section {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 3rem;
-  padding-top: 1rem;
-
-  .signature-block {
-    text-align: center;
-    width: 45%;
-    .line {
-      border-bottom: 1px solid var(--text-dark);
-      margin-bottom: 8px;
-    }
-    span {
-      font-size: 0.7rem;
-      color: var(--text-gray);
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-  }
+.signatures-section { display: flex; justify-content: space-around; margin-top: 3.5rem; padding-top: 1.5rem; 
+  .signature-block { text-align: center; width: 40%; .line { border-bottom: 1px solid $text-dark; margin-bottom: 8px; opacity: 0.8; } span { font-size: 0.7rem; color: $text-muted; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; } }
 }
 
-/* --- FOOTER --- */
-.modal-footer {
-  padding: 1.2rem 2rem;
-  background: #f8fafc;
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: flex-end;
-
-  .btn-print {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 36px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.2s;
-    box-shadow: 0 4px 6px rgba(140, 29, 64, 0.2);
-
-    &:hover {
-      background: #6d1631;
-      transform: translateY(-2px);
-    }
-    i {
-      font-size: 1.1rem;
-    }
-  }
+/* --- FOOTER Y BOTONES --- */
+.modal-footer { padding: 1.2rem 2rem; background: $bg-white; border-top: 1px solid $border; display: flex; align-items: center; gap: 1rem;
+  .spacer { flex: 1; }
+  .btn-icon-delete { width: 45px; height: 45px; border-radius: 12px; border: 1px solid #fee2e2; background: #fff1f2; color: $red; cursor: pointer; display: grid; place-items: center; font-size: 1.2rem; transition: 0.3s; &:hover { background: $red; color: white; transform: scale(1.05); box-shadow: 0 4px 12px rgba($red, 0.3); } }
+  .btn-print { background: $guinda; color: white; border: none; padding: 0.8rem 1.8rem; border-radius: 36px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.6rem; transition: 0.3s; &.shadow-btn { box-shadow: 0 4px 12px rgba($guinda, 0.3); } &:hover:not(:disabled) { background: $guinda-dark; transform: translateY(-2px); box-shadow: 0 6px 15px rgba($guinda, 0.4); } &:disabled { opacity: 0.7; cursor: not-allowed; } i { font-size: 1.1rem; } }
 }
 
-/* ANIMACIÓN */
-.fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Agrega esto en tu sección de FOOTER */
-
-.modal-footer {
-  /* ... estilos existentes ... */
-  display: flex; 
-  align-items: center; /* Asegura alineación vertical */
-  
-  .spacer { flex: 1; } /* Empuja el botón de imprimir a la derecha */
-
-  .btn-icon-delete {
-    width: 40px; height: 40px; border-radius: 10px; border: 1px solid #fee2e2;
-    background: #fff1f2; color: #dc2626; cursor: pointer;
-    display: grid; place-items: center; font-size: 1.2rem; transition: all 0.2s;
-
-    &:hover {
-      background: #dc2626; color: white; border-color: #dc2626;
-      transform: scale(1.05); box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);
-    }
-  }
-  
-  /* ... estilos de .btn-print ... */
-}
+/* ANIMACIONES */
+.mt-3 { margin-top: 1.5rem; }
+.fw-bold { font-weight: 700; }
+.text-muted { color: $text-muted; }
+.custom-scroll::-webkit-scrollbar { width: 6px; } .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.fade-in { animation: fadeIn 0.3s ease-out; } @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+.spin-icon { animation: spin 1s linear infinite; display: inline-block; } @keyframes spin { 100% { transform: rotate(360deg); } }

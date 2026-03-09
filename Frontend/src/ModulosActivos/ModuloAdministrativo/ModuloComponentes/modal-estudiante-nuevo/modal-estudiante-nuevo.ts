@@ -15,10 +15,14 @@ import { PerfilUsuarioDTO } from '../../../../ModelosActivos/ModelosAplicacion.m
 export class ModalEstudianteNuevo {
 
   @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<PerfilUsuarioDTO>(); // Cambié 'success' a 'save' para ser consistente con tu panel, o puedes usar success
+  @Output() save = new EventEmitter<PerfilUsuarioDTO>(); 
 
   private estudiantesService = inject(EstudiantesService);
   private notificaciones = inject(NotificacionesService);
+
+  // Variables para la vista previa de la foto
+  fotoPreview: string | ArrayBuffer | null = null;
+  fotoArchivo: File | null = null;
 
   // Modelos para el formulario
   nuevoEstudiante = {
@@ -36,6 +40,21 @@ export class ModalEstudianteNuevo {
 
   guardando = false;
 
+  cerrarModal() {
+    this.close.emit();
+  } 
+
+  // Genera el recorte circular visual de la foto antes de guardar
+  onFotoSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.fotoArchivo = file;
+      const reader = new FileReader();
+      reader.onload = e => this.fotoPreview = reader.result;
+      reader.readAsDataURL(file);
+    }
+  }
+
   guardar() {
     if (this.guardando) return;
     this.guardando = true;
@@ -51,11 +70,11 @@ export class ModalEstudianteNuevo {
         fechaNacimiento: new Date(this.nuevoEstudiante.fechaNacimiento),
         sexo: this.nuevoEstudiante.sexo,
         email: this.nuevoEstudiante.email,
-        fotoUrl: ''
+        fotoUrl: '' // Se actualizará si decides subir 'this.fotoArchivo' a Storage posteriormente
       },
       datosRol: {
         matricula: this.nuevoEstudiante.matricula,
-        grado: this.nuevoEstudiante.grado,
+        grado: Number(this.nuevoEstudiante.grado),
         grupo: this.nuevoEstudiante.grupo,
         estatus: 'ACTIVO'
       }
@@ -64,7 +83,6 @@ export class ModalEstudianteNuevo {
     this.estudiantesService.crearEstudiante(payload).subscribe({
       next: (res) => {
         this.guardando = false;
-        // Mensaje más formal
         this.notificaciones.mostrar('exito', 'Alta Exitosa', 'El estudiante ha sido registrado en la base de datos.');
         this.save.emit(); 
         this.close.emit();   

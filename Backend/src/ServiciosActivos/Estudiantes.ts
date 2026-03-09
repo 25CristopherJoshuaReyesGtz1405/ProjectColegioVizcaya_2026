@@ -145,7 +145,6 @@ interface FilaCSVEstudiante
 }
 
 //  * Procesa un buffer de un archivo CSV para crear estudiantes masivamente.
- 
 export const crearEstudiantesMasivo = async (csvBuffer: Buffer, adminUid: string): Promise<{ total: number; exitosos: number; fallidos: number; errores: string[];}> => 
 {
   const resultados: FilaCSVEstudiante[] = [];
@@ -247,4 +246,103 @@ export const crearEstudiantesMasivo = async (csvBuffer: Buffer, adminUid: string
     fallidos: errores.length,
     errores: errores,
   };
+};
+
+/**
+ * Busca estudiantes por nombre, apellidos o matrícula.
+ */
+export const buscarEstudiantesGlobal = async (termino: string): Promise<PerfilUsuarioDTO[]> => {
+  const term = termino.toLowerCase().trim();
+  if (!term) return [];
+  
+  // Reutilizamos tu función que ya une Persona + Rol
+  const todos = await consultarTodosEstudiantes(undefined, undefined);
+  
+  return todos.filter(e => 
+    e.persona.nombre.toLowerCase().includes(term) ||
+    e.persona.apellidos.toLowerCase().includes(term) ||
+    (e.rol as any)?.matricula?.toLowerCase().includes(term)
+  );
+};
+
+/**
+ * ============================================================================
+ * MOTOR DE MÉTRICAS (DESNORMALIZACIÓN) - VERSIÓN CORREGIDA
+ * Recalcula el promedio y las alertas de un alumno y lo guarda en su perfil.
+ * ============================================================================
+ */
+export const actualizarMetricasEstudiante = async (estudianteUid: string): Promise<void> => {
+  try {
+    // 1. Primero buscamos todos los grupos a los que pertenece el estudiante
+    const gruposSnap = await db.collection('grupos')
+      .where('estudianteUids', 'array-contains', estudianteUid)
+      .get();
+
+    if (gruposSnap.empty) {
+      console.log(`⚠️ El estudiante ${estudianteUid} no tiene grupos asignados.`);
+      return;
+    }
+
+    const grupoIds = gruposSnap.docs.map(doc => doc.id);
+
+    let sumaCalificaciones = 0;
+    let materiasReprobadas = 0;
+    let totalMaterias = 0;
+
+    // 2. Iteramos sobre cada grupo para traer sus actas de evaluación
+    for (const grupoId of grupoIds) {
+      const actasSnap = await db.collection('actas_evaluacion')
+        .where('grupoId', '==', grupoId)
+        .get();
+
+      // 3. Extraemos la calificación específica de ESE alumno dentro del acta
+      actasSnap.docs.forEach(doc => {
+        const acta = doc.data();
+        
+        // ¡ASÍ ES COMO ESTÁ EN TU BASE DE DATOS REAL!
+        const valorString = acta.calificaciones?.[estudianteUid]?.valor;
+        
+        if (valorString !== undefined && valorString !== null) {
+          const calificacionFinal = Number(valorString);
+          
+          if (!isNaN(calificacionFinal)) {
+            sumaCalificaciones += calificacionFinal;
+            totalMaterias++;
+            
+            // Regla: Menor a 7.0 es reprobatoria
+            if (calificacionFinal < 7.0) {
+              materiasReprobadas++;
+            }
+          }
+        }
+      });
+    }
+
+    // Calcular el promedio a 1 decimal
+    const promedioGlobal = totalMaterias > 0 ? (sumaCalificaciones / totalMaterias) : 0;
+    const promedioRedondeado = parseFloat(promedioGlobal.toFixed(1));
+
+    // 4. Traer el conteo de reportes de disciplina activos
+    const snapshotReportes = await db.collection('reportes_indisciplina')
+      .where('estudianteUid', '==', estudianteUid)
+      .where('estatus', '==', 'ACTIVO')
+      .get();
+
+    const totalReportes = snapshotReportes.size;
+
+    // 5. ¡LA MAGIA! Guardamos el resumen en el documento del estudiante
+    const estudianteRef = db.collection('estudiantes').doc(estudianteUid);
+    
+    await estudianteRef.update({
+      promedioGlobal: promedioRedondeado,
+      materiasReprobadas: materiasReprobadas,
+      totalReportes: totalReportes,
+      ultimaActualizacionMetricas: new Date().toISOString()
+    });
+
+    console.log(`✅ Biometría actualizada para ${estudianteUid} | Promedio: ${promedioRedondeado} | Reprobadas: ${materiasReprobadas}`);
+
+  } catch (error) {
+    console.error(`❌ Error al actualizar métricas del estudiante ${estudianteUid}:`, error);
+  }
 };

@@ -1,0 +1,196 @@
+<div class="modal-backdrop fade-in" (click)="cerrarModal()">
+  <div class="premium-modal visor-modal animate-slide-up" (click)="$event.stopPropagation()">
+    <header class="modal-header guinda-gradient">
+      <div class="header-content">
+        <span class="badge-tag"><i class="bi bi-search me-1"></i> Explorador 360°</span>
+        <div class="header-titles">
+          <h2>Consulta de Expedientes</h2>
+          <p>Busca alumnos o docentes para visualizar su ficha completa</p>
+        </div>
+      </div>
+      <button class="btn-close-white" (click)="cerrarModal()"><i class="bi bi-x-lg"></i></button>
+    </header>
+
+    <div class="spotlight-search-container">
+      <div class="search-wrapper">
+        <i class="bi bi-search search-icon"></i>
+        <input
+          type="text"
+          [(ngModel)]="terminoBusqueda"
+          (input)="onInputSearch($event)"
+          placeholder="Escribe el nombre, apellidos o matrícula..."
+          autocomplete="off"
+          [disabled]="expedienteSeleccionado !== null"
+        />
+
+        <button
+          *ngIf="expedienteSeleccionado"
+          class="btn-clear-search"
+          (click)="limpiarSeleccion()"
+          title="Nueva búsqueda"
+        >
+          <i class="bi bi-x-circle-fill"></i>
+        </button>
+      </div>
+
+      <div
+        class="search-results-dropdown custom-scroll"
+        *ngIf="resultados.length > 0 && !expedienteSeleccionado"
+      >
+        <div
+          class="result-item"
+          *ngFor="let res of resultados"
+          (click)="seleccionarExpediente(res)"
+        >
+          <div class="res-avatar" [ngClass]="res.tipoRol === 'docente' ? 'bg-teal' : 'bg-blue'">
+            <i class="bi" [ngClass]="res.tipoRol === 'docente' ? 'bi-person-video3' : 'bi-person'"></i>
+          </div>
+          <div class="res-info">
+            <h4>{{ res.persona.nombre }} {{ res.persona.apellidos }}</h4>
+            <span> • {{ res.tipoRol }}</span>
+
+          </div>
+          <i class="bi bi-chevron-right text-muted"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-body empty-state" *ngIf="!expedienteSeleccionado">
+      <div class="empty-content pulse-glow">
+        <i class="bi bi-person-vcard"></i>
+        <h3>Buscador Inteligente</h3>
+        <p>Encuentra expedientes al instante buscando por nombre o identificador.</p>
+      </div>
+    </div>
+
+    <div class="modal-body custom-scroll" *ngIf="expedienteSeleccionado">
+      <div class="empty-state" *ngIf="cargandoDetalles">
+        <div class="empty-content">
+          <i class="bi bi-hourglass-split spin-icon text-guinda"></i>
+          <h3>Recopilando datos...</h3>
+        </div>
+      </div>
+
+      <div class="expediente-layout fade-in" *ngIf="!cargandoDetalles">
+        <aside class="id-card-column">
+          <div class="virtual-id-card">
+            <div
+              class="card-glow"
+              [ngClass]="expedienteSeleccionado.tipoRol === 'docente' ? 'teal-glow' : 'blue-glow'"
+            ></div>
+            <div class="profile-photo-circle">
+              <img
+                *ngIf="expedienteSeleccionado.persona.fotoUrl"
+                [src]="expedienteSeleccionado.persona.fotoUrl"
+                alt="Foto"
+              />
+              <i
+                class="bi"
+                *ngIf="!expedienteSeleccionado.persona.fotoUrl"
+                [ngClass]="
+                  expedienteSeleccionado.tipoRol === 'docente' ? 'bi-person-video3' : 'bi-person'
+                "
+              ></i>
+            </div>
+
+            <h3 class="profile-name">
+              {{ expedienteSeleccionado.persona.nombre }}<br />{{
+                expedienteSeleccionado.persona.apellidos
+              }}
+            </h3>
+
+            <span class="profile-id" *ngIf="expedienteSeleccionado.tipoRol === 'estudiante'">
+              {{ $any(expedienteSeleccionado.rol).matricula }}
+            </span>
+            <span class="profile-id" *ngIf="expedienteSeleccionado.tipoRol === 'docente'">
+              {{ $any(expedienteSeleccionado.rol).RFC }}
+            </span>
+
+            <div class="profile-badges">
+              <span
+                class="badge"
+                [ngClass]="
+                  expedienteSeleccionado.tipoRol === 'docente' ? 'badge-teal' : 'badge-blue'
+                "
+                >{{ expedienteSeleccionado.tipoRol | uppercase }}</span
+              >
+              <span
+                class="badge badge-green"
+                *ngIf="expedienteSeleccionado.rol?.estatus === 'ACTIVO'"
+                >ACTIVO</span
+              >
+              <span class="badge badge-red" *ngIf="expedienteSeleccionado.rol?.estatus === 'BAJA'"
+                >INACTIVO</span
+              >
+            </div>
+          </div>
+        </aside>
+
+        <main class="details-column form-section">
+          <ng-container *ngIf="expedienteSeleccionado.tipoRol === 'estudiante'">
+            <h3 class="section-title"><i class="bi bi-mortarboard-fill"></i> Resumen Académico</h3>
+            <div class="data-grid">
+              <div class="data-pill">
+                <label>Promedio Global</label>
+                <div class="value highlight-guinda">
+                  {{ promedioEstudiante ? (promedioEstudiante | number: '1.1-1') : 'N/A' }}
+                  <i class="bi bi-star-fill"></i>
+                </div>
+              </div>
+              <div class="data-pill">
+                <label>Grado y Grupo</label>
+                <div class="value">
+                  {{ $any(expedienteSeleccionado.rol).grado }}° "{{
+                    $any(expedienteSeleccionado.rol).grupo
+                  }}"
+                </div>
+              </div>
+              <div class="data-pill">
+                <label>CURP</label>
+                <div class="value">{{ expedienteSeleccionado.persona.curp }}</div>
+              </div>
+              <div class="data-pill">
+                <label>Correo Contacto</label>
+                <div class="value">{{ $any(expedienteSeleccionado.rol).matricula }}@vizcaya.edu.mx</div>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="expedienteSeleccionado.tipoRol === 'docente'">
+            <h3 class="section-title"><i class="bi bi-briefcase-fill"></i> Perfil Profesional</h3>
+            <div class="data-grid">
+              <div class="data-pill full-width">
+                <label>Especialidad</label>
+                <div class="value text-teal">
+                  {{ $any(expedienteSeleccionado.rol).especialidad || 'Sin registro' }}
+                </div>
+              </div>
+              <div class="data-pill full-width list-pill">
+                <label>Materias Impartidas</label>
+                <div class="value-tags">
+                  <span class="tag-materia" *ngFor="let materia of materiasDocente">{{
+                    materia
+                  }}</span>
+                  <span class="tag-materia" *ngIf="materiasDocente.length === 0"
+                    >Sin materias asignadas</span
+                  >
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </main>
+      </div>
+    </div>
+
+    <div class="modal-footer justify-end" *ngIf="expedienteSeleccionado">
+      <button class="btn-ghost" (click)="cerrarModal()">Cerrar</button>
+      <button class="btn-guinda shadow-btn" (click)="descargarFichaPDF()" [disabled]="descargandoPDF">
+        <i class="bi" [ngClass]="descargandoPDF ? 'bi-hourglass-split spin-icon' : 'bi-file-earmark-pdf-fill'"></i> 
+        {{ descargandoPDF ? 'Generando Documento...' : 'Descargar Ficha PDF' }}
+      </button>
+    </div>
+
+  </div>
+</div>
+
+

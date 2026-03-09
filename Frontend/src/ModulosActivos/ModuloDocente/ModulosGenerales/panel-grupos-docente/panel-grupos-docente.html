@@ -7,27 +7,58 @@
     </div>
   </header>
 
-  <section class="stats-section" *ngIf="stats || cargando">
+  <section class="kpi-premium-section" *ngIf="stats || cargando">
     <ng-container *ngIf="!cargando && stats; else loadingSkeleton">
-      <app-tarjeta-stadistic titulo="Mis Grupos" [valor]="stats.totalGrupos" detalle="Clases asignadas" color="azul" icono="bi-collection-fill"></app-tarjeta-stadistic>
-      <app-tarjeta-stadistic titulo="Total Alumnos" [valor]="stats.totalAlumnos" detalle="Estudiantes a cargo" color="verde" icono="bi-people-fill"></app-tarjeta-stadistic>
-      <app-tarjeta-stadistic titulo="Planeaciones" [valor]="stats.totalPlaneaciones" detalle="Entregadas" color="naranja" icono="bi-journal-check"></app-tarjeta-stadistic>
-      <app-tarjeta-stadistic titulo="Incidencias" [valor]="stats.totalReportes" detalle="Reportes activos" color="guinda" icono="bi-exclamation-triangle-fill"></app-tarjeta-stadistic>
+      
+      <div class="kpi-card shadow-premium animate-slide-up delay-100">
+        <div class="icon-box bg-pastel-blue"><i class="bi bi-collection-fill text-blue"></i></div>
+        <div class="kpi-data">
+          <span class="kpi-title">Mis Grupos</span>
+          <strong class="kpi-value">{{ stats.totalGrupos }}</strong>
+          <span class="kpi-desc">Clases asignadas</span>
+        </div>
+      </div>
+
+      <div class="kpi-card shadow-premium animate-slide-up delay-200">
+        <div class="icon-box bg-pastel-green"><i class="bi bi-people-fill text-green"></i></div>
+        <div class="kpi-data">
+          <span class="kpi-title">Total Alumnos</span>
+          <strong class="kpi-value">{{ stats.totalAlumnos }}</strong>
+          <span class="kpi-desc">Estudiantes a cargo</span>
+        </div>
+      </div>
+
+      <div class="kpi-card shadow-premium animate-slide-up delay-300">
+        <div class="icon-box bg-pastel-orange"><i class="bi bi-journal-check text-orange"></i></div>
+        <div class="kpi-data">
+          <span class="kpi-title">Planeaciones</span>
+          <strong class="kpi-value">{{ stats.totalPlaneaciones }}</strong>
+          <span class="kpi-desc">Entregadas</span>
+        </div>
+      </div>
+
+      <div class="kpi-card shadow-premium animate-slide-up delay-400">
+        <div class="icon-box bg-pastel-red"><i class="bi bi-exclamation-triangle-fill text-red"></i></div>
+        <div class="kpi-data">
+          <span class="kpi-title">Incidencias</span>
+          <strong class="kpi-value">{{ stats.totalReportes }}</strong>
+          <span class="kpi-desc">Reportes activos</span>
+        </div>
+      </div>
+
     </ng-container>
   </section>
 
   <ng-template #loadingSkeleton>
-    <div class="stats-section">
-      <div class="skeleton-card" *ngFor="let i of [1,2,3,4]"></div>
+    <div class="kpi-premium-section">
+      <div class="skeleton-kpi" *ngFor="let i of [1,2,3,4]"></div>
     </div>
   </ng-template>
 
-  <div class="main-content-card">
+  <div class="main-board shadow-premium animate-slide-up delay-200">
     
     <div class="section-header">
-      <div class="icon-title">
-        <i class="bi bi-mortarboard-fill"></i>
-      </div>
+      <div class="icon-title"><i class="bi bi-mortarboard-fill"></i></div>
       <div class="text">
         <h2>Listado de Materias</h2>
         <p>Selecciona un grupo para ver detalles o gestionar notas.</p>
@@ -35,48 +66,50 @@
     </div>
 
     <div *ngIf="cargando" class="loader-container">
-      <div class="spinner"></div>
-      <p>Cargando asignaciones...</p>
+      <div class="spinner-border text-guinda"></div>
+      <p>Cargando asignaciones académicas...</p>
     </div>
 
     <div *ngIf="!cargando && grupos.length === 0" class="empty-state">
-      <i class="bi bi-journal-x"></i>
-      <p>No tienes grupos asignados para este ciclo escolar.</p>
+      <div class="empty-icon"><i class="bi bi-journal-x"></i></div>
+      <h3>Sin asignaciones</h3>
+      <p>No tienes grupos asignados para este ciclo escolar activo.</p>
     </div>
 
-    <div class="grid-cards" *ngIf="!cargando && grupos.length > 0">
+    <div class="grid-cards custom-scroll" *ngIf="!cargando && grupos.length > 0">
       
-      <div class="group-card" *ngFor="let grupo of grupos">
+      <div class="group-card" *ngFor="let grupo of grupos; let i = index" [style.animation-delay]="(i * 0.1) + 's'">
         
-        <div class="card-top">
-          <div class="icon-circle">
-            <i class="bi bi-book-half"></i>
-          </div>
-          <span class="badge-semestre">
-            {{ grupo.materia?.grado ? grupo.materia.grado + '° SEMESTRE' : 'GENERAL' }}
+        <div class="card-top-accent"></div>
+
+        <div class="card-header">
+          <div class="icon-circle"><i class="bi bi-book-half"></i></div>
+          <span class="badge-semestre" [ngClass]="{'bg-guinda-light': grupo.materia?.grado}">
+            {{ grupo.materia?.grado ? grupo.materia.grado + '° GRADO' : 'GENERAL' }}
           </span>
         </div>
 
-        <div class="card-content">
+        <div class="card-body">
           <h3 class="materia-name">{{ grupo.materia?.nombre || 'Materia Sin Nombre' }}</h3>
           
-          <div class="info-line">
-            <i class="bi bi-calendar3"></i>
-            <span>Ciclo: {{ grupo.cicloEscolar }}</span>
-          </div>
-          
-          <div class="info-line">
-            <i class="bi bi-people-fill"></i>
-            <span>{{ grupo.estudianteUids?.length || 0 }} Alumnos inscritos</span>
+          <div class="materia-meta">
+            <div class="meta-item">
+              <i class="bi bi-calendar3"></i>
+              <span>Ciclo: <strong>{{ grupo.cicloEscolar }}</strong></span>
+            </div>
+            <div class="meta-item">
+              <i class="bi bi-people-fill"></i>
+              <span><strong>{{ grupo.estudianteUids?.length || 0 }}</strong> Alumnos inscritos</span>
+            </div>
           </div>
         </div>
 
-        <div class="card-actions">
-          <button class="btn-secondary" (click)="abrirModalDetalle(grupo, $event)">
+        <div class="card-footer">
+          <button class="btn-outline" (click)="abrirModalDetalle(grupo, $event)">
             <i class="bi bi-eye-fill"></i> Ver Detalle
           </button>
           
-          <button class="btn-primary" (click)="irAGestion(grupo.id)">
+          <button class="btn-guinda-premium" (click)="irAGestion(grupo.id)">
             Gestionar <i class="bi bi-arrow-right"></i>
           </button>
         </div>

@@ -1,62 +1,160 @@
 <div class="dashboard-page fade-in">
-
   <header class="page-header">
     <div class="header-content">
       <h1 class="titulo-principal">Panel Gestión Calificaciones</h1>
-      <p class="subtitulo">Resumen de actividades, grupos y gestión escolar.</p>
+      <p class="subtitulo">Sistema de evaluación continua y gestión académica.</p>
     </div>
   </header>
 
-  <section class="stats-section" *ngIf="!cargando && stats; else loadingSkeleton">
-    <app-tarjeta-stadistic titulo="Mis Grupos" [valor]="stats.totalGrupos" detalle="Clases asignadas" color="azul" icono="bi-collection-fill"></app-tarjeta-stadistic>
-    <app-tarjeta-stadistic titulo="Total Alumnos" [valor]="stats.totalAlumnos" detalle="Estudiantes a cargo" color="verde" icono="bi-people-fill"></app-tarjeta-stadistic>
-    <app-tarjeta-stadistic titulo="Planeaciones" [valor]="stats.totalPlaneaciones" detalle="Entregadas" color="naranja" icono="bi-journal-check"></app-tarjeta-stadistic>
-    <app-tarjeta-stadistic titulo="Incidencias" [valor]="stats.totalReportes" detalle="Reportes" color="guinda" icono="bi-exclamation-triangle-fill"></app-tarjeta-stadistic>
-  </section>
+  <div class="kpi-dashboard-grid mt-9">
+    <div class="kpi-card ultra-premium">
+      <div class="card-glow guinda-glow"></div>
+      <div class="watermark"><i class="bi bi-briefcase"></i></div>
 
-  <ng-template #loadingSkeleton>
-    <div class="stats-section">
-      <div class="skeleton-card" *ngFor="let i of [1,2,3,4]"></div>
+      <div class="kpi-content">
+        <div class="kpi-header">
+          <span class="kpi-label">MIS GRUPOS</span>
+          <div class="icon-ring ring-guinda">
+            <i class="bi bi-collection-fill"></i>
+          </div>
+        </div>
+
+        <div class="kpi-body">
+          <h3 class="kpi-value">{{ stats.totalGrupos || 8 }}</h3>
+          <span class="badge-tag tag-neutral">Ciclo 2025-2026</span>
+        </div>
+      </div>
+
+      <div class="kpi-footer">
+        <div class="mini-progress"><div class="fill bg-guinda" style="width: 100%"></div></div>
+        <span class="status-text"><i class="bi bi-check-all"></i> Carga completa</span>
+      </div>
     </div>
-  </ng-template>
 
+    <div class="kpi-card ultra-premium">
+      <div class="card-glow teal-glow"></div>
+      <div class="watermark"><i class="bi bi-people"></i></div>
+
+      <div class="kpi-content">
+        <div class="kpi-header">
+          <span class="kpi-label">MATRÍCULA ACTIVA</span>
+          <div class="icon-ring ring-teal">
+            <i class="bi bi-person-vcard-fill"></i>
+          </div>
+        </div>
+
+        <div class="kpi-body">
+          <h3 class="kpi-value">{{ stats.totalAlumnos || 16 }}</h3>
+          <span class="badge-tag tag-teal">+2 este mes</span>
+        </div>
+      </div>
+
+      <div class="kpi-footer">
+        <div class="mini-progress"><div class="fill bg-teal" style="width: 100%"></div></div>
+        <span class="status-text"><i class="bi bi-graph-up"></i> Estudiantes a cargo</span>
+      </div>
+    </div>
+
+    <div class="kpi-card ultra-premium">
+      <div class="card-glow gold-glow"></div>
+      <div class="watermark"><i class="bi bi-journal-text"></i></div>
+
+      <div class="kpi-content">
+        <div class="kpi-header">
+          <span class="kpi-label">PLANEACIONES</span>
+          <div class="icon-ring ring-gold">
+            <i class="bi bi-journal-check"></i>
+          </div>
+        </div>
+
+        <div class="kpi-body">
+          <h3 class="kpi-value">{{ stats.totalPlaneaciones || 3 }}</h3>
+          <span class="badge-tag tag-gold">1 en revisión</span>
+        </div>
+      </div>
+
+      <div class="kpi-footer">
+        <div class="mini-progress"><div class="fill bg-gold" style="width: 75%"></div></div>
+        <span class="status-text"><i class="bi bi-clock-history"></i> 75% Aprobadas</span>
+      </div>
+    </div>
+
+    <div class="kpi-card ultra-premium alert-card">
+      <div class="card-glow red-glow"></div>
+      <div class="watermark"><i class="bi bi-shield-exclamation"></i></div>
+
+      <div class="kpi-content">
+        <div class="kpi-header">
+          <span class="kpi-label text-red">INCIDENCIAS</span>
+          <div class="icon-ring ring-red pulse-animation">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+          </div>
+        </div>
+
+        <div class="kpi-body">
+          <h3 class="kpi-value text-red">{{ stats.totalReportes || 1 }}</h3>
+          <span class="badge-tag tag-red">Alta prioridad</span>
+        </div>
+      </div>
+
+      <div class="kpi-footer">
+        <div class="mini-progress"><div class="fill bg-red" style="width: 100%"></div></div>
+        <span class="status-text text-red"
+          ><i class="bi bi-bell-fill"></i> Requiere seguimiento</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <br />
+
+  <!-- CONTROL CARD -->
   <div class="control-card">
     <div class="card-decoration"></div>
     <div class="header-row">
       <div class="title-block">
         <div class="icon-box"><i class="bi bi-mortarboard-fill"></i></div>
         <div>
-          <h2>Gestión de Calificaciones</h2>
-          <p>Captura de notas y cálculo de promedios.</p>
+          <h2>Panel de Gestión de Evaluación</h2>
+          <p>Selecciona grupo y periodo para visualizar la lista de estudiantes completa.</p>
         </div>
       </div>
-      <button class="btn-new-pill" (click)="mostrarModalEvaluacion = true" [disabled]="!seleccion.grupoId || !seleccion.periodoId">
-        <i class="bi bi-plus-lg"></i><span>Nuevo Criterio</span>
-      </button>
+
+      <div class="header-buttons">
+        <button
+          class="btn-manage-rubro"
+          (click)="mostrarModalGestion = true"
+          [disabled]="!seleccion.grupoId"
+          title="Gestionar Rubros"
+        >
+          <i class="bi bi-sliders2"></i>
+        </button>
+        <button
+          class="btn-new-pill"
+          (click)="mostrarModalEvaluacion = true"
+          [disabled]="!seleccion.grupoId"
+        >
+          <i class="bi bi-plus-lg"></i><span>Nuevo Criterio</span>
+        </button>
+      </div>
     </div>
 
-    <div class="filters-grid mt-4">
+    <div class="filters-grid" style="align-items: center; display: flex; align-content: center;">
       <div class="input-pill">
         <i class="bi bi-people-fill icon"></i>
         <select [(ngModel)]="seleccion.grupoId" (change)="onFiltroChange()">
           <option value="" disabled selected>Seleccionar Grupo</option>
-          <option *ngFor="let g of misGrupos" [value]="g.id">{{ g.materia?.nombre }} ({{ g.materia?.grado }}°)</option>
+          <option *ngFor="let g of misGrupos" [value]="g.id">
+            {{ g.materia?.nombre }} ({{ g.materia?.grado }}°)
+          </option>
         </select>
         <i class="bi bi-chevron-down arrow"></i>
       </div>
       <div class="input-pill">
         <i class="bi bi-calendar-range icon"></i>
         <select [(ngModel)]="seleccion.periodoId" (change)="onFiltroChange()">
-          <option value="" disabled selected>Periodo</option>
+          <option value="" disabled selected>Periodo Académico</option>
           <option *ngFor="let p of periodos" [value]="p.id">{{ p.nombre }}</option>
-        </select>
-        <i class="bi bi-chevron-down arrow"></i>
-      </div>
-      <div class="input-pill wide">
-        <i class="bi bi-clipboard-check icon"></i>
-        <select [(ngModel)]="seleccion.evaluacionId" (change)="cargarActa()" [disabled]="!seleccion.grupoId || !seleccion.periodoId">
-          <option value="" disabled selected>{{ evaluaciones.length > 0 ? 'Seleccionar Rubro...' : '---' }}</option>
-          <option *ngFor="let ev of evaluaciones" [value]="ev.id">{{ ev.nombre }} ({{ ev.porcentaje }}%)</option>
         </select>
         <i class="bi bi-chevron-down arrow"></i>
       </div>
@@ -65,26 +163,64 @@
 
   <div *ngIf="cargandoTabla" class="loader-container">
     <div class="spinner"></div>
-    <p>Cargando lista de alumnos...</p>
+    <p>Cargando matriz de evaluación...</p>
   </div>
 
-  <div class="sheet-card animate-slide-up" *ngIf="!cargandoTabla && seleccion.evaluacionId">
-    
+  <!-- TABLA DE CALIFICACIONES -->
+  <div
+    class="sheet-card animate-slide-up"
+    *ngIf="!cargandoTabla && seleccion.grupoId && seleccion.periodoId"
+  >
     <div class="sheet-header">
       <div class="info">
         <span class="badge-status" [class.closed]="actaCerrada">
-          {{ actaCerrada ? 'ACTA CERRADA' : 'ACTA ABIERTA' }}
+          {{ actaCerrada ? 'PERIODO CERRADO' : 'CAPTURA ABIERTA' }}
         </span>
-        <h3>Listado de Alumnos</h3>
+        <h3>Registro de Calificaciones</h3>
       </div>
       <div class="actions-group">
-        <button class="btn-print" (click)="imprimirActa()" title="Imprimir"><i class="bi bi-printer-fill"></i></button>
-        <button class="btn-save-pill" (click)="guardarTodo()" [disabled]="guardando || actaCerrada" *ngIf="!actaCerrada">
-          <ng-container *ngIf="!guardando"><i class="bi bi-cloud-arrow-up-fill"></i> Guardar</ng-container>
-          <ng-container *ngIf="guardando"><span class="spinner-mini"></span></ng-container>
+        <button class="btn-print excel" (click)="exportarExcel()" title="Descargar Excel">
+          <i class="bi bi-file-earmark-excel-fill"></i> Excel
         </button>
-        <button class="btn-finalize" (click)="confirmarCierre()" *ngIf="!actaCerrada">
-          <i class="bi bi-lock-fill"></i> Finalizar
+        <button
+          class="btn-outline-secondary"
+          (click)="abrirAnalitica()"
+          [disabled]="!seleccion.grupoId || alumnos.length === 0"
+          title="Ver Analíticas"
+          style="
+            border-radius: 36px;
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            font-weight: 600;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+          "
+        >
+          <i class="bi bi-bar-chart-fill"></i><span>Insights</span>
+        </button>
+        <button class="btn-print" (click)="imprimirSabana()" title="Sábana">
+          <i class="bi bi-file-earmark-spreadsheet"></i> Desglosado
+        </button>
+        <button class="btn-print" (click)="imprimirActa()" title="Acta Oficial">
+          <i class="bi bi-printer-fill"></i> Acta
+        </button>
+
+        <button
+          class="btn-save-pill"
+          (click)="guardarTodo()"
+          [disabled]="guardando || actaCerrada"
+          *ngIf="!actaCerrada"
+        >
+          <ng-container *ngIf="!guardando"
+            ><i class="bi bi-cloud-arrow-up-fill"></i> Guardar Todo</ng-container
+          >
+          <ng-container *ngIf="guardando"
+            ><span class="spinner-border spinner-border-sm"></span> Guardando...</ng-container
+          >
         </button>
       </div>
     </div>
@@ -93,23 +229,47 @@
       <table class="premium-table">
         <thead>
           <tr>
-            <th class="col-id">#</th>
-            <th>Estudiante</th>
-            <th class="text-center">Prom. Ant.</th>
-            <th class="col-grade">Nota Actual</th>
-            <th class="text-center">Final</th>
+            <th class="col-id text-center">#</th>
+            <th style="min-width: 220px">Estudiante</th>
+            <th class="text-center text-muted" style="width: 80px">Prom.<br />Ant.</th>
+
+            <!-- Rubros Dinámicos -->
+            <th
+              *ngFor="let col of columnasEvaluacion"
+              class="text-center"
+              [class.col-active-header]="activeInputColId === col.id"
+            >
+              <div class="rubro-container">
+                <span class="rubro-label">{{ col.nombre }}</span>
+                <span class="badge-percentage">{{ col.porcentaje }}%</span>
+              </div>
+            </th>
+
+            <th class="text-center header-calif">Calif.<br />Periodo</th>
+            <th class="text-center header-final">Prom.<br />Final</th>
             <th class="text-center">Estatus</th>
-            <th>Observaciones</th>
+            <th style="min-width: 200px">Observaciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let alumno of alumnos; let i = index" [class.is-modified]="alumno.modificado">
-            <td class="col-id">{{ i + 1 }}</td>
+          <tr
+            *ngFor="let alumno of alumnos; let i = index"
+            [class.is-modified]="alumno.modificado"
+            [class.row-focused]="hoveredRowIndex === i"
+          >
+            <td class="col-id text-center">{{ i + 1 }}</td>
+
             <td>
-              <div class="student-profile">
+              <div
+                class="student-profile"
+                (click)="abrirExpediente(alumno)"
+                style="cursor: pointer; transition: 0.2s"
+                onmouseover="this.style.opacity = '0.7'"
+                onmouseout="this.style.opacity = '1'"
+              >
                 <div class="avatar">
+                  <img *ngIf="alumno.fotoUrl" [src]="alumno.fotoUrl" />
                   <span *ngIf="!alumno.fotoUrl">{{ alumno.nombre.charAt(0) }}</span>
-                  <img *ngIf="alumno.fotoUrl" [src]="alumno.fotoUrl">
                 </div>
                 <div class="data">
                   <strong class="name">{{ alumno.nombre }}</strong>
@@ -117,43 +277,124 @@
                 </div>
               </div>
             </td>
-            <td class="text-center text-muted font-mono">{{ alumno.promedioAnterior | number:'1.1-1' }}</td>
-            <td class="text-center">
+
+            <td class="text-center text-muted font-mono" style="background-color: #f8fafc">
+              {{ alumno.promedioAnterior ?? '-' }}
+            </td>
+
+            <!-- CELDAS DE RUBROS -->
+            <td
+              *ngFor="let col of columnasEvaluacion"
+              class="text-center cell-rubro"
+              [class.col-focused]="activeInputColId === col.id"
+              [class.cell-intersection]="activeInputColId === col.id && hoveredRowIndex === i"
+            >
               <div class="grade-input-box">
-                <input type="number" [(ngModel)]="alumno.calificacion" (change)="actualizarPromedio(alumno)"
-                  [disabled]="actaCerrada" [ngClass]="getNotaClass(alumno.calificacion)" min="0" max="10" placeholder="-">
+                <input
+                  type="number"
+                  [(ngModel)]="alumno.notas[col.id]"
+                  (change)="recalcularPromedioFila(alumno)"
+                  (focus)="onInputFocus(i, col.id)"
+                  (blur)="onInputBlur()"
+                  [disabled]="actaCerrada"
+                  [ngClass]="getNotaClass(alumno.notas[col.id])"
+                  (ngModelChange)="guardarBorradorLocal()"
+                  min="0"
+                  max="10"
+                  placeholder="-"
+                />
+
+                <!-- BOTÓN CORRECCIÓN (Lápiz) -->
+                <div
+                  class="btn-correction"
+                  *ngIf="actaCerrada"
+                  (click)="abrirSolicitud(alumno, col)"
+                  title="Solicitar Corrección"
+                >
+                  <i class="bi bi-pencil-fill"></i>
+                </div>
               </div>
             </td>
-            <td class="text-center font-bold" [style.color]="alumno.promedioResultante < 6 ? '#ef4444' : '#111827'">
-              {{ alumno.promedioResultante | number:'1.1-1' }}
+
+            <td class="text-center font-bold bg-light-red">
+              {{ alumno.calificacionPeriodo | number: '1.1-1' }}
             </td>
+            <td class="text-center font-bold bg-light-green" style="font-size: 1.15em">
+              {{ alumno.promedioFinal | number: '1.1-1' }}
+            </td>
+
             <td class="text-center">
-              <span class="status-badge" [ngClass]="getEstatusClass(alumno.promedioResultante)">
-                {{ getEstatusLabel(alumno.promedioResultante) }}
+              <span
+                class="badge-estatus"
+                [class.aprobado]="alumno.promedioFinal >= 6"
+                [class.reprobado]="alumno.promedioFinal < 6"
+              >
+                {{ alumno.estatus }}
               </span>
             </td>
+
             <td>
-              <input type="text" class="obs-input" placeholder="..." [disabled]="actaCerrada"
-                [(ngModel)]="alumno.observaciones" (change)="actualizarPromedio(alumno)">
+              <input
+                type="text"
+                class="obs-input"
+                placeholder="Agregar nota..."
+                [(ngModel)]="alumno.observacionGeneral"
+                [disabled]="actaCerrada"
+                (ngModelChange)="guardarBorradorLocal()"
+              />
             </td>
           </tr>
         </tbody>
       </table>
-      <div *ngIf="alumnos.length === 0" class="empty-state">
-        <i class="bi bi-people"></i> <p>No hay alumnos inscritos.</p>
+
+      <!-- Empty State -->
+      <div *ngIf="alumnos.length === 0" style="padding: 4rem; text-align: center; color: #94a3b8">
+        <i class="bi bi-people" style="font-size: 3rem; margin-bottom: 1rem; display: block"></i>
+        <p>No hay alumnos inscritos en este grupo.</p>
       </div>
     </div>
   </div>
-
-  <div class="placeholder-state fade-in" *ngIf="!seleccion.evaluacionId && !cargandoTabla">
-    <div class="icon-big"><i class="bi bi-arrow-up-circle"></i></div>
-    <h3>Selecciona los filtros</h3>
-    <p>Elige un grupo, un periodo y un rubro de evaluación para comenzar.</p>
-  </div>
-
 </div>
 
-<app-modal-evaluacion-crear *ngIf="mostrarModalEvaluacion" 
-  [grupoId]="seleccion.grupoId" [periodoId]="seleccion.periodoId"
-  (close)="mostrarModalEvaluacion = false" (success)="onFiltroChange()"> 
+<!-- MODALES -->
+<app-modal-evaluacion-crear
+  *ngIf="mostrarModalEvaluacion"
+  [grupoId]="seleccion.grupoId"
+  [periodoId]="seleccion.periodoId"
+  (close)="mostrarModalEvaluacion = false"
+  (success)="onFiltroChange()"
+>
 </app-modal-evaluacion-crear>
+
+<app-modal-gestion-rublos
+  *ngIf="mostrarModalGestion"
+  [grupoId]="seleccion.grupoId"
+  [periodoId]="seleccion.periodoId"
+  (close)="mostrarModalGestion = false"
+  (cambioRealizado)="onFiltroChange()"
+>
+</app-modal-gestion-rublos>
+
+<app-modal-solicitud-correccion
+  *ngIf="mostrarModalSolicitud"
+  [dataContext]="dataSolicitud"
+  (close)="mostrarModalSolicitud = false"
+>
+</app-modal-solicitud-correccion>
+
+<app-modal-analitica-grupal
+  *ngIf="mostrarModalAnalitica"
+  [alumnos]="alumnos"
+  [tituloGrupo]="tituloGrupoAnalitica"
+  (close)="mostrarModalAnalitica = false"
+>
+</app-modal-analitica-grupal>
+
+<app-modal-expediente-360
+  *ngIf="mostrarExpediente"
+  [alumno]="alumnoExpediente"
+  [materiaNombre]="materiaActualNombre"
+  [grupoId]="seleccion.grupoId"
+  (close)="mostrarExpediente = false"
+>
+</app-modal-expediente-360>

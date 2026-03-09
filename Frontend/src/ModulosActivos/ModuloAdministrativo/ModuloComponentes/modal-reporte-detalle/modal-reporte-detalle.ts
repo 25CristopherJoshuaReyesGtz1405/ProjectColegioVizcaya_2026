@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ImpresionService } from '../../../../ServiciosActivos/impresion.service';
 import { DocentesService } from '../../../../ServiciosActivos/docentes.service'; 
 import { NotificacionesService } from '../../../../ServiciosActivos/notificaciones.service';
-import { EstudiantesService } from '../../../../ServiciosActivos/estudiantes.service'; // <--- 1. IMPORTAR
+import { EstudiantesService } from '../../../../ServiciosActivos/estudiantes.service';
 
 @Component({
   selector: 'app-modal-reporte-detalle',
@@ -20,10 +20,28 @@ export class ModalReporteDetalle {
   private impresionService = inject(ImpresionService);
   private docentesService = inject(DocentesService); 
   private notificaciones = inject(NotificacionesService);
-  private estudiantesService = inject(EstudiantesService); // <--- 2. INYECTAR
+  private estudiantesService = inject(EstudiantesService); 
 
-  // Variable para deshabilitar el botón mientras carga
   cargandoPDF = false;
+
+  // --- TRADUCTOR DE FECHAS (Solución al bug visual) ---
+  get reporteFecha(): Date | null {
+    if (!this.reporte || !this.reporte.fecha) return null;
+    
+    const f = this.reporte.fecha;
+    
+    // Si viene como Timestamp de Firebase Admin (_seconds) o Client (seconds)
+    if (f._seconds) return new Date(f._seconds * 1000);
+    if (f.seconds) return new Date(f.seconds * 1000);
+    
+    // Si viene como String ISO o número
+    if (typeof f === 'string' || typeof f === 'number') return new Date(f);
+    
+    // Si ya es un objeto Date
+    if (f instanceof Date) return f;
+
+    return null;
+  }
 
   imprimir() {
     if (!this.reporte || this.cargandoPDF) return;
@@ -31,13 +49,9 @@ export class ModalReporteDetalle {
     this.cargandoPDF = true;
     this.notificaciones.mostrar('info', 'Generando PDF', 'Obteniendo datos del estudiante...');
 
-    // 3. LLAMADA AL BACKEND
     this.estudiantesService.getPorUID(this.reporte.estudianteUid).subscribe({
       next: (estudianteFull) => {
-        
-        // ¡ÉXITO! Ya tenemos la matrícula real, foto y grado actualizados
         this.impresionService.imprimirReporteIndisciplina(this.reporte, estudianteFull);
-        
         this.cargandoPDF = false;
       },
       error: (err) => {
@@ -54,9 +68,7 @@ export class ModalReporteDetalle {
     this.notificaciones.confirmar(
       'Eliminar Reporte',
       '¿Estás seguro de eliminar este reporte de forma permanente? Esta acción no se puede deshacer.',
-      () => {
-        this.eliminar();
-      },
+      () => this.eliminar(),
       'Sí, eliminar'
     );
   }
@@ -65,8 +77,8 @@ export class ModalReporteDetalle {
     this.docentesService.deleteReporte(this.reporte.id).subscribe({
       next: () => {
         this.notificaciones.mostrar('exito', 'Eliminado', 'El reporte ha sido borrado.');
-        this.deleted.emit(); // Avisamos para recargar la lista
-        this.close.emit();   // Cerramos el modal
+        this.deleted.emit(); 
+        this.close.emit();   
       },
       error: (err) => {
         console.error(err);

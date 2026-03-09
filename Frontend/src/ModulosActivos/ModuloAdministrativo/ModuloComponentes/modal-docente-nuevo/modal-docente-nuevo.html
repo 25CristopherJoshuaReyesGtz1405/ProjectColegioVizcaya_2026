@@ -1,0 +1,156 @@
+<div class="modal-backdrop fade-in" (click)="cerrarModal()">
+  <div class="premium-modal form-modal animate-slide-up" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header teal-gradient">
+      <div class="header-content">
+        <span class="badge-tag"><i class="bi bi-person-video3 me-1"></i> Recursos Humanos</span>
+        <div class="header-titles">
+          <h2>Registrar Nuevo Docente</h2>
+          <p>Complete el perfil profesional y asigne credenciales de acceso</p>
+        </div>
+      </div>
+      <button class="btn-close-white" (click)="cerrarModal()" [disabled]="guardando"><i class="bi bi-x-lg"></i></button>
+    </header>
+
+    <div class="modal-body custom-scroll">
+      <form class="premium-form grid-layout" (ngSubmit)="guardar()" #docenteForm="ngForm">
+        
+        <div class="form-section">
+          <h3 class="section-title"><i class="bi bi-person-vcard"></i> Datos Personales</h3>
+          
+          <div class="avatar-upload-container">
+            <input type="file" id="fotoPerfil" (change)="onFotoSelected($event)" accept="image/*" hidden>
+            <label for="fotoPerfil" class="avatar-preview-circle" [class.has-image]="fotoPreview">
+              <img *ngIf="fotoPreview" [src]="fotoPreview" alt="Foto">
+              <div class="upload-placeholder" *ngIf="!fotoPreview">
+                <i class="bi bi-camera"></i>
+                <span>Foto</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="inputs-container">
+            <div class="input-group">
+              <label>Nombre(s) <span class="req">*</span></label>
+              <div class="input-wrapper">
+                <i class="bi bi-person icon"></i>
+                <input type="text" [(ngModel)]="nuevoDocente.nombre" name="nombre" placeholder="Ej. Ana María" required>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label>Apellidos <span class="req">*</span></label>
+              <div class="input-wrapper">
+                <i class="bi bi-person-lines-fill icon"></i>
+                <input type="text" [(ngModel)]="nuevoDocente.apellidos" name="apellidos" placeholder="Ej. López Cruz" required>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label>CURP</label>
+              <div class="input-wrapper">
+                <i class="bi bi-upc-scan icon"></i>
+                <input type="text" [(ngModel)]="nuevoDocente.curp" name="curp" placeholder="18 caracteres" maxlength="18">
+              </div>
+            </div>
+
+            <div class="input-group mt-1">
+              <label>Sexo</label>
+              <div class="radio-pills">
+                <label class="pill">
+                  <input type="radio" name="sexo" value="MUJER" [(ngModel)]="nuevoDocente.sexo">
+                  <span>Mujer</span>
+                </label>
+                <label class="pill">
+                  <input type="radio" name="sexo" value="HOMBRE" [(ngModel)]="nuevoDocente.sexo">
+                  <span>Hombre</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section bg-gray-section">
+          
+          <h3 class="section-title"><i class="bi bi-shield-lock"></i> Credenciales de Acceso</h3>
+          <div class="inputs-container mb-4">
+            <div class="input-group">
+              <label>Correo Institucional <span class="req">*</span></label>
+              <div class="input-wrapper">
+                <i class="bi bi-envelope-at icon"></i>
+                <input type="email" [(ngModel)]="nuevoDocente.email" name="email" placeholder="docente@colegiovizcaya.edu.mx" required>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label>Contraseña Temporal <span class="req">*</span></label>
+              <div class="input-wrapper">
+                <i class="bi bi-key icon"></i>
+                <input type="password" [(ngModel)]="nuevoDocente.password" name="password" placeholder="Mínimo 6 caracteres" required>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="section-title"><i class="bi bi-briefcase"></i> Perfil Profesional</h3>
+          <div class="inputs-container">
+            
+            <div class="row-group">
+              <div class="input-group flex-1">
+                <label>RFC <span class="req">*</span></label>
+                <div class="input-wrapper">
+                  <i class="bi bi-hash icon"></i>
+                  <input type="text" [(ngModel)]="nuevoDocente.rfc" name="rfc" placeholder="13 caracteres" required>
+                </div>
+              </div>
+              
+              <div class="input-group flex-1">
+                <label>Teléfono</label>
+                <div class="input-wrapper">
+                  <i class="bi bi-telephone icon"></i>
+                  <input type="text" [(ngModel)]="nuevoDocente.telefono" name="telefono" placeholder="10 dígitos">
+                </div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label>Especialidad Principal</label>
+              <div class="input-wrapper">
+                <i class="bi bi-award icon"></i>
+                <input type="text" [(ngModel)]="nuevoDocente.especialidad" name="especialidad" placeholder="Ej. Matemáticas Aplicadas">
+              </div>
+            </div>
+
+            <div class="row-group">
+              <div class="input-group flex-1">
+                <label>Cédula Profesional</label>
+                <div class="input-wrapper">
+                  <i class="bi bi-card-heading icon"></i>
+                  <input type="text" [(ngModel)]="nuevoDocente.cedula" name="cedula" placeholder="Opcional">
+                </div>
+              </div>
+
+              <div class="input-group flex-1">
+                <label>Fecha de Ingreso</label>
+                <div class="input-wrapper">
+                  <i class="bi bi-calendar-check icon"></i>
+                  <input type="date" [(ngModel)]="nuevoDocente.fechaIngreso" name="fechaIngreso">
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer justify-end">
+      <button type="button" class="btn-ghost" (click)="cerrarModal()" [disabled]="guardando">Cancelar</button>
+      <button type="button" class="btn-teal shadow-btn" (click)="guardar()" [disabled]="!docenteForm.valid || guardando">
+        <i class="bi" [ngClass]="guardando ? 'bi-hourglass-split spin-icon' : 'bi-check-circle'"></i> 
+        {{ guardando ? 'Registrando...' : 'Guardar Docente' }}
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -1,163 +1,223 @@
-// COLORES INSTITUCIONALES
+// COLORES INSTITUCIONALES MEJORADOS
 $guinda: #8C1D40;
-$guinda-dark: #65122d;
+$guinda-dark: #5c132a;
 $guinda-light: #fdf2f4;
-$text-main: #1f2937;
-$text-light: #6b7280;
-$border: #e5e7eb;
+$accent-gold: #bda054; // Acento elegante
+$text-main: #1e293b;
+$text-muted: #475569;
+$text-light: #94a3b8;
+$border: #e2e8f0;
 $white: #ffffff;
-$bg-input: #f8fafc;
+$bg-app: #f8fafc;
 $focus-ring: rgba(140, 29, 64, 0.15);
 
-/* BACKDROP */
+/* BACKDROP CON DESENFOQUE */
 .modal-backdrop {
   position: fixed; inset: 0; z-index: 1050;
-  background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(6px);
+  background: rgba(15, 23, 42, 0.4); 
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex; align-items: center; justify-content: center; padding: 1rem;
 }
 
-/* TARJETA MODAL */
+/* TARJETA MODAL PREMIUM */
 .modal-content.premium-modal {
-  background: $white; width: 100%; max-width: 500px;
-  border-radius: 24px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+  background: $bg-app; 
+  width: 100%; max-width: 520px;
+  border-radius: 36px;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0,0,0,0.02);
   display: flex; flex-direction: column; overflow: hidden;
-  max-height: 85vh; // Limita la altura para pantallas chicas
+  max-height: 85vh;
   animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* HEADER */
+/* HEADER ELEGANTE */
 .modal-header {
-  background: $guinda; padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, $guinda 0%, $guinda-dark 100%);
+  padding: 1.5rem 2rem;
   display: flex; align-items: center; justify-content: space-between;
   color: $white; position: relative; overflow: hidden;
+  box-shadow: 0 4px 15px rgba(140, 29, 64, 0.2);
 
-  &::before {
-    content: ''; position: absolute; top: -50%; right: -10%; width: 150px; height: 150px;
-    background: rgba(255,255,255,0.05); border-radius: 50%; pointer-events: none;
+  .header-bg-pattern {
+    position: absolute; top: -50%; right: -10%; 
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%; pointer-events: none;
   }
 
   .brand-icon {
-    width: 42px; height: 42px; background: rgba(255,255,255,0.15);
-    border-radius: 12px; display: grid; place-items: center; font-size: 1.3rem;
-    backdrop-filter: blur(4px);
+    width: 46px; height: 46px; 
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 14px; display: grid; place-items: center; font-size: 1.4rem;
+    backdrop-filter: blur(4px); box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
 
   .header-titles {
-    flex: 1; margin-left: 1rem;
-    h2 { margin: 0; font-size: 1.1rem; font-weight: 700; letter-spacing: 0.5px; }
-    p { margin: 0; font-size: 0.8rem; opacity: 0.85; font-weight: 300; }
+    flex: 1; margin-left: 1.2rem; z-index: 1;
+    h2 { margin: 0; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.3px; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+    p { margin: 0; font-size: 0.85rem; opacity: 0.9; font-weight: 400; }
   }
 
   .btn-close-custom {
-    background: none; border: none; color: rgba(255,255,255,0.7);
-    font-size: 1.2rem; cursor: pointer; transition: all 0.2s;
-    &:hover { color: $white; transform: rotate(90deg); }
+    background: rgba(255,255,255,0.1); border: none; color: $white;
+    width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+    font-size: 1.1rem; cursor: pointer; transition: all 0.2s; z-index: 1;
+    &:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg) scale(1.05); }
   }
 }
 
-/* BODY */
-.modal-body { padding: 2rem; overflow-y: auto; }
-
-.group-hero {
-  text-align: center; margin-bottom: 1.5rem;
-  h3 { font-size: 1.3rem; font-weight: 800; color: $guinda; margin: 0 0 0.5rem 0; }
-  .badge-ciclo { background: $guinda-light; color: $guinda; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+/* BODY Y SCROLLBAR */
+.modal-body { 
+  padding: 2rem; overflow-y: auto; background: $bg-app; 
+}
+.custom-scroll {
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: $border; border-radius: 10px; }
+  &::-webkit-scrollbar-thumb:hover { background: $text-light; }
 }
 
-/* GRID DE ESTADÍSTICAS */
+/* HERO DEL GRUPO */
+.group-hero {
+  text-align: center; margin-bottom: 2rem;
+  h3 { font-size: 1.4rem; font-weight: 800; color: $text-main; margin: 0 0 0.8rem 0; letter-spacing: -0.5px; }
+  .badge-ciclo { 
+    background: $white; border: 1px solid $border; color: $text-muted; 
+    padding: 6px 14px; border-radius: 36px; font-size: 0.8rem; font-weight: 600;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02); display: inline-flex; align-items: center; gap: 6px;
+    i { color: $guinda; }
+  }
+}
+
+/* ESTADÍSTICAS */
 .stats-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
   .stat-box {
-    background: $bg-input; border: 1px solid $border; border-radius: 12px; padding: 1rem; text-align: center;
-    label { display: block; font-size: 0.7rem; font-weight: 700; color: $text-light; margin-bottom: 4px; }
-    span { display: block; font-size: 1rem; font-weight: 600; color: $text-main; }
+    background: $white; border: 1px solid $border; border-radius: 16px; 
+    padding: 1.2rem; text-align: center; transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    &:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.04); }
+    label { display: block; font-size: 0.75rem; font-weight: 800; color: $text-light; margin-bottom: 6px; letter-spacing: 0.5px; }
+    span { display: block; font-size: 1.15rem; font-weight: 700; color: $guinda-dark; }
   }
 }
-
-.divider { border: 0; border-top: 1px dashed $border; margin: 1.5rem 0; }
 
 /* INPUT DE BÚSQUEDA */
 .input-box {
-  position: relative; margin-bottom: 1rem;
-  .icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: $text-light; }
+  position: relative;
+  .icon { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); color: $text-light; font-size: 1.1rem; }
   input {
-    width: 100%; padding: 0.8rem 1rem 0.8rem 2.8rem; border-radius: 12px;
+    width: 100%; padding: 0.9rem 1rem 0.9rem 3rem; border-radius: 36px;
     border: 1px solid $border; background: $white; outline: none;
-    transition: all 0.2s; font-size: 0.9rem;
-    &:focus { border-color: $guinda; box-shadow: 0 0 0 3px $focus-ring; + .icon { color: $guinda; } }
+    transition: all 0.2s; font-size: 0.95rem; color: $text-main;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
+    &::placeholder { color: $text-light; }
+    &:focus { border-color: $guinda; box-shadow: 0 0 0 4px $focus-ring; + .icon { color: $guinda; } }
   }
 }
 
-/* LISTAS */
-.premium-list {
-  list-style: none; padding: 0; margin: 0;
-  li {
-    display: flex; align-items: center; gap: 1rem; padding: 0.8rem;
-    border-bottom: 1px solid $border; transition: background 0.2s;
-    &:last-child { border-bottom: none; }
-    &:hover { background: $guinda-light; }
-    
-    .avatar-ring {
-      width: 36px; height: 36px; border-radius: 50%; background: $guinda; color: $white;
-      display: grid; place-items: center; font-weight: 700; font-size: 0.9rem;
-    }
-    .list-info {
-      flex: 1;
-      .name { display: block; font-size: 0.95rem; font-weight: 600; color: $text-main; }
-      .meta { display: block; font-size: 0.8rem; color: $text-light; }
-    }
-    .status-badge { font-size: 0.65rem; font-weight: 700; color: #10b981; background: #dcfce7; padding: 2px 6px; border-radius: 4px; }
+/* LISTAS COMO TARJETAS */
+.premium-list, .groups-list {
+  display: flex; flex-direction: column; gap: 0.8rem;
+}
+
+.list-card, .group-card {
+  display: flex; align-items: center; gap: 1rem; padding: 1rem;
+  background: $white; border: 1px solid $border; border-radius: 24px;
+  transition: all 0.2s ease; cursor: default;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+  
+  &:hover { 
+    border-color: rgba($guinda, 0.3); background: $white; 
+    box-shadow: 0 6px 12px rgba(140, 29, 64, 0.05); transform: translateY(-2px); 
   }
+
+  .avatar-ring {
+    width: 42px; height: 42px; border-radius: 50%; background: $guinda-light; color: $guinda;
+    display: grid; place-items: center; font-weight: 800; font-size: 1rem;
+    border: 2px solid $white; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+  
+  .list-info, .group-info {
+    flex: 1;
+    .name, h4 { display: block; font-size: 0.95rem; font-weight: 700; color: $text-main; margin: 0 0 2px 0; }
+    .meta, p { display: flex; align-items: center; gap: 4px; font-size: 0.8rem; color: $text-muted; margin: 0; }
+  }
+
+  .status-badge { 
+    font-size: 0.65rem; font-weight: 800; color: #059669; 
+    background: #d1fae5; padding: 4px 8px; border-radius: 6px; letter-spacing: 0.5px; 
+  }
+
+  .icon-box { 
+    width: 44px; height: 44px; background: $guinda-light; color: $guinda; 
+    border-radius: 12px; display: grid; place-items: center; font-size: 1.2rem; 
+  }
+  .action-icon { color: $border; transition: color 0.2s; }
+  &:hover .action-icon { color: $guinda; }
 }
 
 /* PERFIL ESTUDIANTE */
 .student-profile {
-  text-align: center; margin-bottom: 1rem;
+  text-align: center; margin-bottom: 2rem;
   .avatar-large {
-    width: 80px; height: 80px; margin: 0 auto 1rem auto; border-radius: 50%;
-    background: $guinda; color: $white; display: grid; place-items: center; font-size: 2rem; font-weight: 700;
-    border: 4px solid $guinda-light;
+    width: 90px; height: 90px; margin: 0 auto 1.2rem auto; border-radius: 50%;
+    background: $guinda-light; color: $guinda; display: grid; place-items: center; 
+    font-size: 2.5rem; font-weight: 700;
+    border: 4px solid $white; box-shadow: 0 8px 20px rgba(140, 29, 64, 0.15);
     img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
   }
-  h2 { font-size: 1.2rem; font-weight: 700; color: $text-main; margin: 0 0 0.5rem 0; }
-  .matricula-chip { background: $text-main; color: $white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-family: monospace; }
+  h2 { font-size: 1.4rem; font-weight: 800; color: $text-main; margin: 0 0 0.8rem 0; letter-spacing: -0.5px; }
+  .matricula-chip { 
+    background: $text-main; color: $white; padding: 6px 14px; border-radius: 20px; 
+    font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
 }
 
-.section-label { font-size: 0.75rem; font-weight: 800; color: $guinda; text-transform: uppercase; margin-bottom: 1rem; display: block; }
-
-.groups-list {
-  display: flex; flex-direction: column; gap: 0.8rem;
-  .group-card {
-    display: flex; align-items: center; gap: 1rem; padding: 1rem;
-    background: $white; border: 1px solid $border; border-radius: 12px;
-    .icon-box { width: 40px; height: 40px; background: $guinda-light; color: $guinda; border-radius: 10px; display: grid; place-items: center; font-size: 1.2rem; }
-    .group-info {
-      flex: 1;
-      h4 { margin: 0; font-size: 0.95rem; font-weight: 700; color: $text-main; }
-      p { margin: 0; font-size: 0.8rem; color: $text-light; }
-    }
-  }
+.section-label { 
+  font-size: 0.8rem; font-weight: 800; color: $text-muted; 
+  text-transform: uppercase; letter-spacing: 1px; margin: 0 0 1rem 0; 
 }
 
 /* FOOTER */
 .modal-footer {
-  padding: 1.2rem 2rem; border-top: 1px solid $border; background: $bg-input;
-  display: flex; justify-content: flex-end;
+  padding: 1.2rem 2rem; border-top: 1px solid $border; background: $white;
+  display: flex; justify-content: flex-end; border-radius: 0 0 20px 20px;
   
   .btn-ghost {
-    padding: 0.7rem 1.5rem; background: $white; border: 1px solid $border;
-    color: $text-main; font-weight: 600; border-radius: 10px; cursor: pointer;
-    &:hover { background: darken($white, 2%); }
+    padding: 0.75rem 1.8rem; background: $bg-app; border: 1px solid $border;
+    color: $text-main; font-weight: 600; border-radius: 12px; cursor: pointer;
+    transition: all 0.2s; font-size: 0.95rem;
+    &:hover { background: $border; color: $guinda-dark; }
   }
 }
 
-/* UTILS */
-.empty-state { text-align: center; padding: 2rem; color: $text-light; i { font-size: 2rem; } }
-.loading-state { display: flex; justify-content: center; padding: 2rem; }
-.spinner {
-  width: 20px; height: 20px; border: 2px solid rgba($guinda, 0.3);
-  border-top-color: $guinda; border-radius: 50%; animation: spin 0.8s linear infinite;
+/* ESTADOS COMPARTIDOS */
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+
+.empty-state { 
+  text-align: center; padding: 3rem 1rem; color: $text-light; 
+  background: $white; border: 1px dashed $border; border-radius: 16px;
+  .empty-icon { width: 60px; height: 60px; margin: 0 auto 1rem; background: $bg-app; border-radius: 50%; display: grid; place-items: center; font-size: 1.5rem; color: $text-light; }
+  p { margin: 0; font-size: 0.95rem; }
 }
+
+.loading-state { 
+  display: flex; flex-direction: column; align-items: center; gap: 1rem; padding: 3rem 1rem; color: $text-light; font-size: 0.9rem; font-weight: 500;
+}
+
+.spinner {
+  width: 28px; height: 28px; border: 3px solid $border;
+  border-top-color: $guinda; border-radius: 50%; animation: spin 0.8s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;
+}
+
 @keyframes spin { to { transform: rotate(360deg); } }
-@keyframes slideUpFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUpFade { 
+  from { opacity: 0; transform: translateY(30px) scale(0.98); } 
+  to { opacity: 1; transform: translateY(0) scale(1); } 
+}

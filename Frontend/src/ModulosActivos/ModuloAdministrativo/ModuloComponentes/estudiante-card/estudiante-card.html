@@ -77,28 +77,7 @@
         <span *ngIf="esInactivo" class="fw-bold text-danger text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.5px;">Baja</span>
       </div>
       
-      <div class="footer-group d-flex gap-2">
-
-        <button class="action-btn btn-id rounded-3 border-0 shadow-sm" 
-          (click)="onCredencial($event)" 
-          title="Generar Credencial">
-          <i class="bi bi-person-badge-fill"></i> 
-        </button> 
-
-        <button class="action-btn btn-kardex rounded-3 border-0 shadow-sm" (click)="onKardex($event)" title="Expediente Académico">
-          <i class="bi bi-folder-fill"></i>
-        </button>
-
-        <button class="action-btn btn-print rounded-3 border-0 shadow-sm" (click)="onPrint($event)" title="Imprimir Boleta">
-          <i class="bi bi-printer-fill"></i>
-        </button>
-        <button class="action-btn btn-edit rounded-3 border-0 shadow-sm" (click)="onEdit($event)" title="Editar">
-          <i class="bi bi-pencil-fill"></i>
-        </button>
-        <button class="action-btn btn-delete rounded-3 border-0 shadow-sm" (click)="onDelete($event)" title="Baja/Eliminar">
-          <i class="bi bi-trash-fill"></i>
-        </button>
-      </div>
+      
     </div>
 
   </div>

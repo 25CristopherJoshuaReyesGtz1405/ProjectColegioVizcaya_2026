@@ -1,33 +1,34 @@
 <div class="modal-backdrop fade-in" (click)="close.emit()">
   <div class="modal-content premium-modal" (click)="$event.stopPropagation()">
-    
     <header class="modal-header">
+      <div class="header-bg-pattern"></div>
       <div class="brand-icon">
-        <i class="bi" [ngClass]="tipo === 'GRUPO' ? 'bi-collection-fill' : 'bi-person-vcard-fill'"></i>
+        <i
+          class="bi"
+          [ngClass]="tipo === 'GRUPO' ? 'bi-collection-fill' : 'bi-person-vcard-fill'"
+        ></i>
       </div>
       <div class="header-titles">
         <h2>{{ tipo === 'GRUPO' ? 'Detalle de Grupo' : 'Expediente del Alumno' }}</h2>
-        <p *ngIf="tipo === 'GRUPO'">Gestión de lista y asistencia.</p>
-        <p *ngIf="tipo === 'ESTUDIANTE'">Información académica y carga.</p>
+        <p *ngIf="tipo === 'GRUPO'">Gestión de lista y asistencia</p>
+        <p *ngIf="tipo === 'ESTUDIANTE'">Información académica y carga</p>
       </div>
-      <button class="btn-close-custom" (click)="close.emit()">
+      <button class="btn-close-custom" (click)="close.emit()" title="Cerrar modal">
         <i class="bi bi-x-lg"></i>
       </button>
     </header>
 
     <div class="modal-body custom-scroll">
-
       <ng-container *ngIf="tipo === 'GRUPO'">
-        
         <div class="group-hero">
           <h3>{{ data.materia }}</h3>
-          <span class="badge-ciclo">{{ data.ciclo }}</span>
+          <span class="badge-ciclo"><i class="bi bi-calendar3"></i> {{ data.ciclo }}</span>
         </div>
 
         <div class="stats-grid">
           <div class="stat-box">
             <label>GRADO</label>
-            <span>{{ data.grado }}° Semestre</span>
+            <span>{{ data.grado }}° Grado</span>
           </div>
           <div class="stat-box">
             <label>TOTAL ALUMNOS</label>
@@ -35,89 +36,96 @@
           </div>
         </div>
 
-        <hr class="divider">
-
-        <div class="search-section">
+        <div class="search-section mt-4">
           <div class="input-box">
             <i class="bi bi-search icon"></i>
-            <input type="text" 
-                   placeholder="Filtrar estudiante por nombre..." 
-                   [(ngModel)]="busquedaAlumno"
-                   (keyup)="filtrarAlumnos()">
+            <input
+              type="text"
+              placeholder="Buscar estudiante por nombre o matrícula..."
+              [(ngModel)]="busquedaAlumno"
+              (keyup)="filtrarAlumnos()"
+            />
           </div>
         </div>
 
-        <div class="list-wrapper">
+        <div class="list-wrapper mt-3">
           <div *ngIf="cargando" class="loading-state">
             <div class="spinner"></div>
+            <p>Cargando lista...</p>
           </div>
-          
-          <ul *ngIf="!cargando" class="premium-list">
-            <li *ngFor="let alumno of alumnosFiltrados">
+
+          <div *ngIf="!cargando" class="premium-list">
+            <div class="list-card" *ngFor="let alumno of alumnosFiltrados">
               <div class="avatar-ring">
                 <span>{{ alumno.persona.nombre.charAt(0) }}</span>
               </div>
               <div class="list-info">
                 <span class="name">{{ alumno.persona.nombre }} {{ alumno.persona.apellidos }}</span>
-                <span class="meta">ID: {{ alumno.rol!.uid }}</span>
+                <span class="meta"
+                  ><i class="bi bi-person-badge"></i>
+                  {{ $any(alumno.rol).matricula || 'Sin Matrícula' }}</span
+                >
               </div>
               <div class="status-badge">ACTIVO</div>
-            </li>
-            
-            <li *ngIf="alumnosFiltrados.length === 0" class="empty-state">
-              <i class="bi bi-person-x"></i>
-              <p>No se encontraron alumnos.</p>
-            </li>
-          </ul>
+            </div>
+
+            <div *ngIf="alumnosFiltrados.length === 0" class="empty-state">
+              <div class="empty-icon"><i class="bi bi-person-x"></i></div>
+              <p>No se encontraron alumnos con ese criterio.</p>
+            </div>
+          </div>
         </div>
       </ng-container>
 
-
       <ng-container *ngIf="tipo === 'ESTUDIANTE'">
-        
         <div class="student-profile">
           <div class="profile-header">
             <div class="avatar-large">
-              <img *ngIf="data.fotoUrl" [src]="data.fotoUrl">
+              <img *ngIf="data.fotoUrl" [src]="data.fotoUrl" alt="Foto de {{ data.nombre }}" />
               <span *ngIf="!data.fotoUrl">{{ data.nombre.charAt(0) }}</span>
             </div>
             <div class="profile-text">
               <h2>{{ data.nombre }} {{ data.apellidos }}</h2>
-              <span class="matricula-chip">{{ data.matricula || 'SIN MATRÍCULA' }}</span>
+              <span class="matricula-chip"
+                ><i class="bi bi-hash"></i> {{ data.matricula || 'SIN MATRÍCULA' }}</span
+              >
             </div>
           </div>
         </div>
 
-        <div class="section-label mt-4">CLASES COMPARTIDAS</div>
-        
-        <div *ngIf="cargando" class="loading-state">
-          <div class="spinner"></div>
-        </div>
+        <div class="section-container mt-4">
+          <h4 class="section-label">CLASES COMPARTIDAS</h4>
 
-        <div class="groups-list" *ngIf="!cargando">
-          <div class="group-card" *ngFor="let g of gruposCompartidos">
-            <div class="icon-box">
-              <i class="bi bi-journal-text"></i>
-            </div>
-            <div class="group-info">
-              <h4>{{ g.materia?.nombre || 'Materia' }}</h4>
-              <p>{{ g.materia?.grado }}° Semestre • {{ g.cicloEscolar }}</p>
-            </div>
-            <i class="bi bi-check-circle-fill text-success"></i>
+          <div *ngIf="cargando" class="loading-state">
+            <div class="spinner"></div>
+            <p>Cargando información...</p>
           </div>
-          
-          <div *ngIf="gruposCompartidos.length === 0" class="empty-state">
-            <p>No compartes clases con este alumno actualmente.</p>
+
+          <div class="groups-list mt-3" *ngIf="!cargando">
+            <div class="group-card" *ngFor="let g of gruposCompartidos">
+              <div class="icon-box">
+                <i class="bi bi-journal-bookmark-fill"></i>
+              </div>
+              <div class="group-info">
+                <h4>{{ g.materia?.nombre || 'Materia' }}</h4>
+                <p>{{ g.materia?.grado }}° Grado • {{ g.cicloEscolar }}</p>
+              </div>
+              <div class="action-icon">
+                <i class="bi bi-chevron-right"></i>
+              </div>
+            </div>
+
+            <div *ngIf="gruposCompartidos.length === 0" class="empty-state">
+              <div class="empty-icon"><i class="bi bi-inbox"></i></div>
+              <p>No compartes clases con este alumno actualmente.</p>
+            </div>
           </div>
         </div>
-
       </ng-container>
-
     </div>
 
     <div class="modal-footer">
       <button class="btn-ghost" (click)="close.emit()">Cerrar</button>
     </div>
-
   </div>
 </div>

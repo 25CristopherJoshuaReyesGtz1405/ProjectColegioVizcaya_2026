@@ -3,6 +3,7 @@ import * as ServicioDocente from '../ServiciosActivos/Docentes.js';
 import authMiddleware from '../APIs/auth.middleware.js';
 import { log } from 'console';
 import multer from 'multer';
+import { actualizarEvaluacion, eliminarEvaluacion, crearSolicitudRatificacion } from '../ServiciosActivos/Docentes.js';
 
 const router = Router();
 
@@ -222,6 +223,75 @@ router.post('/calificacion', authMiddleware, async (req: Request, res: Response)
 // --- Rutas de Seguimiento ---
 
 /**
+ * PUT /api/docentes/grupos/:grupoId/evaluaciones/:evaluacionId
+ * Actualiza el nombre o porcentaje de un criterio de evaluación.
+ */
+router.put('/grupos/:grupoId/evaluaciones/:evaluacionId', async (req: Request, res: Response) => {
+  try {
+    const { grupoId, evaluacionId } = req.params;
+    const { nombre, porcentaje } = req.body;
+    const docenteUid = (req as any).user.uid;
+
+    console.log(req);
+    
+
+    // Validación básica
+    if (!docenteUid) {
+      return res.status(401).json({ success: false, message: 'Falta UID del docente.' });
+    }
+    if (!nombre && porcentaje === undefined) {
+      return res.status(400).json({ success: false, message: 'No hay datos para actualizar.' });
+    }
+
+    // Llamada a la Lógica de Negocio (ServiciosActivos/Docentes.ts)
+    await actualizarEvaluacion(docenteUid, grupoId as string, evaluacionId as string, { nombre, porcentaje });
+
+    return res.status(200).json({ 
+      success: true, 
+      message: 'Rubro actualizado correctamente.' 
+    });
+
+  } catch (error: any) {
+    console.error('Error al actualizar rubro:', error);
+    return res.status(500).json({ 
+      success: false, 
+      message: error.message || 'Error interno del servidor.' 
+    });
+  }
+});
+
+/**
+ * DELETE /api/docentes/grupos/:grupoId/evaluaciones/:evaluacionId
+ * Elimina un criterio de evaluación y su acta de calificaciones asociada.
+ */
+router.delete('/grupos/:grupoId/evaluaciones/:evaluacionId', async (req: Request, res: Response) => {
+  try {
+    const { grupoId, evaluacionId } = req.params;
+    // En una app real, docenteUid vendría del middleware de autenticación (req.user.uid)
+    const docenteUid = (req as any).user.uid;
+
+    if (!docenteUid) {
+      return res.status(401).json({ success: false, message: 'Falta UID del docente.' });
+    }
+
+    // Llamada a la Lógica de Negocio (Borrado en Cascada)
+    await eliminarEvaluacion(docenteUid, grupoId as string, evaluacionId as string);
+
+    return res.status(200).json({ 
+      success: true, 
+      message: 'Rubro y calificaciones eliminados correctamente.' 
+    });
+
+  } catch (error: any) {
+    console.error('Error al eliminar rubro:', error);
+    return res.status(500).json({ 
+      success: false, 
+      message: error.message || 'Error interno del servidor.' 
+    });
+  }
+});
+
+/**
  * @route   POST /api/docente/asistencia
  * @desc    (RF 5.1) Registra el pase de lista de un grupo para un día.
  * @access  Privado (Docente)
@@ -235,8 +305,8 @@ router.post('/asistencia', authMiddleware, async (req: Request, res: Response) =
       return res.status(400).json({ message: 'Faltan datos (grupoId, fecha, estatusAlumnos)' });
     }
     
-    const asistencia = await ServicioDocente.registrarAsistencia(
-      docenteUid, grupoId, new Date(fecha), estatusAlumnos
+    const asistencia = await ServicioDocente.guardarAsistenciaDia(
+      docenteUid, grupoId, estatusAlumnos
     );
     res.status(201).json(asistencia);
     
@@ -421,5 +491,167 @@ router.get('/busqueda', authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @route   GET /api/docente/grupos/:grupoId/promedios/:periodoId
+ * @desc    Obtiene el promedio final calculado de los alumnos en un periodo anterior.
+ */
+router.get('/grupos/:grupoId/promedios/:periodoId', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { grupoId, periodoId } = req.params;
+    const promedios = await ServicioDocente.obtenerPromediosPeriodo(grupoId as string, periodoId as string);
+    res.status(200).json(promedios);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error al obtener promedios anteriores', error: error.message });
+  }
+});
+
+/**
+ * @route   POST /api/docente/solicitud-rectificacion
+ * @desc    Crea un ticket para solicitar cambio de calificación.
+ * @access  Privado (Docente)
+ */
+router.post('/solicitud-rectificacion', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const docenteUid = (req as any).user.uid;
+    
+    // Extraemos los datos del cuerpo
+    const { 
+      uidAlumno, nombreAlumno, 
+      idMateria, nombreMateria, 
+      calificacionAnterior, calificacionNueva, 
+      motivo, nombreDocente 
+    } = req.body;
+
+    // Validaciones básicas
+    if (!uidAlumno || !idMateria || calificacionNueva === undefined || !motivo) {
+      return res.status(400).json({ message: 'Faltan datos obligatorios para la solicitud.' });
+    }
+
+    const idTicket = await ServicioDocente.crearSolicitudRatificacion(docenteUid, {
+      uidAlumno, nombreAlumno,
+      idMateria, nombreMateria,
+      calificacionAnterior, calificacionNueva,
+      motivo, uidDocente: docenteUid, nombreDocente,
+      fechaSolicitud: undefined,
+      estado: 'PENDIENTE'
+    });
+
+    res.status(201).json({ 
+      success: true, 
+      message: 'Solicitud enviada a Dirección correctamente.',
+      ticketId: idTicket
+    });
+
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: `Error al crear solicitud: ${error.message}` });
+  }
+});
+
+/**
+ * @route   GET /api/docente/mis-solicitudes
+ * @desc    Obtiene el historial de tickets de corrección del docente
+ */
+router.get('/mis-solicitudes', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const docenteUid = (req as any).user.uid;
+    const solicitudes = await ServicioDocente.consultarMisSolicitudes(docenteUid);
+    res.status(200).json(solicitudes);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error al obtener solicitudes', error: error.message });
+  }
+});
+
+/**
+ * @route   GET /api/docente/avisos
+ * @desc    Obtiene los últimos avisos institucionales
+ */
+router.get('/avisos', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const avisos = await ServicioDocente.consultarAvisosInstitucionales();
+    res.status(200).json(avisos);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error al obtener avisos', error: error.message });
+  }
+});
+
+/**
+ * @route   GET /api/docente/alertas
+ * @desc    Obtiene las alertas tempranas (alumnos en riesgo) de los grupos del docente
+ */
+router.get('/alertas', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const docenteUid = (req as any).user.uid;
+    const alertas = await ServicioDocente.consultarAlertasTempranas(docenteUid);
+    res.status(200).json(alertas);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error al obtener alertas', error: error.message });
+  }
+});
+
+/**
+ * @route   GET /api/docente/grupo/:grupoId/expediente/:estudianteUid
+ * @desc    Obtiene los KPIs y el historial del Expediente 360 de un estudiante
+ */
+router.get('/grupo/:grupoId/expediente/:estudianteUid', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { grupoId, estudianteUid } = req.params;
+    
+    // Llamamos a la función recién creada
+    const expediente = await ServicioDocente.obtenerExpediente360(estudianteUid as string, grupoId as string);
+    
+    res.status(200).json(expediente);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error al obtener el expediente 360', error: error.message });
+  }
+});
+
+// Asegúrate de importar tu ServicioDocente arriba
+
+/**
+ * @route   POST /api/docentes/grupo/:grupoId/asistencia-inteligente
+ * @desc    Guarda el pase de lista con el periodo incluido
+ */
+router.post('/grupo/:grupoId/asistencia-inteligente', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { grupoId } = req.params;
+    const { periodoId, fecha, registro } = req.body;
+
+    const resultado = await ServicioDocente.guardarAsistenciaInteligente(grupoId as string, periodoId as string, fecha, registro);
+    res.status(200).json(resultado);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error al guardar asistencia', error: error.message });
+  }
+});
+
+/**
+ * @route   GET /api/docentes/grupo/:grupoId/periodo/:periodoId/estadisticas-asistencia
+ * @desc    Obtiene las métricas de faltas y el Sparkline
+ */
+router.get('/grupo/:grupoId/periodo/:periodoId/estadisticas-asistencia', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { grupoId, periodoId } = req.params;
+    const estadisticas = await ServicioDocente.obtenerEstadisticasAsistencia(grupoId as string, periodoId as string);
+    res.status(200).json(estadisticas);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error al calcular estadísticas', error: error.message });
+  }
+});
+
+/**
+ * @route   GET /api/docente/buscar/global
+ * @desc    Buscador en tiempo real para el modal Spotlight
+ */
+router.get('/buscar/global', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { q } = req.query;
+    if (!q || typeof q !== 'string') return res.status(200).json([]);
+    
+    const resultados = await ServicioDocente.buscarDocentesGlobal(q);
+    res.status(200).json(resultados);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 export default router;

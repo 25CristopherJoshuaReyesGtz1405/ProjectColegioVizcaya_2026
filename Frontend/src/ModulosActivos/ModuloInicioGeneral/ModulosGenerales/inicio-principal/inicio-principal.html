@@ -1,0 +1,257 @@
+<div class="landing-wrapper fade-in-page">
+
+  <!-- 1. BARRA SUPERIOR (Top Bar) -->
+  <div class="top-bar-institutional">
+    <div class="container d-flex justify-content-between align-items-center h-100">
+      <div class="d-flex gap-4">
+        <span><i class="bi bi-geo-alt-fill text-gold me-2"></i>Campus Durango</span>
+        <span class="d-none d-md-inline"><i class="bi bi-telephone-fill text-gold me-2"></i>(618) 811-1234</span>
+      </div>
+      <div class="d-flex gap-3">
+        <a href="#" class="social-item"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="social-item"><i class="bi bi-instagram"></i></a>
+        <a href="#" class="social-item"><i class="bi bi-youtube"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. NAVBAR PRINCIPAL -->
+  <nav class="navbar-main sticky-top">
+    <div class="container d-flex justify-content-between align-items-center">
+      
+      <!-- Identidad -->
+      <div class="d-flex align-items-center gap-3">
+        <img src="assets/images/logo-vizcaya.png" 
+             onerror="this.src='https://vectorseek.com/wp-content/uploads/2023/09/Colegio-Vizcaya-Logo-Vector.svg--300x283.png'" 
+             alt="Logo Vizcaya" class="logo-img">
+        <div class="d-flex flex-column justify-content-center">
+          <span class="brand-title">Colegio Vizcaya</span>
+          <span class="brand-subtitle">Excelencia Académica</span>
+        </div>
+      </div>
+
+      <!-- Acciones -->
+      <div class="d-flex align-items-center gap-3">
+        <div class="d-none d-xl-flex gap-2 me-3">
+          <a href="#noticias" class="nav-link-custom">Noticias</a>
+          <a href="#modelo" class="nav-link-custom">Modelo</a>
+          <a href="#admisiones" class="nav-link-custom">Admisiones</a>
+        </div>
+        
+        <button class="btn-outline-vizcaya" (click)="abrirModalPadres()">
+          <i class="bi bi-people-fill me-2"></i>Soy Tutor
+        </button>
+        <button class="btn-vizcaya-solid" (click)="irAlLogin()">
+          <i class="bi bi-person-lock me-2"></i>Acceso Admin
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 3. HERO SECTION (Carrusel) -->
+  <header class="hero-section">
+    <!-- Carrusel de Fondo -->
+    <div class="hero-bg-slider">
+      <div class="slide slide-1"></div>
+      <div class="slide slide-2"></div>
+      <div class="slide slide-3"></div>
+      <div class="slide slide-4"></div>
+    </div>
+    
+    <div class="hero-overlay"></div>
+    
+    <div class="container position-relative z-2">
+      <div class="col-lg-8 text-white animate-up">
+        <div class="d-inline-flex align-items-center bg-white text-dark px-4 py-2 mb-4 rounded-pill fw-bold text-uppercase ls-1 shadow-sm">
+          <i class="bi bi-award-fill text-gold me-2"></i> 25 Años de Historia
+        </div>
+        <h1>
+          Formando Líderes <br> 
+          <span class="text-gold fst-italic">Con Valores</span>
+        </h1>
+        <p>
+          Un modelo educativo de vanguardia que integra tecnología, humanismo y excelencia académica en un entorno seguro.
+        </p>
+        <div class="d-flex gap-3 mt-5">
+          <button class="btn-white">Conocer Oferta Educativa</button>
+          <button class="btn-outline-light-custom">Agendar Visita</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <br> <br> <br> <br>
+  <!-- STATS FLOTANTES -->
+  <div class="stats-strip container">
+    <div class="stats-container">
+      <div class="stat-box">
+        <i class="bi bi-trophy-fill text-gold fs-1"></i>
+        <div>
+          <span class="d-block fw-bold fs-3 text-dark">25+</span>
+          <small class="text-muted text-uppercase fw-bold ls-1">Años de Trayectoria</small>
+        </div>
+      </div>
+      <div class="stat-box">
+        <i class="bi bi-mortarboard-fill text-vizcaya fs-1"></i>
+        <div>
+          <span class="d-block fw-bold fs-3 text-dark">3,500</span>
+          <small class="text-muted text-uppercase fw-bold ls-1">Egresados</small>
+        </div>
+      </div>
+      <div class="stat-box">
+        <i class="bi bi-globe text-gold fs-1"></i>
+        <div>
+          <span class="d-block fw-bold fs-3 text-dark">40+</span>
+          <small class="text-muted text-uppercase fw-bold ls-1">Convenios</small>
+        </div>
+      </div>
+      <!-- Caja de Acción -->
+      <div class="stat-box action-box" (click)="irAlLogin()">
+        <div>
+          <span class="d-block fw-bold fs-4">Únete a Vizcaya</span>
+          <small class="opacity-75 text-uppercase">Inicia tu proceso</small>
+        </div>
+        <i class="bi bi-arrow-right-circle fs-1"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. SECCIÓN NOTICIAS -->
+  <section id="noticias" class="py-5 mt-5">
+    <div class="container py-5">
+      
+      <div class="d-flex justify-content-between align-items-end mb-5">
+        <div>
+          <span class="text-gold fw-bold text-uppercase ls-2">Actualidad</span>
+          <h2 class="section-title">Vida Institucional</h2>
+        </div>
+        <a href="#" class="text-secondary fw-bold text-decoration-none">
+          Ver todas las noticias <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-4" *ngFor="let post of noticias">
+          <article class="news-card h-100 d-flex flex-column">
+            
+            <div class="card-img-wrapper position-relative">
+              <img [src]="post.imagen" alt="Noticia">
+              <span class="badge-category position-absolute top-0 end-0 m-3 shadow-sm"
+                    [ngClass]="getBadgeClass(post.categoria)">
+                {{ post.categoria }}
+              </span>
+            </div>
+
+            <div class="card-body d-flex flex-column flex-grow-1">
+              <div class="d-flex align-items-center text-muted small mb-3">
+                <i class="bi bi-calendar-event me-2 text-gold"></i>
+                <span class="fw-bold">{{ post.fecha }}</span>
+              </div>
+              
+              <h5 class="card-title">{{ post.titulo }}</h5>
+              <p class="text-secondary flex-grow-1" style="line-height: 1.6;">
+                {{ post.resumen }}
+              </p>
+
+              <div class="d-flex justify-content-between align-items-center pt-3 mt-3 border-top">
+                <button class="btn-like" [class.liked]="post.liked" (click)="darLike(post)">
+                  <i class="bi" [ngClass]="post.liked ? 'bi-heart-fill' : 'bi-heart'"></i>
+                  <span class="ms-1">{{ post.likes }}</span>
+                </button>
+                <a href="#" class="text-vizcaya fw-bold text-decoration-none small">Leer nota completa</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 5. CTA PADRES -->
+  <section class="cta-section py-5 my-5">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <div class="img-stack">
+            <img src="https://img.freepik.com/foto-gratis/estudiantes-universitarios-caminando-interior-edificio-universidad-borrosa_1150-13673.jpg" class="img-fluid img-main" alt="Alumnos">
+            <div class="img-backdrop"></div>
+          </div>
+        </div>
+        <div class="col-lg-6 ps-lg-5">
+          <span class="text-gold fw-bold text-uppercase ls-2">Plataforma Digital</span>
+          <h2 class="section-title mb-4">Portal Familiar Integral</h2>
+          <p class="lead text-secondary mb-4">
+            Manténgase conectado con el desarrollo académico de sus hijos. Acceso seguro 24/7 a calificaciones, asistencias y comunicados.
+          </p>
+          
+          <ul class="list-unstyled text-secondary mb-5">
+            <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-gold me-3 fs-5"></i> Consulta de Boletas Oficiales</li>
+            <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-gold me-3 fs-5"></i> Monitoreo de Asistencia en Tiempo Real</li>
+            <li class="mb-3 d-flex align-items-center"><i class="bi bi-check-circle-fill text-gold me-3 fs-5"></i> Comunicación Directa con Coordinación</li>
+          </ul>
+          
+          <button class="btn-vizcaya-solid" (click)="abrirModalPadres()">
+            <i class="bi bi-laptop me-2"></i> Acceder al Portal
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="main-footer">
+    <div class="container">
+      <div class="row g-5">
+        <div class="col-lg-4">
+          <h4 class="font-primary fw-bold">COLEGIO VIZCAYA</h4>
+          <p class="opacity-75 mb-4">
+            Comprometidos con la formación de seres humanos íntegros, capaces de transformar su entorno con liderazgo y valores.
+          </p>
+          <div class="d-flex gap-3">
+            <a href="#" class="social-circle"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="social-circle"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="social-circle"><i class="bi bi-youtube"></i></a>
+          </div>
+        </div>
+        
+        <div class="col-lg-2 col-6">
+          <h6 class="text-gold fw-bold text-uppercase">Accesos</h6>
+          <ul class="list-unstyled opacity-75">
+            <li><a href="#" class="footer-link">Portal Padres</a></li>
+            <li><a href="#" class="footer-link">Portal Docente</a></li>
+            <li><a href="#" class="footer-link">Admisiones</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-6">
+          <h6 class="text-gold fw-bold text-uppercase">Legal</h6>
+          <ul class="list-unstyled opacity-75">
+            <li><a href="#" class="footer-link">Aviso de Privacidad</a></li>
+            <li><a href="https://uva.edu.mx/wp-content/uploads/2023/12/Reglamento-Institucional_formatoMKT.pdf" class="footer-link">Reglamento Escolar</a></li>
+            <li><a href="#" class="footer-link">Términos de Uso</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3">
+          <h6 class="text-gold fw-bold text-uppercase">Contacto</h6>
+          <ul class="list-unstyled opacity-75">
+            <li class="mb-2"><i class="bi bi-geo-alt me-2 text-gold"></i> Av. Universidad #123</li>
+            <li class="mb-2"><i class="bi bi-telephone me-2 text-gold"></i> (618) 811-1234</li>
+            <li><i class="bi bi-envelope me-2 text-gold"></i> info@colegiovizcaya.edu.mx</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-top border-secondary mt-5 pt-4 text-center opacity-50 small">
+        © 2026 Colegio Vizcaya. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Component Integration -->
+  <app-modal-acceso-padres 
+    [isVisible]="showModalPadres" 
+    (close)="cerrarModalPadres()">
+  </app-modal-acceso-padres>
+
+</div>

@@ -1,8 +1,9 @@
 /**
  * ====================================================================
- * MODELO DE DATOS (v3)
+ * MODELO DE DATOS (v4) - INCLUSIÓN DE TUTORES
  * ====================================================================
- * 
+ */
+
 /**
  * COLECCIÓN: 'personas'
  * Document ID: uid (de Firebase Auth)
@@ -38,7 +39,33 @@ export interface RolEmpleado {
   uid: string;
   RFC: string;
   cedulaProfesional?: string;
-  rol: "estudiante" | "docente" | "directora" | "control_escolar";
+  rol: "docente" | "directora" | "control_escolar";
+  estatus: "ACTIVO" | "BAJA";
+  // --- NUEVOS CAMPOS AÑADIDOS PARA EL EXPEDIENTE ---
+  especialidad?: string;
+  telefono?: string;
+  fechaIngreso?: Date | string;
+}
+
+// -------------------------------------------------------------------
+// NUEVO: ROL TUTOR (Para el Portal de Padres)
+// -------------------------------------------------------------------
+
+/**
+ * COLECCIÓN: 'roles_tutor'
+ * Document ID: uid (de Firebase Auth)
+ * RF: Permite agrupar a varios estudiantes bajo un mismo responsable legal.
+ */
+export interface RolTutor {
+  uid: string;
+  rfc?: string; // Opcional, para facturación si aplica
+  telefonoContacto: string; // Dato crítico para comunicación
+  direccion?: string;
+  
+  // Relación: Array de UIDs de los estudiantes (hijos/tutorados)
+  // Esto permite una consulta rápida sin necesidad de buscar en todos los estudiantes.
+  estudiantesUids: string[]; 
+  
   estatus: "ACTIVO" | "BAJA";
 }
 
@@ -139,6 +166,7 @@ export interface AsistenciaDia {
   estatusAlumnos: {
     [estudianteUid: string]: "PRESENTE" | "AUSENTE" | "RETARDO";
   };
+  periodoId: string; 
 }
 
 // -------------------------------------------------------------------
@@ -233,11 +261,14 @@ export interface AlertaRiesgo {
 
 /**
  * DTO: Perfil unificado de un usuario.
+ * Ahora soporta la estructura de Tutor.
  */
 export interface PerfilUsuarioDTO {
   persona: Persona;
-  rol: RolEstudiante | RolEmpleado | null;
-  tipoRol: "estudiante" | "docente" | "directora" | "control_escolar" | null;
+  // Unión de tipos de roles posibles
+  rol: RolEstudiante | RolEmpleado | RolTutor | null;
+  // Discriminador de tipo para facilitar el casting en el frontend
+  tipoRol: "estudiante" | "docente" | "directora" | "control_escolar" | "tutor" | null;
 }
 
 /**
@@ -257,6 +288,7 @@ export interface ResultadoMateriaDTO {
   // --- NUEVOS CAMPOS ---
   nombreDocente?: string;       // Para imprimir quién da la clase
   observaciones?: string;       // El comentario del último periodo
+  inasistenciasTotales?: number
 }
 
 /**
@@ -326,4 +358,23 @@ export interface MateriaKardexDTO {
   calificacionFinal: number; // Promedio final de la materia
   estatus: 'APROBADA' | 'REPROBADA' | 'CURSANDO';
   observaciones?: string;
+}
+
+export type EstadoSolicitud = 'PENDIENTE' | 'APROBADO' | 'RECHAZADO';
+
+export interface SolicitudRatificacion {
+  id?: string;               // ID del documento en Firebase
+  uidAlumno: string;         // A quién pertenece la calificación
+  nombreAlumno: string;      // Para mostrarlo rápido en la lista de la directora
+  idMateria: string;         // Qué materia es
+  nombreMateria: string;     
+  calificacionAnterior: number;
+  calificacionNueva: number;
+  motivo: string;            // Justificación del docente
+  uidDocente: string;        // Quién pide el cambio
+  nombreDocente: string;
+  fechaSolicitud: Date | any; // Timestamp de Firestore
+  estado: EstadoSolicitud;   // Aquí controlamos el flujo
+  fechaRespuesta?: Date | any; // Cuándo respondió la directora
+  comentarioDirector?: string; // Opcional: por si la directora rechaza y dice por qué
 }

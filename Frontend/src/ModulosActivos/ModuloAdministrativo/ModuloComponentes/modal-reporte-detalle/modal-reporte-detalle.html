@@ -7,25 +7,26 @@
            'medium': reporte?.severidad === 'MEDIA', 
            'low': reporte?.severidad === 'BAJA'
          }">
-      <span>{{ reporte?.severidad || 'FALTA' }}</span>
+      <span>{{ reporte?.severidad || 'REPORTE' }}</span>
     </div>
 
     <header class="modal-header">
       <div class="header-branding">
-        <img src="https://images.seeklogo.com/logo-png/30/2/colegio-vizcaya-logo-png_seeklogo-307798.png" alt="Logo" class="logo-img">
-        <div class="header-text">
+        <div class="shield-icon"><i class="bi bi-shield-exclamation"></i></div>
+        <div class="header-text"> 
           <h2>Reporte de Incidencia</h2>
-          <span class="folio-badge">FOLIO #{{ reporte?.id || '000' }}</span>
+          <span class="folio-badge">FOLIO #{{ reporte.id }}</span>
         </div>
       </div>
-      <button class="btn-close" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
+      <button class="btn-close-premium" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
     </header>
 
     <div class="modal-body custom-scroll">
       
       <div class="student-profile-section">
         <div class="avatar-container">
-          <div class="avatar-placeholder gradient-student">
+          <img *ngIf="reporte?.fotoUrl" [src]="reporte.fotoUrl" class="avatar-img">
+          <div *ngIf="!reporte?.fotoUrl" class="avatar-placeholder gradient-student">
             <i class="bi bi-person-fill"></i>
           </div>
         </div>
@@ -43,10 +44,8 @@
           <div class="icon-box"><i class="bi bi-calendar-event"></i></div>
           <div class="data-text">
             <label>Fecha</label>
-            <span class="fw-bold" *ngIf="reporte?.fecha">
-              {{ reporte.fecha | date:'dd/MM/yyyy' }}
-            </span>
-            <span class="fw-bold text-muted" *ngIf="!reporte?.fecha">--/--/----</span>
+            <span class="fw-bold" *ngIf="reporteFecha">{{ reporteFecha | date:'dd/MM/yyyy' }}</span>
+            <span class="fw-bold text-muted" *ngIf="!reporteFecha">Sin fecha</span>
           </div>
         </div>
 
@@ -54,10 +53,8 @@
           <div class="icon-box"><i class="bi bi-clock"></i></div>
           <div class="data-text">
             <label>Hora</label>
-            <span class="fw-bold" *ngIf="reporte?.fecha">
-              {{ reporte.fecha | date:'shortTime' }}
-            </span>
-            <span class="fw-bold text-muted" *ngIf="!reporte?.fecha">--:--</span>
+            <span class="fw-bold" *ngIf="reporteFecha">{{ reporteFecha | date:'shortTime' }}</span>
+            <span class="fw-bold text-muted" *ngIf="!reporteFecha">--:--</span>
           </div>
         </div>
 
@@ -70,33 +67,34 @@
         </div>
       </div>
 
-      <div class="description-section">
-        <label class="section-title"><i class="bi bi-text-paragraph"></i> Descripción de los Hechos</label>
+      <div class="description-section mt-3">
+        <label class="section-title"><i class="bi bi-justify-left"></i> Descripción de los Hechos</label>
         <div class="text-content">
-          <p>{{ reporte?.descripcion || 'Sin descripción detallada.' }}</p>
+          <p>{{ reporte?.descripcion || 'No se proporcionó una descripción detallada.' }}</p>
         </div>
       </div>
 
       <div class="signatures-section">
         <div class="signature-block">
           <div class="line"></div>
-          <span>Docente / Reportante</span>
+          <span>Firma del Docente</span>
         </div>
         <div class="signature-block">
           <div class="line"></div>
-          <span>Dirección / Control Escolar</span>
+          <span>Firma de Dirección</span>
         </div>
       </div>
 
     </div>
 
     <div class="modal-footer">
-      <button class="btn-icon-delete" (click)="confirmarEliminar()" title="Eliminar Reporte">
+      <button class="btn-icon-delete" (click)="confirmarEliminar()" title="Eliminar permanentemente">
         <i class="bi bi-trash3-fill"></i>
       </button>
       <div class="spacer"></div> 
-      <button class="btn-print" (click)="imprimir()">
-        <i class="bi bi-printer-fill"></i> Imprimir Expediente
+      <button class="btn-print shadow-btn" (click)="imprimir()" [disabled]="cargandoPDF">
+        <i class="bi" [ngClass]="cargandoPDF ? 'bi-hourglass-split spin-icon' : 'bi-printer-fill'"></i> 
+        {{ cargandoPDF ? 'Generando...' : 'Imprimir Expediente' }}
       </button>
     </div>
 

@@ -1,8 +1,9 @@
 /**
  * ====================================================================
- * MODELO DE DATOS (v3)
+ * MODELO DE DATOS (v4) - INCLUSIÓN DE TUTORES
  * ====================================================================
- * 
+ */
+
 /**
  * COLECCIÓN: 'personas'
  * Document ID: uid (de Firebase Auth)
@@ -28,6 +29,10 @@ export interface RolEstudiante {
   grado: number;
   grupo: string;
   estatus: "ACTIVO" | "BAJA";
+  // --- NUEVOS CAMPOS DE RESUMEN (Calculados por el backend) ---
+  promedioGlobal?: number;
+  materiasReprobadas?: number;
+  totalReportes?: number;
 }
 
 /**
@@ -38,7 +43,86 @@ export interface RolEmpleado {
   uid: string;
   RFC: string;
   cedulaProfesional?: string;
-  rol: "ESTUDIANTE" | "DOCENTE" | "DIRECTORA" | "CONTROL_ESCOLAR";
+  rol: "docente" | "directora" | "control_escolar";
+  estatus: "ACTIVO" | "BAJA";
+}
+
+// -------------------------------------------------------------------
+// 8. MÓDULO DE PROMOCIÓN Y DIFUSIÓN (NUEVO)
+// -------------------------------------------------------------------
+
+/**
+ * COLECCIÓN: 'publicaciones_institucionales'
+ * RF: Permite al encargado de promoción actualizar el feed de noticias.
+ */
+export interface PublicacionInstitucional {
+  id: string;
+  titulo: string;
+  subtitulo?: string;
+  contenido: string; // Puede soportar HTML básico o texto plano
+  imagenUrl: string; // URL de la foto en Storage
+  fechaPublicacion: Date;
+  
+  // Metadatos de Autoría
+  autorUid: string; // UID del encargado que subió la noticia
+  
+  // Categorización
+  tipo: 'NOTICIA' | 'EVENTO' | 'LOGRO' | 'GALERIA';
+  estatus: 'BORRADOR' | 'PUBLICADO' | 'ARCHIVADO';
+  
+  // Engagement (Social Wall)
+  reacciones: {
+    likes: number;
+    loves: number;
+    // Aquí podríamos guardar un array de UIDs si quisiéramos evitar votos dobles reales
+  };
+}
+
+export interface SolicitudCambio {
+  docenteUid: string;
+  docenteNombre: string;
+  grupoId: string;
+  materiaNombre: string;
+  estudianteUid: string;
+  estudianteNombre: string;
+  evaluacionId: string; // ID del rubro
+  nombreRubro: string;
+  calificacionActual: number;
+  calificacionNueva: number;
+  motivo: string;
+  tipoCausa: string;
+}
+
+/**
+ * ROL ESPECÍFICO: 'rol_promocion'
+ * Permite acceso al panel de edición de noticias.
+ */
+export interface RolPromocion {
+  uid: string;
+  departamento: string; // Ej: "Marketing", "Relaciones Públicas"
+  permisos: ('CREAR_POST' | 'EDITAR_POST' | 'ELIMINAR_POST')[];
+  estatus: "ACTIVO" | "BAJA";
+}
+
+// -------------------------------------------------------------------
+// NUEVO: ROL TUTOR (Para el Portal de Padres)
+// -------------------------------------------------------------------
+
+/**
+ * COLECCIÓN: 'roles_tutor'
+ * Document ID: uid (de Firebase Auth)
+ * RF: Permite agrupar a varios estudiantes bajo un mismo responsable legal.
+ */
+export interface RolTutor {
+  uid: string;
+  rfc?: string; // Opcional, para facturación si aplica
+  telefonoContacto: string; // Dato crítico para comunicación
+  direccion?: string;
+  
+  // Relación: Array de UIDs de los estudiantes (hijos/tutorados)
+  // Esto permite una consulta rápida sin necesidad de buscar en todos los estudiantes.
+  estudiantesUids: string[]; 
+  
   estatus: "ACTIVO" | "BAJA";
 }
 
@@ -68,7 +152,7 @@ export interface Periodo {
 }
 
 // -------------------------------------------------------------------
-// 3. ESTRUCTURA ACADÉMICA (Nexo)
+// 3. ESTRUCTURA ACADÉMICA
 // -------------------------------------------------------------------
 
 /**
@@ -85,6 +169,26 @@ export interface Grupo {
 // -------------------------------------------------------------------
 // 4. EVALUACIÓN Y SEGUIMIENTO (Sub-colecciones)
 // -------------------------------------------------------------------
+
+export interface ActaEvaluacion {
+  id: string; 
+  grupoId: string;
+  docenteUid: string;
+  periodoId: string;
+  fechaUltimaModificacion: Date;
+
+  estatus: 'ABIERTA' | 'CERRADA'; // <--- NUEVO CAMPO
+  
+  // MAPA de calificaciones:
+  // Clave: UID del estudiante -> Valor: Objeto con nota
+  calificaciones: {
+    [estudianteUid: string]: {
+      valor: number;       
+      observaciones?: string; 
+      fechaCaptura: Date;
+    }
+  };
+}
 
 /**
  * SUB-COLECCIÓN: 'grupos/{grupoId}/evaluaciones'
@@ -119,6 +223,7 @@ export interface AsistenciaDia {
   estatusAlumnos: {
     [estudianteUid: string]: "PRESENTE" | "AUSENTE" | "RETARDO";
   };
+  periodoId: string; 
 }
 
 // -------------------------------------------------------------------
@@ -150,8 +255,8 @@ export interface ReporteIndisciplina {
   estudianteUid: string;
   descripcion: string;
   // --- NUEVOS CAMPOS ---
-    tipo: string;       // Ej: "Conducta", "Uniforme", "Asistencia"
-    severidad: 'BAJA' | 'MEDIA' | 'ALTA';
+  tipo: string;       // Ej: "Conducta", "Uniforme", "Asistencia"
+  severidad: 'BAJA' | 'MEDIA' | 'ALTA';
 }
 
 /**
@@ -213,11 +318,16 @@ export interface AlertaRiesgo {
 
 /**
  * DTO: Perfil unificado de un usuario.
+ * Ahora soporta la estructura de Tutor.
  */
 export interface PerfilUsuarioDTO {
   persona: Persona;
-  rol: RolEstudiante | RolEmpleado | null;
-  tipoRol: "estudiante" | "docente" | "directora" | "control_escolar" | null;
+  // Unión de tipos de roles posibles
+  rol: RolEstudiante | RolEmpleado | RolTutor | null;
+  // Discriminador de tipo para facilitar el casting en el frontend
+  tipoRol: "estudiante" | "docente" | "directora" | "control_escolar" | "tutor" | 'promocion' | null;
+
+  
 }
 
 /**
@@ -225,7 +335,7 @@ export interface PerfilUsuarioDTO {
  */
 export interface BoletaDataDTO {
   estudiante: Persona & RolEstudiante;
-  cicloEscolar: string;
+  cicloEscolar: any;
   periodos: Periodo[];
   resultados: ResultadoMateriaDTO[];
 }
@@ -283,6 +393,8 @@ export interface EstadisticasDashboardDTO {
   };
   promedioGeneral: number;
 }
+
+// Agrega esto al final de tus modelos
 
 export interface KardexDTO {
   estudiante: PerfilUsuarioDTO;

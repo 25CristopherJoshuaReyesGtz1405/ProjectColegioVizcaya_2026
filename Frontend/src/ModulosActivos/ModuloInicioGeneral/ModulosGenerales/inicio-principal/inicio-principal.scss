@@ -1,0 +1,430 @@
+// =========================================================
+// ESTILOS: INICIO PRINCIPAL (Estilo Vizcaya Premium)
+// =========================================================
+
+// --- 1. Variables y Configuración ---
+$vizcaya-guinda: #8C1D40;
+$vizcaya-dark: #5e132b;
+$vizcaya-gold: #C5A059;
+$text-dark: #1F2937;
+$text-muted: #6B7280;
+$bg-light: #F9FAFB;
+
+// Normativa de Diseño
+$font-primary: 'Roboto', sans-serif;
+$border-radius-std: 36px; // Radio de borde solicitado
+
+// Mixins
+@mixin transition-smooth {
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+@mixin glass-effect {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+// Globales
+:host {
+  display: block;
+  font-family: $font-primary;
+  color: $text-dark;
+  background-color: #fff;
+}
+
+// Clases de Utilidad Tipográfica
+.font-primary { font-family: $font-primary !important; }
+.text-vizcaya { color: $vizcaya-guinda !important; }
+.text-gold { color: $vizcaya-gold !important; }
+.ls-1 { letter-spacing: 1px; }
+.ls-2 { letter-spacing: 2px; }
+
+// --- 2. Barra Superior (Top Bar) ---
+.top-bar-institutional {
+  background-color: $vizcaya-dark;
+  height: 50px; // Más altura para mejor presencia
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem; // Letra un poco más grande
+  color: white;
+  .social-item {
+    color: rgba(255,255,255,0.7);
+    font-size: 1.1rem;
+    transition: 0.3s;
+    &:hover { color: $vizcaya-gold; transform: scale(1.1); }
+  }
+}
+
+// --- 3. Navbar Principal (Sticky) ---
+.navbar-main {
+  padding: 1.5rem 0; // Más espaciado vertical ("ancho")
+  background-color: #fff;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  transition: padding 0.3s ease;
+
+  .logo-img {
+    height: 70px; // Logo más grande
+    width: auto;
+    transition: transform 0.3s ease;
+  }
+
+  .brand-title {
+    font-size: 1.8rem; // Título más grande
+    color: $vizcaya-guinda;
+    font-weight: 900; // Roboto Black
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+
+  .brand-subtitle {
+    font-size: 0.85rem; // Subtítulo más legible
+    color: $text-muted;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  // Enlaces de navegación
+  .nav-link-custom {
+    text-decoration: none;
+    color: $text-dark;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    position: relative;
+    @include transition-smooth;
+
+    &:hover { color: $vizcaya-guinda; }
+    
+    &::after {
+      content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 3px;
+      background-color: $vizcaya-guinda; transition: all 0.3s ease; transform: translateX(-50%);
+      border-radius: 2px;
+    }
+    &:hover::after { width: 80%; }
+  }
+}
+
+// --- 4. Botones Institucionales ---
+.btn-vizcaya-solid {
+  background-color: $vizcaya-guinda;
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  padding: 0.8rem 2rem;
+  border-radius: $border-radius-std; // 36px
+  @include transition-smooth;
+  
+  &:hover {
+    background-color: darken($vizcaya-guinda, 5%);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba($vizcaya-guinda, 0.3);
+  }
+}
+
+.btn-outline-vizcaya {
+  background: transparent;
+  color: $vizcaya-guinda;
+  border: 2px solid $vizcaya-guinda;
+  font-weight: 700;
+  padding: 0.8rem 2rem;
+  border-radius: $border-radius-std; // 36px
+  @include transition-smooth;
+
+  &:hover {
+    background-color: $vizcaya-guinda;
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba($vizcaya-guinda, 0.2);
+  }
+}
+
+.btn-white {
+  background-color: #fff;
+  color: $vizcaya-guinda;
+  border: none;
+  font-weight: 700;
+  padding: 1rem 2.5rem;
+  border-radius: $border-radius-std; // 36px
+  @include transition-smooth;
+  
+  &:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+  }
+}
+
+.btn-outline-light-custom {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(4px);
+  border: 2px solid #fff;
+  color: #fff;
+  font-weight: 700;
+  padding: 1rem 2.5rem;
+  border-radius: $border-radius-std; // 36px
+  @include transition-smooth;
+
+  &:hover {
+    background: #fff;
+    color: $vizcaya-dark;
+    transform: translateY(-3px);
+  }
+}
+
+// --- 5. Hero Section (Carrusel) ---
+.hero-section {
+  position: relative;
+  height: 85vh;
+  min-height: 650px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-bottom-left-radius: $border-radius-std; // 36px
+  border-bottom-right-radius: $border-radius-std; // 36px
+  margin-bottom: 4rem; // Espacio para stats flotantes
+
+  // Carrusel de Fondo
+  .hero-bg-slider {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+  }
+
+  .slide {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover; background-position: center;
+    opacity: 0;
+    animation: zoomFade 24s infinite; // Ciclo total
+  }
+
+  // Definición de imágenes locales (Ajustar rutas según tu carpeta public)
+  .slide-1 { background-image: url('./../../../../../public/ColegioImagen_1.jpg'); animation-delay: 0s; }
+  .slide-2 { background-image: url('./../../../../../public/ColegioImagen_8.jpg'); animation-delay: 6s; }
+  .slide-3 { background-image: url('./../../../../../public/ColegioImagen_2.jpg'); animation-delay: 12s; }
+  .slide-4 { background-image: url('./../../../../../public/ColegioImagen_5.jpg'); animation-delay: 18s; }
+
+  .hero-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+    // Degradado profesional: Oscuro abajo izquierda, Guinda transparente arriba derecha
+    background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba($vizcaya-guinda, 0.4) 100%);
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    padding-left: 2rem;
+  }
+
+  h1 {
+    font-size: 4.5rem; // Título Hero Muy Grande
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  p {
+    font-size: 1.35rem;
+    margin-bottom: 2.5rem;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+}
+
+@keyframes zoomFade {
+  0% { opacity: 0; transform: scale(1); }
+  5% { opacity: 1; }
+  25% { opacity: 1; }
+  30% { opacity: 0; transform: scale(1.1); }
+  100% { opacity: 0; }
+}
+
+// Stats Flotantes
+.stats-strip {
+  margin-top: -80px; // Flotar sobre el Hero
+  position: relative;
+  z-index: 10;
+  padding: 0 1rem;
+
+  .stats-container {
+    background: #fff;
+    border-radius: $border-radius-std; // 36px
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .stat-box {
+    padding: 2.5rem 2rem;
+    flex: 1;
+    min-width: 220px;
+    border-right: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    @include transition-smooth;
+
+    &:last-child { border-right: none; }
+    &:hover { background-color: #fcfcfc; }
+
+    // Caja de Acción (Última)
+    &.action-box {
+      background-color: $vizcaya-guinda;
+      color: #fff;
+      cursor: pointer;
+      justify-content: space-between;
+      
+      &:hover { background-color: $vizcaya-dark; }
+      i { color: $vizcaya-gold; transition: transform 0.3s; }
+      &:hover i { transform: translateX(5px); }
+    }
+  }
+}
+
+// --- 6. Sección Noticias (Cards) ---
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: $vizcaya-guinda;
+  margin-bottom: 0.5rem;
+}
+
+.news-card {
+  border-radius: $border-radius-std; // 36px
+  overflow: hidden;
+  background: #fff;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  @include transition-smooth;
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+
+    .card-img-wrapper img { transform: scale(1.1); }
+  }
+
+  .card-img-wrapper {
+    height: 260px;
+    overflow: hidden;
+    position: relative;
+    border-top-left-radius: $border-radius-std;
+    border-top-right-radius: $border-radius-std;
+
+    img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+  }
+
+  .badge-category {
+    background: rgba(255, 255, 255, 0.95);
+    color: $text-dark;
+    font-weight: 700;
+    padding: 0.5rem 1.2rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    
+    &.badge-academic { border-left: 4px solid $vizcaya-guinda; }
+    &.badge-sports { border-left: 4px solid $vizcaya-gold; }
+    &.badge-cultural { border-left: 4px solid $text-dark; }
+  }
+
+  .card-body { padding: 2rem; }
+  
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+    color: $text-dark;
+    @include transition-smooth;
+    
+    &:hover { color: $vizcaya-guinda; }
+  }
+}
+
+.btn-like {
+  background-color: #f0f2f5;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  color: $text-muted;
+  font-weight: 600;
+  @include transition-smooth;
+
+  &:hover { background-color: #e4e6eb; }
+  &.liked { color: #dc3545; background-color: rgba(220, 53, 69, 0.1); }
+}
+
+// --- 7. Sección CTA Padres ---
+.cta-section {
+  position: relative;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.img-stack {
+  position: relative;
+  padding-right: 3rem; 
+  padding-bottom: 3rem;
+
+  .img-main {
+    border-radius: $border-radius-std; // 36px
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+
+  .img-backdrop {
+    position: absolute;
+    top: 30px; right: 0; bottom: 0; left: 30px;
+    background-color: $vizcaya-gold;
+    border-radius: $border-radius-std; // 36px
+    z-index: 1;
+    opacity: 0.2;
+  }
+}
+
+// --- 8. Footer ---
+.main-footer {
+  background-color: #111;
+  color: #fff;
+  padding-top: 5rem;
+  padding-bottom: 2rem;
+  border-top: 6px solid $vizcaya-guinda;
+
+  h4 { font-size: 1.5rem; margin-bottom: 1.5rem; }
+  h6 { font-size: 0.9rem; letter-spacing: 1px; margin-bottom: 1.5rem; }
+
+  .footer-link {
+    display: block;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    margin-bottom: 0.8rem;
+    @include transition-smooth;
+    
+    &:hover { color: $vizcaya-gold; transform: translateX(5px); }
+  }
+
+  .social-circle {
+    width: 45px; height: 45px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 1.2rem;
+    @include transition-smooth;
+    
+    &:hover { background: $vizcaya-guinda; transform: translateY(-5px); }
+  }
+}
+
+// Animaciones de Entrada
+.fade-in-page { animation: fadeIn 0.8s ease-out; }
+.animate-up { animation: fadeInUp 1s ease-out 0.3s backwards; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }

@@ -1,0 +1,230 @@
+/* --- Variables Institucionales --- */
+:host {
+  --vizcaya-vino: #990707fd;
+  --vizcaya-dorado: #c5a059;
+  --vizcaya-blanco: #ffffff;
+  --slide-duration: 3s;
+}
+
+.splash-page {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ebebeb; // Fallback
+}
+
+/* --- 1. Fondo Animado (Slider) --- */
+.background-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  animation: zoomFade 24s infinite; // 4 slides * 6s
+}
+
+// Rutas a imágenes (Asegúrate de que existan en tu carpeta public/assets)
+.slide-1 { background-image: url('./../../../../public/ColegioImagen_4.jpg'); animation-delay: 0s; }
+.slide-2 { background-image: url('./../../../../public/ColegioImagen_8.jpg'); animation-delay: 6s; }
+.slide-3 { background-image: url('./../../../../public/ColegioImagen_2.jpg'); animation-delay: 12s; }
+.slide-4 { background-image: url('./../../../../public/ColegioImagen_5.jpg'); animation-delay: 18s; }
+
+@keyframes zoomFade {
+  0% { opacity: 0; transform: scale(1); }
+  5% { opacity: 1; }
+  25% { opacity: 1; }
+  30% { opacity: 0; transform: scale(1.1); }
+  100% { opacity: 0; }
+}
+
+.overlay-dim {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(206, 206, 206, 0.205); 
+  backdrop-filter: blur(5.05px); // Efecto desenfoque fuerte para fondo
+  z-index: 1;
+}
+
+/* --- 2. Contenido Central --- */
+.splash-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  color: var(--vizcaya-blanco);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- Logo con Efecto Ripple --- */
+.logo-wrapper {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.logo-circle {
+  width: 140px;
+  height: 140px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 2;
+  animation: bounceIn 1s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-img {
+  width: 90%;
+  height: auto;
+  object-fit: contain;
+}
+
+.ripple {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  z-index: 1;
+  animation: rippleEffect 2s infinite;
+}
+
+/* --- Tipografía --- */
+.text-wrapper {
+  margin-bottom: 3rem;
+  animation: fadeInUp 0.8s ease-out 0.3s backwards;
+}
+
+.institution-name {
+  font-family: 'Roboto', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 0;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.institution-campus {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #e0e0e0;
+  margin-bottom: 1rem;
+}
+
+.divider {
+  width: 60px;
+  height: 3px;
+  background-color: var(--vizcaya-dorado);
+  margin: 0 auto 1rem auto;
+  border-radius: 2px;
+}
+
+.system-name {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+  text-decoration: solid;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+
+}
+
+/* --- Spinner Institucional Personalizado --- */
+.loader-wrapper {
+  animation: fadeIn 1s ease-out 1s backwards;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.vizcaya-spinner {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.double-bounce1, .double-bounce2 {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: var(--vizcaya-blanco);
+  opacity: 0.6;
+  position: absolute;
+  top: 0; left: 0;
+  animation: sk-bounce 2.0s infinite ease-in-out;
+}
+
+.double-bounce2 {
+  background-color: var(--vizcaya-dorado); // Segundo círculo dorado
+  animation-delay: -1.0s;
+}
+
+.loading-text {
+  font-size: 1.15rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-align: center;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  font-weight: bold;
+  animation: pulseText 1.5s infinite;
+}
+
+/* --- Keyframes --- */
+@keyframes bounceIn {
+  0% { opacity: 0; transform: scale(0.3); }
+  50% { opacity: 1; transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes rippleEffect {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+@keyframes sk-bounce {
+  0%, 100% { transform: scale(0.0); }
+  50% { transform: scale(1.0); }
+}
+
+@keyframes pulseText {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}

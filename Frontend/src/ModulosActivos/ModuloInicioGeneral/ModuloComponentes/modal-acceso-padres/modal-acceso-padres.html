@@ -1,0 +1,63 @@
+<div class="modal-backdrop" *ngIf="isVisible" (click)="cerrarModal()">
+  <div class="modal-content premium-modal" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header guinda-header">
+      <div class="header-content">
+        <div class="icon-box">
+          <i class="bi bi-shield-lock-fill"></i>
+        </div>
+        <div class="header-text">
+          <h2>Portal Familiar</h2>
+          <p>Inicie la sesión para poder acceder...</p>
+        </div>
+      </div>
+      <button type="button" class="btn-close-white" (click)="cerrarModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </header>
+    
+    <div class="modal-body">
+      <p class="instruction">
+        Bienvenido.... Por favor ingrese sus datos de acceso, para consultar el expediente académico de su hijo(a).
+      </p>
+
+      <form >
+        
+        <div class="field-group">
+          <label>Matrícula / Usuario</label>
+          <div class="input-wrapper">
+            <i class="bi bi-person"></i>
+            <input type="text" 
+                   [(ngModel)]="credenciales.identificador" name="identificador"
+                   placeholder="Ej. VIZ-2024..." required autocomplete="off">
+          </div>
+        </div>
+        
+        <div class="field-group">
+          <label>Contraseña</label>
+          <div class="input-wrapper">
+            <i class="bi bi-key"></i>
+            <input type="password" 
+                   [(ngModel)]="credenciales.password" name="password"
+                   placeholder="••••••••" required>
+          </div>
+          <a href="#" class="forgot-link">¿Olvidó su contraseña?</a>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn-submit" (click)="iniciarSesion()"
+              [disabled]="loading || !credenciales.identificador || !credenciales.password">
+        <span *ngIf="!loading">Iniciar Sesión</span>
+        <span *ngIf="loading">Cargando...</span>
+      </button>
+      <br> <br>
+      <div class="security-badge">
+        <i class="bi bi-lock-fill"></i> Conexión Cifrada SSL
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,105 @@
+<div class="drawer-backdrop" [class.show]="isOpen" (click)="cerrar()"></div>
+
+<aside class="floating-drawer" [class.open]="isOpen" (click)="$event.stopPropagation()">
+  
+  <div class="drawer-header guinda-gradient" *ngIf="materia">
+    <div class="header-left">
+      <span class="badge-light"><i class="bi bi-upc-scan me-1"></i> CLAVE: {{ materia.claveMateria || 'S/N' }}</span>
+      <h2 class="animate-fade-up">{{ materia.nombre }}</h2>
+      <p class="materia-grade animate-fade-up delay-100">{{ materia.grado }}° Semestre | Plan de Estudios Oficial</p>
+    </div>
+    <button class="btn-close-drawer" (click)="cerrar()"><i class="bi bi-x-lg"></i></button>
+  </div>
+
+  <div class="drawer-body custom-scroll" *ngIf="materia">
+    
+    <div class="loading-state" *ngIf="estaCargando">
+      <div class="spinner-border text-guinda" role="status"></div>
+      <p>Consultando base de datos curricular...</p>
+    </div>
+
+    <ng-container *ngIf="!estaCargando">
+      
+      <div class="vital-signs-grid animate-fade-up">
+        <div class="vital-card bg-blue-light">
+          <i class="bi bi-buildings-fill text-blue"></i>
+          <div><span class="value">{{ totalAulas }}</span><span class="label">Aulas Activas</span></div>
+        </div>
+        <div class="vital-card" [ngClass]="planeacionesEntregadas === totalMaestros && totalMaestros > 0 ? 'bg-green-light' : 'bg-orange-light border-warning'">
+          <i class="bi" [ngClass]="planeacionesEntregadas === totalMaestros && totalMaestros > 0 ? 'bi-check-circle-fill text-verde' : 'bi-exclamation-triangle-fill text-warning'"></i>
+          <div>
+            <span class="value" [ngClass]="{'text-warning': planeacionesEntregadas < totalMaestros}">{{ planeacionesEntregadas }} <small>/ {{ totalMaestros }}</small></span>
+            <span class="label">Planeaciones</span>
+          </div>
+        </div>
+        <div class="vital-card bg-guinda-light">
+          <i class="bi bi-graph-up-arrow text-guinda"></i>
+          <div><span class="value">{{ indiceAprobacion }}%</span><span class="label">Aprobación Hist.</span></div>
+        </div>
+      </div>
+
+      <hr class="divider animate-fade-up delay-100">
+
+      <div class="spotlight-section animate-fade-up delay-200">
+        <div class="section-header">
+          <h4>Auditoría de Instrumentación</h4>
+          <span class="badge-count">{{ totalMaestros }} Docentes</span>
+        </div>
+        <p class="section-desc">Profesores impartiendo la materia y el estado de sus enlaces de Google Drive.</p>
+      </div>
+
+      <div class="teachers-list animate-fade-up delay-300">
+        
+        <div class="empty-state-mini" *ngIf="docentesVinculados.length === 0">
+          <i class="bi bi-inbox text-muted"></i>
+          <p>Esta materia no está asignada a ningún docente en este momento.</p>
+        </div>
+        
+        <div class="teacher-planning-card" *ngFor="let doc of docentesVinculados">
+          
+          <div class="card-info-section">
+            <img [src]="doc.fotoUrl || 'assets/default-teacher.png'" class="teacher-avatar">
+            <div class="teacher-details">
+              <h5 class="name">{{ doc.nombre }} {{ doc.apellidos }}</h5>
+              <span class="group-assigned"><i class="bi bi-people-fill"></i> Grupos: {{ doc.gruposAsignadosTexto }}</span>
+            </div>
+          </div>
+
+          <div class="planning-status-section">
+            
+            <div class="status-box ok" *ngIf="doc.tienePlaneacion" [ngClass]="{'bg-light-blue': doc.datosPlaneacion?.estatus === 'REVISADA'}">
+              <div class="status-text">
+                <span class="tag text-verde" *ngIf="doc.datosPlaneacion?.estatus === 'ENTREGADA' || doc.datosPlaneacion?.estatus === 'APROBADA'">
+                  <i class="bi bi-check-circle-fill"></i> {{ doc.datosPlaneacion?.estatus }}
+                </span>
+                <span class="tag text-blue" *ngIf="doc.datosPlaneacion?.estatus === 'REVISADA'">
+                  <i class="bi bi-eye-fill"></i> EN REVISIÓN
+                </span>
+                <span class="date">Fecha: {{ doc.fechaEntrega || 'No registrada' }}</span>
+              </div>
+              <button class="btn-action-doc bg-green-light text-verde" title="Abrir en Google Drive" (click)="descargarPlaneacion(doc)">
+                <i class="bi bi-google"></i>
+              </button>
+            </div>
+
+            <div class="status-box missing" *ngIf="!doc.tienePlaneacion">
+              <div class="status-text">
+                <span class="tag text-red pulse-text"><i class="bi bi-x-circle-fill"></i> PENDIENTE</span>
+                <span class="date text-red">Sin enlace a Drive</span>
+              </div>
+              <button class="btn-action-doc bg-red-light text-red" title="Notificar Docente" (click)="solicitarPlaneacion(doc)">
+                <i class="bi bi-bell-fill"></i>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="drawer-footer">
+    <button class="btn-outline" (click)="cerrar()">Cerrar Panel</button>
+  </div>
+</aside>

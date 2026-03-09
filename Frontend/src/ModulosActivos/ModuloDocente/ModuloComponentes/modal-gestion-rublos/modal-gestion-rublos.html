@@ -1,0 +1,122 @@
+<div class="modal-backdrop fade-in" (click)="cerrarModal()">
+  <!-- Contenedor Principal con diseño 36px -->
+  <div class="modal-card scale-in" (click)="$event.stopPropagation()">
+    
+    <!-- HEADER -->
+    <div class="modal-header">
+      <div class="header-icon">
+        <i class="bi bi-sliders"></i>
+      </div>
+      <div class="header-titles">
+        <h2>Gestión de Criterios</h2>
+        <p>Ajusta ponderaciones o elimina rubros.</p>
+      </div>
+      <button class="btn-close" (click)="cerrarModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <!-- BODY -->
+    <div class="modal-body custom-scroll">
+      
+      <!-- INDICADOR DE TOTAL (Estilo Dashboard) -->
+      <div class="total-indicator" 
+           [class.status-ok]="totalPorcentaje === 100" 
+           [class.status-warning]="totalPorcentaje < 100"
+           [class.status-error]="totalPorcentaje > 100">
+        
+        <div class="label-group">
+          <span class="label">Total Acumulado</span>
+          <span class="status-text" *ngIf="totalPorcentaje < 100">Falta asignar porcentaje</span>
+          <span class="status-text" *ngIf="totalPorcentaje > 100">Excede el 100%</span>
+          <span class="status-text" *ngIf="totalPorcentaje === 100">Configuración completa</span>
+        </div>
+
+        <div class="value-circle">
+          <svg viewBox="0 0 36 36" class="circular-chart">
+            <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path class="circle" [attr.stroke-dasharray]="totalPorcentaje + ', 100'" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <span class="percentage">{{ totalPorcentaje }}%</span>
+        </div>
+      </div>
+
+      <!-- LOADING -->
+      <div *ngIf="cargando" class="loading-state">
+        <div class="spinner"></div>
+        <span>Cargando datos...</span>
+      </div>
+
+      <!-- LISTA DE RUBROS -->
+      <div class="rubros-list" *ngIf="!cargando">
+        
+        <div class="rubro-row slide-in-item" 
+             *ngFor="let rubro of rubros; let i = index" 
+             [style.--delay]="i"
+             [class.editing]="rubro.editando">
+          
+          <!-- MODO LECTURA -->
+          <ng-container *ngIf="!rubro.editando">
+            <div class="row-content">
+              <div class="drag-handle"><i class="bi bi-grip-vertical"></i></div>
+              <div class="info">
+                <span class="name">{{ rubro.nombre }}</span>
+                <span class="badge-percent">{{ rubro.porcentaje }}%</span>
+              </div>
+            </div>
+            
+            <div class="row-actions">
+              <button class="action-btn edit" (click)="habilitarEdicion(rubro)" title="Editar">
+                <i class="bi bi-pencil-fill"></i>
+              </button>
+              <button class="action-btn delete" (click)="eliminarRubro(rubro)" title="Eliminar">
+                <i class="bi bi-trash3-fill"></i>
+              </button>
+            </div>
+          </ng-container>
+
+          <!-- MODO EDICIÓN -->
+          <ng-container *ngIf="rubro.editando">
+            <div class="edit-mode-wrapper fade-in-quick">
+              <div class="inputs-container">
+                <div class="input-pill small">
+                  <i class="bi bi-type-h1"></i>
+                  <input type="text" [(ngModel)]="rubro.nombre" placeholder="Nombre" autoFocus>
+                </div>
+                <div class="input-pill small percent">
+                  <i class="bi bi-percent"></i>
+                  <input type="number" [(ngModel)]="rubro.porcentaje" (ngModelChange)="calcularTotal()">
+                </div>
+              </div>
+              
+              <div class="edit-actions">
+                <button class="save-btn" (click)="guardarRubro(rubro)" [disabled]="procesando">
+                  <i class="bi bi-check-lg"></i>
+                </button>
+                <button class="cancel-btn" (click)="cancelarEdicion(rubro)" [disabled]="procesando">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+            </div>
+          </ng-container>
+
+        </div>
+
+        <!-- EMPTY STATE -->
+        <div *ngIf="rubros.length === 0" class="empty-state">
+          <i class="bi bi-layers-half"></i>
+          <p>No hay criterios de evaluación.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="modal-footer">
+      <button class="btn-primary-pill" (click)="cerrarModal()">
+        Terminar Gestión
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -21,9 +21,6 @@
   <div class="actions-area">
     
     <div class="tool-buttons">
-      <button class="btn-icon" (click)="toggleTheme()" title="Cambiar Tema">
-        <i class="bi" [ngClass]="isDarkMode ? 'bi-moon-stars-fill' : 'bi-sun-fill'"></i>
-      </button>
       <button class="btn-icon notification" title="Notificaciones">
         <i class="bi bi-bell-fill"></i>
         <span class="dot"></span>
@@ -39,7 +36,7 @@
       </div>
       <i class="bi bi-chevron-down arrow" [class.open]="isProfileMenuOpen"></i>
 
-      <div class="dropdown-menu-card" *ngIf="isProfileMenuOpen">
+      <div class="dropdown-menu-card" *ngIf="isProfileMenuOpen" (click)="$event.stopPropagation()">
         
         <div class="menu-header">
           <p>Cuenta Administrativa</p>
@@ -49,11 +46,11 @@
           <a routerLink="/admin/perfil" class="menu-item">
             <i class="bi bi-person-gear"></i> Mi Perfil
           </a>
-          <a routerLink="/admin/configuracion" class="menu-item">
+          <a (click)="abrirModalConfiguracion()" class="menu-item" style="cursor: pointer;">
             <i class="bi bi-sliders"></i> Configuración Global
           </a>
-          <a href="#" class="menu-item">
-            <i class="bi bi-shield-lock"></i> Seguridad
+          <a (click)="abrirModalPrivacidad()" class="menu-item" style="cursor: pointer;">
+            <i class="bi bi-shield-lock"></i> Aviso de Privacidad
           </a>
         </div>
 
@@ -63,8 +60,9 @@
           </button>
         </div>
       </div>
-
     </div>
   </div>
-
 </header>
+
+<app-modal-configuracion *ngIf="mostrarConfiguracion" (close)="mostrarConfiguracion = false"></app-modal-configuracion>
+<app-modal-privacidad *ngIf="mostrarPrivacidad" (close)="mostrarPrivacidad = false"></app-modal-privacidad>

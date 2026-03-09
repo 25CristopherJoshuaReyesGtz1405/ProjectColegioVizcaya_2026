@@ -12,12 +12,56 @@ import * as ServicioReportes from '../ServiciosActivos/ReportesBoletas.js';
 import * as ServicioGrupos from '../ServiciosActivos/Grupos.js';
 import authMiddleware from '../APIs/auth.middleware.js';
 import { log } from 'console';
+import { rectificarCalificacion } from '../ServiciosActivos/Direccion.js';
 
 const router = Router();
 
 // Todas las rutas aquí requieren autenticación
 // TODO: Añadir un middleware que verifique que el rol sea 'DIRECTORA'
 router.use(authMiddleware);
+
+/**
+ * PUT /api/direccion/rectificar
+ * Endpoint para aplicar correcciones de calificación.
+ */
+router.put('/rectificar', async (req: Request, res: Response) => {
+  try {
+    const { 
+      uidDirectora, // En producción vendría del token JWT (req.user.uid)
+      evaluacionId, 
+      estudianteUid, 
+      nuevaCalificacion, 
+      motivoCambio, 
+      observaciones,
+      solicitudId 
+    } = req.body;
+
+    const uidDirectora1 = (req as any).user.uid;
+
+
+    if (!uidDirectora1 || !evaluacionId || !estudianteUid || nuevaCalificacion === undefined) {
+      return res.status(400).json({ success: false, message: 'Datos insuficientes.' });
+    }
+
+    await rectificarCalificacion(uidDirectora1, {
+      evaluacionId,
+      estudianteUid,
+      nuevaCalificacion: Number(nuevaCalificacion),
+      motivoCambio,
+      observaciones,
+      solicitudId
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Calificación actualizada exitosamente.'
+    });
+
+  } catch (error: any) {
+    console.error('Error en rectificación:', error);
+    return res.status(500).json({ success: false, message: error.message });
+  }
+});
 
 // --- 1. Rutas de Dashboard (Estadísticas) (RF 4.2) ---
 
@@ -179,16 +223,55 @@ router.get('/reportes/acta-calificaciones', async (req: Request, res: Response) 
       return res.status(400).json({ message: 'Faltan query params ?grupoId= y ?periodoId=' });
     }
 
-    const actaDTO = await ServicioReportes.generarActaCalificacionesPorGrupo(
+    /*const actaDTO = await ServicioReportes.generarActaCalificacionesPorGrupo(
       grupoId as string,
       periodoId as string
     );
     
-    res.status(200).json(actaDTO);
+    res.status(200).json(actaDTO);*/
 
   } catch (error: any) {
     console.error('Error en GET /api/director/reportes/acta-calificaciones:', error);
     res.status(500).json({ message: 'Error al generar el acta', error: error.message });
+  }
+});
+
+/**
+ * @route   GET /api/direccion/solicitudes-pendientes
+ * @desc    Obtiene la lista de tickets pendientes de aprobación.
+ */
+router.get('/solicitudes-pendientes', async (req: Request, res: Response) => {
+  try {
+    const solicitudes = await ServicioDireccion.consultarSolicitudesPendientes();
+    res.status(200).json(solicitudes);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error al consultar solicitudes', error: error.message });
+  }
+});
+
+/**
+ * @route   PUT /api/direccion/solicitud/:id/rechazar
+ * @desc    Rechaza una solicitud de cambio de calificación.
+ */
+router.put('/solicitud/:id/rechazar', async (req: Request, res: Response) => {
+  try {
+    const uidDirectora = (req as any).user.uid; // Token
+    const { id } = req.params; // ID del Ticket
+    const { motivoRechazo } = req.body;
+
+    if (!motivoRechazo) {
+      return res.status(400).json({ message: 'Se requiere un motivo para rechazar.' });
+    }
+
+    await ServicioDireccion.rechazarSolicitudCambio(uidDirectora, id as string, motivoRechazo);
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Solicitud rechazada correctamente.' 
+    });
+
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error al rechazar solicitud', error: error.message });
   }
 });
 

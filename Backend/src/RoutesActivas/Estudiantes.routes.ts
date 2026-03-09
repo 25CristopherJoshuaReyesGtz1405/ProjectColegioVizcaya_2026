@@ -10,7 +10,7 @@ import { Router, type Request, type Response } from 'express';
 import * as ServicioEstudiantes from '../ServiciosActivos/Estudiantes.js'; 
 import authMiddleware from '../APIs/auth.middleware.js';
 import multer from 'multer'; // <-- ¡NUEVO!
-import { generarKardexEstudiante, obtenerBoletaActual } from '../ServiciosActivos/ReportesBoletas.js';
+import { generarKardexEstudiante, generarBoletaData, generarBoletaEstudiante } from '../ServiciosActivos/ReportesBoletas.js';
 
 // Configuración de Multer para guardar el archivo en memoria
 const upload = multer({ storage: multer.memoryStorage() });
@@ -26,10 +26,7 @@ router.use(authMiddleware);
  * @access  Privado (Admin)
  * ====================================================================
  */
-router.post(
-  '/masivo',
-  upload.single('archivoCsv'), // 'archivoCsv' debe ser el 'name' del input en el frontend
-  async (req: Request, res: Response) => {
+router.post('/masivo',upload.single('archivoCsv'), async (req: Request, res: Response) => {
     try {
       const adminUid = (req as any).user.uid;
 
@@ -172,12 +169,12 @@ router.put('/:uid', authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
-router.get('/:uid/boleta', authMiddleware, async (req: Request, res: Response) => {
+router  .get('/:uid/boleta', authMiddleware, async (req: Request, res: Response) => {
   try {
     const { uid } = req.params; // El UID viene en la URL
     
     // Llamamos a la nueva función que detecta el ciclo sola
-    const dataBoleta = await obtenerBoletaActual(uid as string);
+    const dataBoleta = await generarBoletaEstudiante(uid as string, "2025-2026" );
     
     // Respondemos con el JSON exactv o que espera tu ImpresionService
     res.status(200).json(dataBoleta);
@@ -208,5 +205,20 @@ router.get('/:estudianteUid/kardex', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @route   GET /api/estudiantes/buscar/global
+ * @desc    Buscador en tiempo real para el modal Spotlight
+ */
+router.get('/buscar/global', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const { q } = req.query;
+    if (!q || typeof q !== 'string') return res.status(200).json([]);
+    
+    const resultados = await ServicioEstudiantes.buscarEstudiantesGlobal(q);
+    res.status(200).json(resultados);
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 export default router;

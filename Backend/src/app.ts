@@ -17,6 +17,7 @@ import gruposRouter from './RoutesActivas/Grupos.routes.js' ;
 import periodosRouter from './RoutesActivas/Periodos.router.js' ;
 import reportesBoletasRouter from './RoutesActivas/ReportesBoletas.routes.js' ;
 import direccionRoutes from './RoutesActivas/Direccion.routes.js';
+import gestionCalificaciones from './RoutesActivas/GestionCalificacones.routes.js'
 
 
 const app = express();
@@ -34,6 +35,7 @@ app.use('/api/materias', materiasRouter);
 app.use('/api/grupos', gruposRouter); 
 app.use('/api/periodos', periodosRouter); 
 app.use('/api/boleta', reportesBoletasRouter)
+app.use('/api/solicitudes', gestionCalificaciones)
 
 // Ruta de "Hola Mundo"
 app.get('/api', (req, res) => {

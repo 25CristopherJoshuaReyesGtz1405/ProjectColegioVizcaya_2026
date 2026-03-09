@@ -1,0 +1,86 @@
+<div class="modal-backdrop fade-in" (click)="close.emit()">
+  <div class="modal-content institucional-modal modal-lg" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header guinda-header">
+      <div class="header-content">
+        <div class="header-icon">
+          <i class="bi bi-bar-chart-fill"></i>
+        </div>
+        <div class="header-text">
+          <h2>Insights Académicos</h2>
+          <p class="subtitle">{{ tituloGrupo }}</p>
+        </div>
+      </div>
+      <button class="btn-close-white" (click)="close.emit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </header>
+
+    <div class="modal-body custom-scroll">
+      
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-label">Promedio Grupal</span>
+          <div class="kpi-value" [ngClass]="{'text-success': promedioGeneral >= 8, 'text-warning': promedioGeneral >= 6 && promedioGeneral < 8, 'text-danger': promedioGeneral < 6}">
+            {{ promedioGeneral | number:'1.1-1' }}
+          </div>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Tasa de Aprobación</span>
+          <div class="kpi-value text-blue">{{ tasaAprobacion }}%</div>
+        </div>
+        <div class="kpi-card stats-split">
+          <div class="split bg-pastel-green">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>{{ totalAprobados }} Aprobados</span>
+          </div>
+          <div class="split bg-pastel-red">
+            <i class="bi bi-x-circle-fill"></i>
+            <span>{{ totalReprobados }} Reprobados</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="layout-grid">
+        
+        <div class="chart-section">
+          <h3 class="section-title">Curva de Rendimiento</h3>
+          
+          <div class="chart-container">
+            <div class="chart-grid">
+              <div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div>
+            </div>
+            
+            <div class="bars-area">
+              <div class="bar-group" *ngFor="let item of distribucion">
+                <div class="bar-value" *ngIf="item.cantidad > 0">{{ item.cantidad }}</div>
+                <div class="bar-track">
+                  <div class="bar-fill" 
+                       [style.height.%]="item.porcentajeAlto" 
+                       [style.backgroundColor]="item.color">
+                  </div>
+                </div>
+                <div class="bar-label">{{ item.etiqueta }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="top-section">
+          <h3 class="section-title"><i class="bi bi-trophy-fill text-gold"></i> Cuadro de Honor</h3>
+          <div class="top-list">
+            <div class="top-student" *ngFor="let est of topEstudiantes; let i = index">
+              <div class="medal" [ngClass]="'medal-' + (i+1)">{{ i + 1 }}</div>
+              <div class="info">
+                <strong>{{ est.nombre }}</strong>
+                <span>Promedio: {{ est.promedioFinal | number:'1.1-1' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

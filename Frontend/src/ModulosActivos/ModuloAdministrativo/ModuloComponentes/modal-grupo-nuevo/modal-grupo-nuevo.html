@@ -22,13 +22,29 @@
         <h6 class="section-title">Detalles del Curso</h6>
 
         <div class="form-grid">
-          <div class="form-group full-width">
+          
+          <div class="form-group">
             <label for="ciclo">Ciclo Escolar <span class="required">*</span></label>
             <div class="input-group premium-input">
               <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
               <input type="text" id="ciclo" name="ciclo" 
                      [(ngModel)]="nuevoGrupo.cicloEscolar" required 
                      placeholder="Ej. 2024-2025" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="letraGrupo">Sección / Grupo <span class="required">*</span></label>
+            <div class="input-group premium-input">
+              <span class="input-group-text"><i class="bi bi-alphabet"></i></span>
+              <select id="letraGrupo" name="letraGrupo" [(ngModel)]="nuevoGrupo.letraGrupo" required class="form-select">
+                <option value="" disabled selected>Selecciona letra...</option>
+                <option value="A">Grupo A</option>
+                <option value="B">Grupo B</option>
+                <option value="C">Grupo C</option>
+                <option value="D">Grupo D</option>
+                <option value="E">Grupo E</option>
+              </select>
             </div>
           </div>
 
@@ -57,10 +73,40 @@
               </select>
             </div>
           </div>
-        </div>
-      </div>
+          
+          <div class="form-group full-width auto-assign-box animate-fade-in" 
+               *ngIf="nuevoGrupo.materiaId && nuevoGrupo.letraGrupo"
+               [ngClass]="asignarAutomaticamente ? 'active-box' : 'inactive-box'">
+            <div class="toggle-container">
+              
+              <label class="switch">
+                <input type="checkbox" [(ngModel)]="asignarAutomaticamente" name="autoAssign">
+                <span class="slider round"></span>
+              </label>
+              
+              <div class="toggle-text">
+                <strong *ngIf="asignarAutomaticamente"  >Los estudiantes se vincularán automáticamente</strong>
+                <strong *ngIf="!asignarAutomaticamente"  >Los estudiantes no se vincularán automáticamente</strong>
+                
+                <ng-container *ngIf="asignarAutomaticamente">
+                  <p *ngIf="alumnosCoincidentes.length > 0" class="text-success">
+                    <i class="bi bi-check-circle-fill"></i> Listo para enlazar a <b>{{ alumnosCoincidentes.length }} estudiantes</b> de {{ gradoSeleccionado }}° "{{ nuevoGrupo.letraGrupo }}".
+                  </p>
+                  <p *ngIf="alumnosCoincidentes.length === 0" class="text-warning">
+                    <i class="bi bi-exclamation-triangle-fill"></i> No hay alumnos registrados en {{ gradoSeleccionado }}° "{{ nuevoGrupo.letraGrupo }}" actualmente. El grupo se creará vacío.
+                  </p>
+                </ng-container>
 
-    </form>
+                <ng-container *ngIf="!asignarAutomaticamente">
+                  <p class="text-muted">
+                    <i class="bi bi-info-circle-fill"></i> El grupo se creará <b>vacío</b>. Podrás asignar los estudiantes manualmente más tarde.
+                  </p>
+                </ng-container>
+              </div>
+
+            </div>
+          </div>
+        </div> </div> </form>
 
     <div class="modal-footer">
       <button class="btn btn-outline-secondary btn-premium" (click)="close.emit()" [disabled]="cargando">

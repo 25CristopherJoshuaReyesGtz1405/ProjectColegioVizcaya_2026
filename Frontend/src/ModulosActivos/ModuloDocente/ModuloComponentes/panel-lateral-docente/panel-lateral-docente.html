@@ -1,32 +1,54 @@
 <nav class="sidebar" [class.colapsado]="estaColapsado">
   <div class="sidebar-header">
     <h1 class="school-name">Colegio Vizcaya De Durango</h1>
-    <img   routerLink="/teacher/home"  src="https://iconape.com/wp-content/png_logo_vector/colegio-vizcaya-logo.png" alt="Logo Colegio Vizcaya" class="logo">
+    <hr class="separator" />
+    <br />
+    <img
+      routerLink="/teacher/home"
+      src="https://iconape.com/wp-content/png_logo_vector/colegio-vizcaya-logo.png"
+      alt="Logo Colegio Vizcaya"
+      class="logo"
+    />
   </div>
 
-  <hr class="separator">
+  <hr class="separator" />
 
   <div class="nav-menu">
-    <a routerLink="/teacher/groups" routerLinkActive="active" [title]="estaColapsado ? 'Mis Grupos' : ''">
+    <a
+      routerLink="/teacher/home"
+      routerLinkActive="active"
+      [title]="estaColapsado ? 'Mis Grupos' : ''"
+    >
+      <i class="bi bi-house-door"></i>
+      <span class="link-text">Inicio</span>
+    </a>
+    <a
+      routerLink="/teacher/groups"
+      routerLinkActive="active"
+      [title]="estaColapsado ? 'Mis Grupos' : ''"
+    >
       <i class="bi bi-backpack2"></i>
       <span class="link-text">Mis Grupos</span>
     </a>
-    <a routerLink="/teacher/calif" routerLinkActive="active" [title]="estaColapsado ? 'Mis Grupos' : ''">
+    <a
+      routerLink="/teacher/calif"
+      routerLinkActive="active"
+      [title]="estaColapsado ? 'Mis Grupos' : ''"
+    >
       <i class="bi bi-people-fill"></i>
       <span class="link-text">Mis Calificaciones</span>
     </a>
-    <a routerLink="/teacher/asist" routerLinkActive="active" [title]="estaColapsado ? 'Calificaciones' : ''">
+    <a
+      routerLink="/teacher/asist"
+      routerLinkActive="active"
+      [title]="estaColapsado ? 'Calificaciones' : ''"
+    >
       <i class="bi bi-people-fill"></i>
       <span class="link-text">Asistencia Generales</span>
     </a>
-    <a routerLink="/admin/subject" routerLinkActive="active" [title]="estaColapsado ? 'Asistencia' : ''">
-      <i class="bi bi-clipboard2-check-fill"></i>
-      <span class="link-text">Reportes Indisiplina</span>
-    </a>
-    </div>
+  </div>
 
   <div class="sidebar-footer">
     <p class="slogan">Integrando Valores, Construimos El Mañana...</p>
   </div>
-
 </nav>

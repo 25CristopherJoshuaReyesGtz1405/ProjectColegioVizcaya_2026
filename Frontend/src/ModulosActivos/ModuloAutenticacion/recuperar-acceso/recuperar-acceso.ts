@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../ServiciosActivos/auth.service';
 import { NotificacionesService } from '../../../ServiciosActivos/notificaciones.service';
@@ -15,6 +15,7 @@ import { NotificacionesShared } from '../../../ComponentesActivos/notificaciones
   standalone: true,
   imports: [
     CommonModule, 
+    ReactiveFormsModule,
     FormsModule, 
     CampoEntradaShared, 
     BtnShared,

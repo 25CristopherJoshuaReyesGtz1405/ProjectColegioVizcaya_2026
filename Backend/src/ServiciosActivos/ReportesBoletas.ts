@@ -1,10 +1,11 @@
 /**
  * ====================================================================
- * SERVICIO DE REPORTES (Optimizado con Actas)
+ * SERVICIO DE REPORTES (Corregido - Promedio Ponderado)
  * ====================================================================
- * Actualización:
- * 1. La boleta ahora lee directamente de la colección 'actas_evaluacion'.
- * 2. Se incluye 'obtenerBoletaActual' para detección automática de ciclo.
+ * Corrección:
+ * 1. Implementa cálculo ponderado (Calificación * Porcentaje).
+ * 2. Evita sobrescribir evaluaciones en un mismo periodo.
+ * 3. Muestra el promedio real basado en los criterios configurados.
  */
 import { db } from '../ConfiguracionesActivas/ADBB_BaseDatos_Secundaria.js';
 import { FieldPath } from 'firebase-admin/firestore';
@@ -14,54 +15,26 @@ import {
   type Materia,
   type Grupo,
   type RolEstudiante,
-  type ActaCalificacionesDTO,
-  type ActaFilaEstudianteDTO,
-  type PerfilUsuarioDTO,
-  type Evaluacion,
-  type Calificacion,
-  type CicloKardexDTO,
+  type Evaluacion, // Asegúrate de tener esto en tu modelo
   type KardexDTO,
+  type CicloKardexDTO,
   type MateriaKardexDTO
 } from '../ModelosAplicacion/ModelosAplicacion.model.js';
 
 import { obtenerPerfilUsuario } from './Usuarios.js';
-import { consultarPeriodoPorId, consultarTodosPeriodos } from './Periodos.js';
-import { consultarGrupoPorId } from './Grupos.js';
-import { consultarMateriaPorId } from './Materias.js';
-
-// Interfaz interna para mapear el documento de la BD (basado en tu imagen)
-interface ActaEvaluacionDoc {
-  id: string;
-  grupoId: string;
-  periodoId: string;
-  docenteUid: string;
-  estatus: 'ABIERTA' | 'CERRADA';
-  // Mapa: [estudianteUid] -> { valor: number, observaciones: string, ... }
-  calificaciones: {
-    [estudianteUid: string]: {
-      valor: number;
-      observaciones?: string;
-      fechaCaptura?: any;
-    }
-  };
-}
+import { consultarTodosPeriodos } from './Periodos.js';
 
 /**
- * Función de ayuda para calcular un promedio simple (para promedios finales)
+ * Función de ayuda para redondear a 1 decimal
  */
-const calcularPromedioSimple = (numeros: number[]): number => {
-  if (numeros.length === 0) return 0;
-  const suma = numeros.reduce((a, b) => a + b, 0);
-  return Math.round((suma / numeros.length) * 10) / 10;
+const redondear = (valor: number): number => {
+  return Math.round(valor * 10) / 10;
 };
 
 /**
- * ====================================================================
- * NUEVA FUNCIÓN: Wrapper para API (Detección Automática)
- * ====================================================================
+ * Obtiene la boleta actual detectando el ciclo automáticamente
  */
 export const obtenerBoletaActual = async (estudianteUid: string): Promise<BoletaDataDTO> => {
-  // 1. Buscar grupos del alumno para deducir ciclo
   const gruposRef = db.collection('grupos');
   const snapshot = await gruposRef
     .where('estudianteUids', 'array-contains', estudianteUid)
@@ -71,7 +44,6 @@ export const obtenerBoletaActual = async (estudianteUid: string): Promise<Boleta
     throw new Error('El estudiante no tiene grupos asignados.');
   }
 
-  // 2. Extraer ciclos
   const ciclos = new Set<string>();
   snapshot.docs.forEach(doc => {
     const d = doc.data();
@@ -80,7 +52,7 @@ export const obtenerBoletaActual = async (estudianteUid: string): Promise<Boleta
 
   if (ciclos.size === 0) throw new Error('Grupos sin ciclo escolar definido.');
 
-  // 3. Tomar el más reciente (alfabéticamente el mayor, ej: "2025-2026" > "2024-2025")
+  // Tomar el más reciente
   const cicloActual = Array.from(ciclos).sort().reverse()[0];
 
   return await generarBoletaEstudiante(estudianteUid, cicloActual as string);
@@ -88,14 +60,13 @@ export const obtenerBoletaActual = async (estudianteUid: string): Promise<Boleta
 
 /**
  * ====================================================================
- * Función para generar el Acta de Calificaciones (Vista Docente/Admin)
- * (Mantenemos esta lógica para cuando se consulta el detalle de un grupo)
+ * LÓGICA CORE: Generación de Boleta con Ponderación
  * ====================================================================
  */
 export const generarBoletaEstudiante = async (
   estudianteUid: string,
   cicloEscolar: string
-): Promise<BoletaDataDTO> => {
+): Promise<any> => {
 
   // 1. Obtener Perfil y Periodos
   const [perfil, periodos] = await Promise.all([
@@ -108,10 +79,10 @@ export const generarBoletaEstudiante = async (
   }
   const estudiante = { ...perfil.persona, ...(perfil.rol as RolEstudiante) };
 
-  // ORDENAR PERIODOS CRONOLÓGICAMENTE (Importante para saber cuál es el "último")
+  // Ordenar periodos cronológicamente
   periodos.sort((a, b) => new Date(a.fechaInicio).getTime() - new Date(b.fechaInicio).getTime());
 
-  // 2. Encontrar Grupos
+  // 2. Encontrar Grupos del ciclo
   const gruposSnap = await db.collection('grupos')
     .where('cicloEscolar', '==', cicloEscolar)
     .where('estudianteUids', 'array-contains', estudianteUid)
@@ -123,96 +94,237 @@ export const generarBoletaEstudiante = async (
     return { estudiante, cicloEscolar, periodos, resultados: [] };
   }
 
-  // 3. Obtener Materias y DOCENTES (Nuevo)
+  // 3. Obtener Datos Maestros (Materias y Docentes)
   const materiaIds = [...new Set(grupos.map(g => g.materiaId))];
-  const docentesUids = [...new Set(grupos.map(g => g.empleadoUid))]; // Extraer UIDs de profes
+  const docentesUids = [...new Set(grupos.map(g => g.empleadoUid))];
 
   const [materiasSnap, docentesPerfiles] = await Promise.all([
     db.collection('materias').where(FieldPath.documentId(), 'in', materiaIds).get(),
-    Promise.all(docentesUids.map(uid => obtenerPerfilUsuario(uid))) // Traer perfiles de docentes
+    Promise.all(docentesUids.map(uid => obtenerPerfilUsuario(uid)))
   ]);
 
   const materiasMap = new Map(materiasSnap.docs.map(doc => [doc.id, doc.data() as Materia]));
   
-  // Mapa de Docentes: uid -> "Nombre Apellidos"
   const docentesMap = new Map<string, string>();
   docentesPerfiles.forEach(d => {
     if (d) docentesMap.set(d.persona.uid, `${d.persona.nombre} ${d.persona.apellidos}`);
   });
 
-  // 4. Procesar Resultados
-  const resultados: ResultadoMateriaDTO[] = [];
+  // 4. PROCESAR RESULTADOS POR MATERIA
+  const resultados: any[] = [];
 
+  // Usamos un for...of o Promise.all para iterar los grupos
   await Promise.all(grupos.map(async (grupo) => {
     const materia = materiasMap.get(grupo.materiaId);
     if (!materia) return;
 
-    const calificacionesPorPeriodo: { [periodoId: string]: number | null } = {};
-    const notasParaPromedio: number[] = [];
+    // A. OBTENER EVALUACIONES (Configuración de porcentajes: Examen 60%, Tareas 40%)
+    const evaluacionesSnap = await db.collection('grupos').doc(grupo.id).collection('evaluaciones').get();
+    const evaluaciones = evaluacionesSnap.docs.map(d => d.data() as Evaluacion);
     
-    // Variables para la observación del último parcial
-    let ultimaObservacion = ''; 
+    // Crear mapa: evaluacionId -> porcentaje (0 a 100)
+    const mapaPesos = new Map<string, number>();
+    const mapaPeriodoEvaluacion = new Map<string, string>(); // evaluacionId -> periodoId
 
-    // 5. Buscar Actas
+    evaluaciones.forEach(ev => {
+      mapaPesos.set(ev.id, ev.porcentaje || 0);
+      mapaPeriodoEvaluacion.set(ev.id, ev.periodoId);
+    });
+
+    // B. OBTENER ACTAS (Las calificaciones reales)
     const actasSnap = await db.collection('actas_evaluacion')
       .where('grupoId', '==', grupo.id)
       .get();
 
-    const actasMap = new Map<string, any>();
-    actasSnap.docs.forEach(doc => actasMap.set(doc.data().periodoId, doc.data()));
+    // Agrupamos las actas por PERIODO para sumarlas después
+    const actasPorPeriodo = new Map<string, any[]>();
 
-    // 6. Recorrer periodos (ya ordenados)
+    actasSnap.docs.forEach(doc => {
+      const acta = doc.data();
+      const periodoId = mapaPeriodoEvaluacion.get(acta.id);
+      
+      if (periodoId) {
+        if (!actasPorPeriodo.has(periodoId)) {
+          actasPorPeriodo.set(periodoId, []);
+        }
+        actasPorPeriodo.get(periodoId)?.push(acta);
+      }
+    });
+
+    // C. CALCULAR CALIFICACIONES FINALES
+    const calificacionesPorPeriodo: { [periodoId: string]: number | null } = {};
+    const notasParaPromedio: number[] = [];
+    let ultimaObservacion = '';
+
     for (const periodo of periodos) {
-      const acta = actasMap.get(periodo.id);
-      let califFinal: number | null = null;
+      const actasDelPeriodo = actasPorPeriodo.get(periodo.id) || [];
+      
+      let sumaPonderada = 0;
+      let porcentajeAcumulado = 0;
+      let tieneCalificacion = false;
 
-      if (acta && acta.calificaciones && acta.calificaciones[estudianteUid]) {
-        const registro = acta.calificaciones[estudianteUid];
-        
-        if (registro.valor !== undefined && registro.valor !== null) {
-          califFinal = Number(registro.valor);
+      for (const acta of actasDelPeriodo) {
+        if (acta.calificaciones && acta.calificaciones[estudianteUid]) {
+          const registro = acta.calificaciones[estudianteUid];
+          const valor = Number(registro.valor); 
           
-          // Si este periodo tiene observación, la guardamos.
-          // Al ir en orden cronológico, la última que encontremos será la del "último parcial evaluado".
-          if (registro.observaciones) {
-            ultimaObservacion = registro.observaciones;
+          if (!isNaN(valor)) {
+            const peso = mapaPesos.get(acta.id) || 0; 
+            
+            sumaPonderada += (valor * (peso / 100));
+            porcentajeAcumulado += peso;
+            tieneCalificacion = true;
+
+            if (registro.observaciones) ultimaObservacion = registro.observaciones;
           }
         }
       }
 
-      calificacionesPorPeriodo[periodo.id] = califFinal;
-      if (califFinal !== null) notasParaPromedio.push(califFinal);
+      if (tieneCalificacion) {
+        const notaFinal = redondear(sumaPonderada);
+        calificacionesPorPeriodo[periodo.id] = notaFinal;
+        notasParaPromedio.push(notaFinal);
+      } else {
+        calificacionesPorPeriodo[periodo.id] = null;
+      }
     }
 
-    const promedioFinal = calcularPromedioSimple(notasParaPromedio);
+    // ====================================================================
+    // B) EXTRACCIÓN DE FALTAS POR PERIODO (La magia para el PDF)
+    // ====================================================================
+    const asistenciasSnap = await db.collection('grupos').doc(grupo.id).collection('asistencias').get();
+    const faltasPorPeriodo: Record<string, number> = {};
+    let inasistenciasTotales1 = 0;
+
+    asistenciasSnap.docs.forEach(docAsis => {
+      const dataAsis = docAsis.data();
+      if (dataAsis.registro && dataAsis.registro[estudianteUid] === 'FALTA') {
+        const pId = dataAsis.periodoId;
+        if (pId) {
+          faltasPorPeriodo[pId] = (faltasPorPeriodo[pId] || 0) + 1; // Suma 1 al periodo
+        }
+        inasistenciasTotales1++;
+      }
+    });
+
+    const promedioFinal = notasParaPromedio.length > 0 
+      ? redondear(notasParaPromedio.reduce((a, b) => a + b, 0) / notasParaPromedio.length) 
+      : 0;
     
-    // Obtener nombre del docente
     const nombreDocente = docentesMap.get(grupo.empleadoUid) || 'Sin Asignar';
 
     resultados.push({ 
       materia,
       calificacionesPorPeriodo,
+      faltasPorPeriodo,        // <--- EL DATO YA VIAJA AL FRONTEND
       promedioFinal,
-      nombreDocente,       // <--- Enviamos el dato
-      observaciones: ultimaObservacion // <--- Enviamos la observación
+      nombreDocente,
+      observaciones: ultimaObservacion, 
+      inasistenciasTotales: inasistenciasTotales1,
     });
   }));
 
   return { estudiante, cicloEscolar, periodos, resultados };
 };
 
-// ... imports existentes
 
 /**
- * Genera el Kardex completo (Historial Académico)
+ * GENERAR DATOS DE LA BOLETA DE EVALUACIÓN (CON FALTAS POR PERIODO)
+ * Endpoint correspondiente: GET /api/estudiantes/:uid/boleta
  */
-export const generarKardexEstudiante = async (estudianteUid: string): Promise<KardexDTO> => {
-  
-  // 1. Obtener Perfil
+export const generarBoletaData = async (estudianteUid: string): Promise<any> => {
   const perfil = await obtenerPerfilUsuario(estudianteUid);
   if (!perfil) throw new Error('Estudiante no encontrado');
 
-  // 2. Obtener TODOS los grupos donde ha estado el alumno (Histórico)
+  // 1. Obtener grupos del alumno
+  const gruposSnap = await db.collection('grupos')
+    .where('estudianteUids', 'array-contains', estudianteUid)
+    .get();
+
+  if (gruposSnap.empty) throw new Error('El estudiante no tiene grupos asignados');
+  const grupos = gruposSnap.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
+  
+  const cicloEscolar = grupos[0].cicloEscolar || '2025-2026';
+
+  // 2. Obtener materias
+  const materiaIds = [...new Set(grupos.map(g => g.materiaId))];
+  const materiasSnap = await db.collection('materias').where(FieldPath.documentId(), 'in', materiaIds).get();
+  const materiasMap = new Map(materiasSnap.docs.map(d => [d.id, d.data()]));
+
+  // 3. Obtener Periodos
+  const periodosSnap = await db.collection('periodos').get();
+  const periodos = periodosSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  // 4. Armar Resultados (Iterando por materia)
+  const resultados = [];
+
+  for (const grupo of grupos) {
+    const materia = materiasMap.get(grupo.materiaId);
+    if (!materia) continue;
+
+    // A) Obtener Calificaciones de este grupo
+    const actasSnap = await db.collection('actas_evaluacion').where('grupoId', '==', grupo.id).get();
+    const calificacionesPorPeriodo: Record<string, number> = {};
+    let sumaCalif = 0;
+    let countCalif = 0;
+
+    actasSnap.docs.forEach(doc => {
+      const acta = doc.data();
+      const val = acta.calificaciones?.[estudianteUid]?.valor;
+      if (val !== undefined && val !== null && acta.periodoId) {
+        calificacionesPorPeriodo[acta.periodoId] = Number(val);
+        sumaCalif += Number(val);
+        countCalif++;
+      }
+    });
+    const promedioFinal = countCalif > 0 ? (sumaCalif / countCalif) : 0;
+
+    // ====================================================================
+    // B) EXTRACCIÓN DE FALTAS POR PERIODO (La magia para el PDF)
+    // ====================================================================
+    const asistenciasSnap = await db.collection('grupos').doc(grupo.id).collection('asistencias').get();
+    const faltasPorPeriodo: Record<string, number> = {};
+    let inasistenciasTotales = 0;
+
+    asistenciasSnap.docs.forEach(docAsis => {
+      const dataAsis = docAsis.data();
+      if (dataAsis.registro && dataAsis.registro[estudianteUid] === 'FALTA') {
+        const pId = dataAsis.periodoId;
+        if (pId) {
+          faltasPorPeriodo[pId] = (faltasPorPeriodo[pId] || 0) + 1; // Suma 1 al periodo
+        }
+        inasistenciasTotales++;
+      }
+    });
+    // ====================================================================
+
+    resultados.push({
+      materia: materia,
+      nombreDocente: grupo.docente ? `${grupo.docente.persona?.nombre} ${grupo.docente.persona?.apellidos}` : 'Sin Asignar',
+      calificacionesPorPeriodo: calificacionesPorPeriodo,
+      faltasPorPeriodo: faltasPorPeriodo, // <--- Enviamos los datos ordenados al Frontend
+      inasistenciasTotales: inasistenciasTotales,
+      promedioFinal: Math.round(promedioFinal * 10) / 10,
+      observaciones: ''
+    });
+  }
+
+  return {
+    estudiante: perfil,
+    cicloEscolar: cicloEscolar,
+    periodos: periodos,
+    resultados: resultados
+  };
+};
+
+/**
+ * Genera el Kardex completo (Historial Académico)
+ * (Mantenemos la lógica pero aseguramos que use los imports correctos)
+ */
+export const generarKardexEstudiante = async (estudianteUid: string): Promise<KardexDTO> => {
+  const perfil = await obtenerPerfilUsuario(estudianteUid);
+  if (!perfil) throw new Error('Estudiante no encontrado');
+
   const gruposSnap = await db.collection('grupos')
     .where('estudianteUids', 'array-contains', estudianteUid)
     .get();
@@ -228,15 +340,12 @@ export const generarKardexEstudiante = async (estudianteUid: string): Promise<Ka
   }
 
   const grupos = gruposSnap.docs.map(doc => doc.data() as Grupo);
-
-  // 3. Obtener Materias (Para tener los nombres)
   const materiaIds = [...new Set(grupos.map(g => g.materiaId))];
   const materiasSnap = await db.collection('materias')
     .where(FieldPath.documentId(), 'in', materiaIds)
     .get();
   const materiasMap = new Map(materiasSnap.docs.map(d => [d.id, d.data() as Materia]));
 
-  // 4. Agrupar por Ciclo Escolar
   const mapaCiclos = new Map<string, Grupo[]>();
   grupos.forEach(g => {
     const lista = mapaCiclos.get(g.cicloEscolar) || [];
@@ -244,84 +353,82 @@ export const generarKardexEstudiante = async (estudianteUid: string): Promise<Ka
     mapaCiclos.set(g.cicloEscolar, lista);
   });
 
-  // 5. Procesar cada Ciclo
   const ciclosKardex: CicloKardexDTO[] = [];
   let sumaGlobal = 0;
   let conteoGlobal = 0;
   let reprobadasGlobal = 0;
 
-  // Recorremos los ciclos (convertimos el mapa a array para ordenar)
-  const ciclosOrdenados = Array.from(mapaCiclos.keys()).sort().reverse(); // Del más reciente al más antiguo
+  const ciclosOrdenados = Array.from(mapaCiclos.keys()).sort().reverse();
 
   for (const nombreCiclo of ciclosOrdenados) {
     const gruposCiclo = mapaCiclos.get(nombreCiclo) || [];
     const materiasDTO: MateriaKardexDTO[] = [];
     let sumaCiclo = 0;
 
-    // Para cada materia del ciclo, calculamos su nota final
-    // (Reutilizamos la lógica de lectura de actas para rapidez)
+    // NOTA: Para el Kardex, lo ideal sería guardar la "Calificación Final" 
+    // directamente en el documento del Grupo o en un documento de "Historial",
+    // calcularlo al vuelo aquí es costoso si hay muchos alumnos.
+    // Por ahora, simulamos un cálculo rápido promediando actas existentes.
+
     const actasSnap = await db.collection('actas_evaluacion')
        .where('grupoId', 'in', gruposCiclo.map(g => g.id))
        .get();
     
-    // Mapa: grupoId -> Acta
-    const actasMap = new Map();
+    // Simplificación para Kardex:
+    // Agrupamos todas las notas del alumno por grupo y hacemos promedio simple de lo encontrado
+    // (Para mayor precisión, deberías usar la función generarBoletaEstudiante para cada ciclo pasado)
+    const notasPorGrupo = new Map<string, number[]>();
+    
     actasSnap.docs.forEach(d => {
-       const data = d.data();
-       // Guardamos por grupo. OJO: Un grupo puede tener varias actas (periodos).
-       // Para el Kardex necesitamos el PROMEDIO FINAL DE LA MATERIA.
-       // Estrategia simplificada: Promediar los periodos encontrados.
-       if(!actasMap.has(data.grupoId)) actasMap.set(data.grupoId, []);
-       actasMap.get(data.grupoId).push(data);
+      const data = d.data();
+      const val = data.calificaciones?.[estudianteUid]?.valor;
+      if (val !== undefined && val !== null) {
+        if (!notasPorGrupo.has(data.grupoId)) notasPorGrupo.set(data.grupoId, []);
+        notasPorGrupo.get(data.grupoId)?.push(Number(val));
+      }
     });
 
     for (const grupo of gruposCiclo) {
       const materia = materiasMap.get(grupo.materiaId);
       if (!materia) continue;
 
-      const actasDelGrupo = actasMap.get(grupo.id) || [];
-      let sumaPeriodos = 0;
-      let periodosContados = 0;
-
-      actasDelGrupo.forEach((acta: any) => {
-        const calif = acta.calificaciones?.[estudianteUid]?.valor;
-        if (calif !== undefined && calif !== null) {
-          sumaPeriodos += Number(calif);
-          periodosContados++;
-        }
-      });
-
-      const finalMateria = periodosContados > 0 ? (sumaPeriodos / periodosContados) : 0;
+      const notas = notasPorGrupo.get(grupo.id) || [];
+      // Aquí el promedio simple es un aproximado histórico
+      const finalMateria = notas.length > 0 
+        ? (notas.reduce((a, b) => a + b, 0) / notas.length) 
+        : 0; 
       
+      const califRedondeada = redondear(finalMateria);
+
       materiasDTO.push({
         nombreMateria: materia.nombre,
-        calificacionFinal: Number(finalMateria.toFixed(1)),
-        estatus: finalMateria >= 6 ? 'APROBADA' : 'REPROBADA'
+        calificacionFinal: califRedondeada,
+        estatus: califRedondeada >= 6 ? 'APROBADA' : 'REPROBADA'
       });
 
-      if (finalMateria > 0) {
-        sumaCiclo += finalMateria;
-        sumaGlobal += finalMateria;
+      if (califRedondeada > 0) {
+        sumaCiclo += califRedondeada;
+        sumaGlobal += califRedondeada;
         conteoGlobal++;
-        if (finalMateria < 6) reprobadasGlobal++;
+        if (califRedondeada < 6) reprobadasGlobal++;
       }
     }
 
-    const promedioCiclo = materiasDTO.length > 0 ? (sumaCiclo / materiasDTO.length) : 0;
+    const promedioCiclo = materiasDTO.length > 0 ? redondear(sumaCiclo / materiasDTO.length) : 0;
     
     ciclosKardex.push({
       nombreCiclo: nombreCiclo,
-      promedioCiclo: Number(promedioCiclo.toFixed(1)),
-      estatus: 'FINALIZADO', // Podrías validar fechas para ver si es CURSANDO
+      promedioCiclo: promedioCiclo,
+      estatus: 'FINALIZADO',
       materias: materiasDTO
     });
   }
 
-  const promedioGlobal = conteoGlobal > 0 ? (sumaGlobal / conteoGlobal) : 0;
+  const promedioGlobal = conteoGlobal > 0 ? redondear(sumaGlobal / conteoGlobal) : 0;
 
   return {
     estudiante: perfil,
-    promedioGlobal: Number(promedioGlobal.toFixed(1)),
+    promedioGlobal,
     totalMateriasCursadas: conteoGlobal,
     totalMateriasReprobadas: reprobadasGlobal,
     ciclos: ciclosKardex

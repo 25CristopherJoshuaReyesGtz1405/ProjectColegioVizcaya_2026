@@ -1,0 +1,149 @@
+// VARIABLES INSTITUCIONALES VIZCAYA
+$guinda-vizcaya: #8c1d40;
+$guinda-dark: #6d1631;
+$text-dark: #1f2937;
+$text-muted: #6b7280;
+$border-light: #e5e7eb;
+$bg-light: #f9fafb;
+$white: #ffffff;
+
+/* --- BACKDROP CENTRADO --- */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 1200; 
+  background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); 
+  display: flex; justify-content: center; align-items: center;
+  padding: 1rem;
+}
+
+/* --- MODAL PREMIUM (BORDE 36PX Y COMPACTO) --- */
+.premium-modal {
+  width: 100%; max-width: 540px; /* Reducido para verse más esbelto */
+  background: $white; 
+  border-radius: 36px; 
+  overflow: hidden; 
+  display: flex; flex-direction: column; 
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+  max-height: 85vh;
+}
+
+/* --- ENCABEZADO CORREGIDO (ORIENTACIÓN HORIZONTAL Y COMPACTA) --- */
+.modal-header.guinda-gradient {
+  padding: 1.5rem 2rem; color: $white;
+  background: linear-gradient(135deg, $guinda-vizcaya, $guinda-dark);
+  display: flex; justify-content: space-between; align-items: flex-start;
+  
+  .header-content {
+    .badge-tag { 
+      background: rgba($white, 0.15); padding: 4px 12px; border-radius: 20px; 
+      font-size: 0.7rem; font-weight: 800; text-transform: uppercase; 
+      display: inline-block; margin-bottom: 0.8rem; letter-spacing: 0.5px;
+    }
+    .header-titles {
+      h2 { margin: 0 0 4px 0; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; } /* Texto más pequeño */
+      p { margin: 0; font-size: 0.8rem; opacity: 0.9; font-weight: 500; }
+    }
+  }
+
+  .btn-close-white { 
+    background: transparent; border: none; color: rgba($white, 0.7); 
+    font-size: 1.2rem; cursor: pointer; transition: 0.2s; padding: 0; margin-top: 2px;
+    &:hover { color: $white; transform: rotate(90deg) scale(1.1); } 
+  }
+}
+
+/* --- CUERPO --- */
+.modal-body { 
+  flex: 1; padding: 1.8rem 2rem; overflow-y: auto; background: $bg-light; 
+}
+
+.last-updated {
+  font-size: 0.75rem; font-weight: 700; color: $text-muted; margin-bottom: 1.2rem;
+  background: $white; display: inline-block; padding: 4px 12px; border-radius: 20px;
+  border: 1px solid $border-light;
+}
+
+.section-title { 
+  font-size: 0.75rem; text-transform: uppercase; font-weight: 800; color: $text-muted; 
+  margin: 0 0 1rem 0; letter-spacing: 0.5px; padding-bottom: 0.4rem; border-bottom: 1px solid $border-light; 
+}
+.mt-3 { margin-top: 1.5rem; }
+
+/* TARJETAS DE POLÍTICA/CONFIGURACIÓN (Más pequeñas) */
+.policy-card {
+  background: $white; border: 1px solid $border-light; padding: 1.2rem; border-radius: 20px;
+  display: flex; gap: 1rem; margin-bottom: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+  transition: transform 0.2s;
+  &:hover { transform: translateX(4px); border-color: #cbd5e1; }
+
+  .icon-box {
+    width: 42px; height: 42px; border-radius: 14px; flex-shrink: 0; display: grid; place-items: center; font-size: 1.2rem;
+    &.bg-pastel-blue { background: #eff6ff; .text-blue { color: #2563eb; } }
+    &.bg-pastel-warning { background: #fffbeb; .text-warning { color: #d97706; } }
+    &.bg-pastel-red { background: #fef2f2; .text-danger { color: #dc2626; } }
+    &.bg-pastel-green { background: #ecfdf5; .text-success { color: #059669; } }
+    &.bg-light-gray { background: #f1f5f9; }
+  }
+
+  .policy-content {
+    flex: 1; display: flex; flex-direction: column; justify-content: center;
+    h3 { margin: 0 0 4px 0; font-size: 0.95rem; font-weight: 800; color: $text-dark; } /* Reducido */
+    p { margin: 0; font-size: 0.85rem; color: $text-muted; line-height: 1.4; strong { color: $text-dark; } } /* Reducido */
+  }
+
+  .flex-row-between { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-direction: row; }
+}
+
+/* --- FOOTER COMPACTO --- */
+.modal-footer {
+  padding: 1.2rem 2rem; background: $white; border-top: 1px solid $border-light;
+  display: flex; flex-direction: column; gap: 1.2rem;
+  &.justify-end { flex-direction: row; justify-content: flex-end; }
+
+  .consent-wrapper {
+    display: flex; align-items: center; gap: 0.8rem; cursor: pointer; user-select: none;
+    background: $bg-light; padding: 0.8rem 1.2rem; border-radius: 16px; border: 1px solid transparent; transition: 0.2s;
+    &:hover { border-color: rgba($guinda-vizcaya, 0.3); }
+
+    input { display: none; }
+    .checkbox-custom {
+      width: 22px; height: 22px; border: 2px solid #cbd5e1; border-radius: 6px; background: $white;
+      display: grid; place-items: center; transition: 0.2s;
+      i { font-size: 1rem; color: $white; opacity: 0; transform: scale(0.5); transition: 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    }
+    input:checked + .checkbox-custom { background: $guinda-vizcaya; border-color: $guinda-vizcaya; i { opacity: 1; transform: scale(1); } }
+    .consent-text { font-size: 0.85rem; font-weight: 700; color: $text-dark; }
+  }
+
+  .action-buttons { display: flex; justify-content: flex-end; gap: 0.8rem; }
+  
+  .btn-ghost { padding: 0.6rem 1.2rem; font-size: 0.85rem; border-radius: 12px; border: 2px solid $border-light; background: transparent; color: $text-muted; font-weight: 700; cursor: pointer; transition: 0.2s; &:hover { background: $bg-light; color: $text-dark; border-color: #cbd5e1; } }
+  .btn-guinda {
+    padding: 0.6rem 1.5rem; font-size: 0.85rem; border-radius: 12px; border: none; background: $guinda-vizcaya; color: $white; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba($guinda-vizcaya, 0.2);
+    &:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; opacity: 0.7; }
+    &:not(:disabled):hover { background: $guinda-dark; transform: translateY(-2px); box-shadow: 0 6px 12px rgba($guinda-vizcaya, 0.3); }
+  }
+}
+
+/* SWITCH TIPO IOS (Más pequeño) */
+.switch-ios {
+  position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0;
+  input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px;
+    &:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s cubic-bezier(0.34, 1.56, 0.64, 1); border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+  }
+  input:checked + .slider { background-color: $guinda-vizcaya; }
+  input:checked + .slider:before { transform: translateX(18px); }
+}
+
+/* SCROLL Y ANIMACIONES */
+.custom-scroll::-webkit-scrollbar { width: 5px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+.fade-in { animation: fadeIn 0.3s ease-out; }
+.animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(15px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.delay-100 { animation-delay: 0.1s; } .delay-200 { animation-delay: 0.15s; }
+.delay-300 { animation-delay: 0.2s; } .delay-400 { animation-delay: 0.25s; } .delay-500 { animation-delay: 0.3s; }

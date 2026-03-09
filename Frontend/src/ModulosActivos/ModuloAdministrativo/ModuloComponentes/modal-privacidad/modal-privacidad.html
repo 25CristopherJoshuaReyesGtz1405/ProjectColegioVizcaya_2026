@@ -1,0 +1,62 @@
+<div class="modal-backdrop fade-in" (click)="cerrarModal()">
+  
+  <div class="premium-modal animate-slide-up" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header guinda-gradient">
+      <div class="header-content">
+        <span class="badge-tag"><i class="bi bi-shield-check me-1"></i> Legal y Cumplimiento</span>
+        <div class="header-titles">
+          <h2>Aviso de Privacidad</h2>
+          <p>Políticas de protección de datos del Colegio</p>
+        </div>
+      </div>
+      <button class="btn-close-white" (click)="cerrarModal()"><i class="bi bi-x-lg"></i></button>
+    </header>
+
+    <div class="modal-body custom-scroll">
+      
+      <div class="last-updated delay-100">
+        <i class="bi bi-clock-history"></i> Actualizado: 24 Feb 2026
+      </div>
+
+      <div class="policy-card delay-200">
+        <div class="icon-box bg-pastel-blue"><i class="bi bi-database-lock text-blue"></i></div>
+        <div class="policy-content">
+          <h3>Tratamiento de la Información</h3>
+          <p>El Colegio Vizcaya es responsable del uso y resguardo de los datos personales recabados mediante este sistema.</p>
+        </div>
+      </div>
+
+      <div class="policy-card delay-300">
+        <div class="icon-box bg-pastel-warning"><i class="bi bi-bullseye text-warning"></i></div>
+        <div class="policy-content">
+          <h3>Finalidad de los Datos</h3>
+          <p>La información será utilizada estrictamente para expedientes académicos, emisión de boletas y auditoría interna.</p>
+        </div>
+      </div>
+
+      <div class="policy-card delay-400">
+        <div class="icon-box bg-pastel-red"><i class="bi bi-incognito text-danger"></i></div>
+        <div class="policy-content">
+          <h3>Confidencialidad</h3>
+          <p>Usted asume la responsabilidad de <strong>no divulgar</strong> información fuera de los procesos autorizados.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <label class="consent-wrapper">
+        <input type="checkbox" [(ngModel)]="terminosAceptados">
+        <div class="checkbox-custom"><i class="bi bi-check-lg"></i></div>
+        <span class="consent-text">He leído y acepto las políticas.</span>
+      </label>
+
+      <div class="action-buttons">
+        <button class="btn-ghost" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn-guinda" [disabled]="!terminosAceptados" (click)="aceptarTerminos()">Aceptar</button>
+      </div>
+    </div>
+
+  </div>
+</div>

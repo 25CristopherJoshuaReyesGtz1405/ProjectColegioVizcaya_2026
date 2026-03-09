@@ -76,8 +76,8 @@ export class IniciarSesion implements OnInit {
   }
 
   recuperarAcceso(): void {
-    //this.notificaciones.mostrar('info', 'Próximamente', 'El módulo de recuperación está en mantenimiento.');
+    this.notificaciones.mostrar('info', 'Próximamente', 'El módulo de recuperación está en mantenimiento.');
     // Redirección con pequeño delay para ver el toast
-    setTimeout(() => this.enrutador.navigate(['/auth/recover']), 900);
+    this.router.navigate(['/auth/recover'])
   }
 }

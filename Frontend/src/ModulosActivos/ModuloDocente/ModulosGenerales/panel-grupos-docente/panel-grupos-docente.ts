@@ -7,13 +7,12 @@ import { DocentesService } from '../../../../ServiciosActivos/docentes.service';
 import { GruposService } from '../../../../ServiciosActivos/grupos.service';
 
 // COMPONENTES HIJOS
-import { TarjetaStadistic } from '../../../../ComponentesActivos/tarjeta-stadistic/tarjeta-stadistic';
 import { ModalDocenteDetalle } from '../../ModuloComponentes/modal-docente-detalle/modal-docente-detalle';
 
 @Component({
   selector: 'app-panel-grupos-docente',
   standalone: true,
-  imports: [CommonModule, TarjetaStadistic, ModalDocenteDetalle], // <--- Importamos el Modal y las Stats
+  imports: [CommonModule, ModalDocenteDetalle], 
   templateUrl: './panel-grupos-docente.html',
   styleUrl: './panel-grupos-docente.scss'
 })
@@ -31,7 +30,7 @@ export class PanelGruposDocente implements OnInit {
   
   // MODAL DETALLE
   mostrarModalDetalle = false;
-  grupoSeleccionado: any = null; // Guardamos el objeto grupo completo para pasarlo al modal
+  grupoSeleccionado: any = null; 
 
   ngOnInit() {
     this.cargarDatosDashboard();
@@ -49,7 +48,7 @@ export class PanelGruposDocente implements OnInit {
     // 2. Cargar Grupos
     this.docentesService.getMisGrupos().subscribe({
       next: (data) => {
-        // Ordenamos por grado para que se vea bonito en el grid
+        // Ordenamos por grado para que se vea impecable en el grid
         this.grupos = data.sort((a: any, b: any) => (a.materia?.grado || 0) - (b.materia?.grado || 0));
         this.cargando = false;
       },
@@ -67,7 +66,7 @@ export class PanelGruposDocente implements OnInit {
 
   // --- ABRIR MODAL (Botón "Ver Detalle") ---
   abrirModalDetalle(grupo: any, event: Event) {
-    event.stopPropagation(); // Evita que se dispare el click de la tarjeta
+    event.stopPropagation(); 
     this.grupoSeleccionado = {
       id: grupo.id,
       materia: grupo.materia?.nombre || 'Materia',

@@ -1,186 +1,356 @@
-<div class="dashboard-page">
-  <header class="page-header">
+<div class="dashboard-page custom-scroll" [class.triage-active-bg]="modoTriage">
+  <header class="page-header animate-slide-in-left">
     <div class="header-content">
-      <h1 class="titulo-principal">Control Y Gestión De Administración General</h1>
-      <p class="subtitulo">Resumen ejecutivo y gestión operativa del Colegio Vizcaya.</p>
+      <h1 class="titulo-principal" [ngClass]="modoTriage ? 'text-red' : ''">
+        Control y Gestión Estudiantil
+      </h1>
+      <p class="subtitulo">Centro de Inteligencia Operativa - Padrón de Alumnos.</p>
     </div>
     <div class="header-actions">
-      <span class="fecha-actual">Bienvenido... Hoy es {{ today | date : 'dd/MM/yyyy' }}</span>
+      <span class="fecha-actual"
+        ><i class="bi bi-calendar3 me-2"></i> {{ today | date: 'EEEE, dd/MM/yyyy' }}</span
+      >
     </div>
   </header>
 
   <section class="stats-section" *ngIf="!estaCargando && estadisticas; else loadingSkeleton">
     <app-tarjeta-stadistic
-      class="kpi-card delay-100"
+      class="animate-slide-up delay-200"
       titulo="Estudiantes Activos"
-      [valor]="estadisticas.conteoEstudiantes.activos"
-      detalle="Matrícula Total"
+      [valor]="estadisticasAnimadas.activos"
       color="verde"
-      icono="bi-people-fill">
+      icono="bi-people-video3"
+      watermarkIcon="bi-people-video3"
+      tendenciaTexto="Cobertura estudiantil estable"
+      tendenciaIcono="bi-dash"
+      descripcion="Total de estudiantes con cuenta activa y materias cursando."
+    >
     </app-tarjeta-stadistic>
-
     <app-tarjeta-stadistic
       class="kpi-card delay-200"
       titulo="Estudiantes Inactivos"
-      [valor]="estadisticas.conteoEstudiantes.inactivos"
-      detalle="Bajas Registradas"
+      [valor]="estadisticasAnimadas.inactivos"
       color="naranja"
-      icono="bi-person-x-fill">
-    </app-tarjeta-stadistic>
-
+      icono="bi-person-x-fill"
+    ></app-tarjeta-stadistic>
     <app-tarjeta-stadistic
-      class="kpi-card delay-400"
+      class="kpi-card delay-300"
       titulo="Reportes Disciplina"
-      [valor]="estadisticas.conteoReportesIndisciplina.total"
-      detalle="Total del periodo"
+      [valor]="estadisticasAnimadas.reportes"
       color="guinda"
-      icono="bi-exclamation-octagon-fill">
-    </app-tarjeta-stadistic>
+      icono="bi-exclamation-octagon-fill"
+    ></app-tarjeta-stadistic>
   </section>
 
   <ng-template #loadingSkeleton>
-    <div class="stats-section">
-      <div class="skeleton-card" *ngFor="let i of [1, 2, 3]"></div>
-    </div>
+    <div class="stats-section"><div class="skeleton-card" *ngFor="let i of [1, 2, 3]"></div></div>
   </ng-template>
 
   <div class="main-layout">
-    
     <div class="col-primary">
-      
-      <div class="toolbar-section animate-slide-up delay-300">
-        <div class="search-box">
-          <i class="bi bi-search"></i>
+      <div class="toolbar-section animate-slide-up delay-300" [class.triage-toolbar]="modoTriage">
+        
+        <div class="toolbar-top">
+          <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Buscar por nombre o matrícula..." [(ngModel)]="terminoBusqueda"/>
+          </div>
 
-          <input 
-            type="text" 
-            placeholder="Buscar por nombre, apellidos o matrícula..." 
-            [(ngModel)]="terminoBusqueda"
-          >
+          <div class="triage-toggle" [class.active]="modoTriage">
+            <span class="triage-label"><i class="bi bi-heart-pulse-fill"></i> Modo Triage</span>
+            <label class="premium-switch danger-switch">
+              <input type="checkbox" [(ngModel)]="modoTriage" (change)="toggleTriage()">
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <div class="actions-box" style="align-items: center;">
+            <button class="btn-ghost-excel" (click)="exportarPadronExcel()" title="Exportar la lista actual a Excel">
+              <i class="bi bi-file-earmark-excel-fill"></i> Exportar
+            </button>
+            <button class="btn-ghost-guinda" (click)="mostrarCargaMasiva = true">
+              <i class="bi bi-cloud-upload"></i> Importar CSV
+            </button>
+            <button class="btn-guinda shadow-btn" (click)="abrirCreacionEstudiante()">
+              <i class="bi bi-person-plus-fill me-1"></i> Nuevo
+            </button>
+          </div>
         </div>
         
-        <div class="actions-box">
-          <button class="btn-secondary-action" (click)="mostrarCargaMasiva = true">
-            <i class="bi bi-cloud-upload"></i> Importar
-          </button>
+        <div class="toolbar-bottom mt-3">
+
           
-          <button class="btn-primary-action" (click)="abrirCreacionEstudiante()">
-            <i class="bi bi-person-plus-fill"></i> Nuevo Estudiante
-          </button>
+          
+          <div class="smart-filters">
+            <span class="filter-label">Filtros:</span>
+            <button class="filter-pill" [class.active]="filtroActivo === 'TODOS'" (click)="setFiltro('TODOS')">Todos</button>
+            <button class="filter-pill" [class.active]="filtroActivo === '1_SEMESTRE'" (click)="setFiltro('1_SEMESTRE')">1° Sem</button>
+            <button class="filter-pill" [class.active]="filtroActivo === '2_SEMESTRE'" (click)="setFiltro('2_SEMESTRE')">2° Sem</button>
+            <button class="filter-pill" [class.active]="filtroActivo === '3_SEMESTRE'" (click)="setFiltro('3_SEMESTRE')"><i class="bi bi-mortarboard-fill me-1"></i> 3° (Egresos)</button>
+            <button class="filter-pill" [class.active]="filtroActivo === 'EXCELENCIA'" (click)="setFiltro('EXCELENCIA')"><i class="bi bi-star-fill text-warning"></i> Excelencia</button>
+            
+            <div class="divider-vertical"></div>
+            
+            <button class="filter-pill pill-bajas" [class.active]="filtroActivo === 'BAJAS'" (click)="setFiltro('BAJAS')">
+              <i class="bi bi-person-x-fill text-muted"></i> Inactivos / Bajas
+            </button>
+          </div>
+
+  
+
         </div>
       </div>
 
-      <article class="widget-card animate-slide-up delay-500">
-        <div class="widget-header">
-          <div class="header-icon azul-bg"><i class="bi bi-backpack"></i></div>
-          <div class="header-info">
-            <h3>Matrícula Activa</h3>
-            <p *ngIf="!terminoBusqueda">Últimos movimientos registrados</p>
-            <p *ngIf="terminoBusqueda">Resultados de búsqueda: {{estudiantesFiltrados.length}}</p>
+      <article class="widget-card animate-slide-up delay-500" [class.triage-border]="modoTriage">
+        <div class="widget-header-premium">
+          <div class="title-group">
+            <h3>
+              {{
+                modoTriage ? 'Alumnos en Riesgo / Atención Prioritaria' : 'Directorio Estudiantil'
+              }}
+            </h3>
+            <p class="text-guinda font-bold" *ngIf="estudiantesFiltrados.length > 0">
+              Mostrando {{ estudiantesFiltrados.length }} resultados
+            </p>
           </div>
-          <button class="btn-more"><i class="bi bi-three-dots"></i></button>
         </div>
-        
-        <div class="widget-body lista-estudiantes-scroll">
+
+        <div class="widget-body p-4 custom-scroll" style="max-height: 600px; overflow-y: auto">
           <ng-container *ngIf="estudiantesFiltrados.length > 0; else noResults">
-            <app-estudiante-card
-              *ngFor="let estudiante_ad of estudiantesFiltrados"
-              [estudiante]="estudiante_ad"
-              (edit)="abrirEdicion(estudiante_ad)"
-              (delete)="confirmarBaja(estudiante_ad)"
-              (print)="descargarBoleta(estudiante_ad)"
-              (credencial)="abrirModalCredencial(estudiante_ad)"
-              (kardex)="abrirKardex($event)">
-              class="mb-3 block"
-            >
-            </app-estudiante-card>
+            <div class="student-grid">
+              <div
+                class="student-card-wrapper"
+                *ngFor="let est of estudiantesFiltrados"
+                (dblclick)="abrirKardex(est)"
+                title="Doble clic para ver Kárdex"
+              >
+                <app-estudiante-card *ngIf="!modoTriage" [estudiante]="est"></app-estudiante-card>
+
+                <div *ngIf="modoTriage" class="triage-card-content">
+                  <div class="triage-header">
+                    <div class="avatar-container rounded-circle shadow-sm">
+                      <img
+                        *ngIf="est?.persona?.fotoUrl; else initialsTemplate"
+                        [src]="est.persona.fotoUrl"
+                        alt="Avatar"
+                        class="avatar-img"
+                      />
+                      <ng-template #initialsTemplate>
+                        <div class="avatar-placeholder gradient-student">
+                          {{
+                            getInitials(est?.persona?.nombre || '', est?.persona?.apellidos || '')
+                          }}
+                        </div>
+                      </ng-template>
+
+                      <div class="header-text">
+                        <h3
+                          class="student-name text-truncate"
+                          title="{{ est?.persona?.nombre }} {{ est?.persona?.apellidos }}"
+                        >
+                          {{ est?.persona?.nombre }}
+                          <span class="last-name">{{ est?.persona?.apellidos }}</span>
+                        </h3>
+
+                        <div class="chip-matricula ribbon-effect">
+                          <i class="bi bi-upc-scan me-1"></i>
+                          <span>{{ 'S/N' }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="triage-body">
+                    <div
+                      class="risk-factor"
+                      [class.danger]="obtenerDetallesRiesgo(est).promedio < 7.0"
+                    >
+                      <span class="label">Promedio Gral:</span>
+                      <span class="value"
+                        >{{ obtenerDetallesRiesgo(est).promedio | number: '1.1-1' }}
+                        <i
+                          *ngIf="obtenerDetallesRiesgo(est).promedio < 7.0"
+                          class="bi bi-arrow-down-circle-fill"
+                        ></i
+                      ></span>
+                    </div>
+                    <div
+                      class="risk-factor"
+                      [class.danger]="obtenerDetallesRiesgo(est).reprobadas >= 2"
+                    >
+                      <span class="label">Mat. Reprobadas:</span>
+                      <span class="value"
+                        >{{ obtenerDetallesRiesgo(est).reprobadas }}
+                        <i
+                          *ngIf="obtenerDetallesRiesgo(est).reprobadas >= 2"
+                          class="bi bi-exclamation-triangle-fill"
+                        ></i
+                      ></span>
+                    </div>
+                    <div
+                      class="risk-factor"
+                      [class.danger]="obtenerDetallesRiesgo(est).reportes > 0"
+                    >
+                      <span class="label">Reportes Activos:</span>
+                      <span class="value"
+                        >{{ obtenerDetallesRiesgo(est).reportes }}
+                        <i
+                          *ngIf="obtenerDetallesRiesgo(est).reportes > 0"
+                          class="bi bi-shield-fill-x"
+                        ></i
+                      ></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="glass-overlay">
+                  <div class="quick-actions-circle">
+                    <button
+                      class="action-btn"
+                      title="Kárdex"
+                      (click)="abrirKardex(est); $event.stopPropagation()"
+                    >
+                      <i class="bi bi-journal-text text-blue"></i>
+                    </button>
+                    <button
+                      class="action-btn"
+                      title="Boleta PDF"
+                      (click)="descargarBoleta(est); $event.stopPropagation()"
+                    >
+                      <i class="bi bi-file-earmark-pdf-fill text-guinda"></i>
+                    </button>
+                    <button
+                      class="action-btn"
+                      title="Credencial"
+                      (click)="abrirModalCredencial(est); $event.stopPropagation()"
+                    >
+                      <i class="bi bi-person-badge-fill text-warning"></i>
+                    </button>
+                    <button
+                      class="action-btn"
+                      title="Editar"
+                      (click)="abrirEdicion(est); $event.stopPropagation()"
+                    >
+                      <i class="bi bi-pencil-square text-dark"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </ng-container>
 
           <ng-template #noResults>
-            <div class="text-center p-4 text-gray-500">
-              <p>No se encontraron estudiantes con ese criterio.</p>
+            <div class="empty-state pulse-glow">
+              <i class="bi bi-person-check text-muted" *ngIf="modoTriage"></i>
+              <i class="bi bi-search text-muted" *ngIf="!modoTriage"></i>
+              <h3>{{ modoTriage ? 'Todo en Orden' : 'Sin Resultados' }}</h3>
+              <p>
+                {{
+                  modoTriage
+                    ? 'No hay alumnos que requieran atención urgente.'
+                    : 'Modifica los filtros de búsqueda.'
+                }}
+              </p>
             </div>
           </ng-template>
-        </div>
-      </article>
-
-      <article class="widget-card animate-slide-up delay-600">
-        <div class="widget-header">
-          <div class="header-icon rojo-bg"><i class="bi bi-person-dash"></i></div>
-          <div class="header-info">
-            <h3>Historial de Bajas</h3>
-            <p>Estudiantes dados de baja recientemente</p>
-          </div>
-        </div>
-        <div class="widget-body lista-estudiantes-scroll">
-          <ng-container *ngIf="listaEstudiantesBaja.length > 0">
-            <app-estudiante-card
-              *ngFor="let estudiante_ad of listaEstudiantesBaja"
-              [estudiante]="estudiante_ad"
-              (edit)="abrirEdicion(estudiante_ad)"
-              (delete)="confirmarBaja(estudiante_ad)" 
-              (print)="descargarBoleta(estudiante_ad)"
-              (credencial)="abrirModalCredencial(estudiante_ad)"
-              (kardex)="abrirKardex($event)"
-              class="mb-3 block"
-            >
-            </app-estudiante-card>
-          </ng-container>
         </div>
       </article>
     </div>
 
     <aside class="col-secondary">
-      
-      <div class="widget-card alert-card animate-slide-up delay-700"
-        *ngIf="(estadisticas?.conteoGrupos?.sinDocente ?? 0) > 0">
-        <div class="widget-header-simple warning-bg">
-          <i class="bi bi-exclamation-triangle-fill text-danger"></i>
-          <h3>Atención Requerida</h3>
+      <div class="widget-card control-center-card animate-slide-up delay-400">
+        <div class="widget-header-premium">
+          <div class="title-group">
+            <h3>Radar de Acciones</h3>
+            <p>Gestión Masiva Escolar</p>
+          </div>
         </div>
-        <div class="widget-body p-0">
-          <ul class="alert-list">
-             <li *ngIf="(estadisticas?.conteoGrupos?.sinDocente ?? 0) > 0">
-              <div class="alert-content">
-                <span class="alert-title">Grupos sin Docente</span>
-              </div>
-              <span class="badge red">{{ estadisticas?.conteoGrupos?.sinDocente }}</span>
-            </li>
-          </ul>
+        <div class="widget-body p-4">
+          <div class="ios-grid">
+            <button class="ios-btn bg-blue-light" title="En desarrollo">
+              <i class="bi bi-person-badge text-blue"></i><span>Lote<br />Credenciales</span>
+            </button>
+            <button class="ios-btn bg-gold-light" title="Cuadros de Honor." (click)="imprimirCuadroDeHonor()">
+              <i class="bi bi-award text-warning"></i><span>Cuadro<br />de Honor</span>
+            </button>
+            <button class="ios-btn bg-guinda-light" title="Impresión de boletas por lote." (click)="imprimirBoletasGlobales()">
+              <i class="bi bi-files text-guinda"></i><span>Imprimir<br />Todas las Boletas</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="widget-card animate-slide-up delay-800">
-        <div class="widget-header">
-          <div class="header-icon guinda-bg"><i class="bi bi-calendar-event"></i></div>
-          <div class="header-info">
-            <h3>Periodo Actual</h3>
-            <p>Gestión de fechas</p>
-          </div>
-          <button (click)="mostrarModalPeriodos = true" class="btn-more">
+      <div class="widget-card animate-slide-up delay-500">
+        <div class="widget-header-premium">
+          <div class="title-group"><h3>Gestión de Periodo</h3></div>
+          <button (click)="mostrarModalPeriodos = true" class="btn-icon-soft">
             <i class="bi bi-gear"></i>
           </button>
         </div>
-        <div class="widget-body p-0">
-          <br>
-          <app-periodo-widget></app-periodo-widget>
-          <br>
-        </div>
-        </div>
-
-      <div class="widget-card animate-slide-up delay-800">
-        <div class="widget-header">
-          <div class="header-icon guinda-bg"><i class="bi bi-shield-exclamation"></i></div>
-          <div class="header-info">
-            <h3>Disciplina</h3>
-            <p>Últimos reportes</p>
-          </div>
-        </div>
-        <div class="widget-body">
-          <app-reportes-widget (verDetalle)="verReporte($event)"></app-reportes-widget>
-        </div>
+        <div class="widget-body p-0"><app-periodo-widget></app-periodo-widget></div>
       </div>
 
+      <div class="widget-card animate-slide-up delay-600">
+        <div class="widget-header-premium">
+          <div class="title-group">
+            <h3>Bandeja de Entrada</h3>
+            <p>Atención requerida</p>
+          </div>
+          <span
+            class="badge-count"
+            *ngIf="solicitudesPendientes.length + reportesDisciplinaRecientes.length > 0"
+          >
+            {{ solicitudesPendientes.length + reportesDisciplinaRecientes.length }}
+          </span>
+        </div>
+        <div class="widget-body p-0 custom-scroll" style="max-height: 400px">
+          <div class="inbox-section-title" *ngIf="reportesDisciplinaRecientes.length > 0">
+            Reportes de Disciplina
+          </div>
+          <div class="inbox-list">
+            <div class="inbox-item" *ngFor="let r of reportesDisciplinaRecientes" (click)="verReporte(r)">
+              <div class="item-icon bg-red-light">
+                <i class="bi bi-shield-fill-exclamation text-red"></i>
+              </div>
+              <div class="item-content">
+                <h4>{{ r.estudiante }}</h4>
+                <p>
+                  Motivo: <strong>{{ r.descripcion }}</strong>
+                </p>
+                <span class="date">{{ r.fecha | date: 'dd MMM' }}</span>
+              </div>
+              <div class="item-action"><i class="bi bi-chevron-right"></i></div>
+            </div>
+          </div>
+
+          <div class="inbox-section-title" *ngIf="solicitudesPendientes.length > 0">
+            Solicitudes de Rectificación
+          </div>
+          <div class="inbox-list">
+            <div
+              class="inbox-item"
+              *ngFor="let t of solicitudesPendientes"
+              (click)="atenderSolicitud(t)"
+            >
+              <div class="item-icon"><i class="bi bi-pencil-square text-guinda"></i></div>
+              <div class="item-content">
+                <h4>{{ t.nombreDocente }}</h4>
+                <p>
+                  Cambio para: <strong>{{ t.nombreAlumno }}</strong>
+                </p>
+                <span class="date">{{ t.fechaSolicitud | date: 'dd MMM, HH:mm' }}</span>
+              </div>
+              <div class="item-action"><i class="bi bi-chevron-right"></i></div>
+            </div>
+          </div>
+
+          <div
+            class="empty-state"
+            *ngIf="solicitudesPendientes.length === 0 && reportesDisciplinaRecientes.length === 0"
+          >
+            <i class="bi bi-check2-circle"></i>
+            <p>Sin asuntos pendientes.</p>
+          </div>
+        </div>
+      </div>
     </aside>
   </div>
 </div>
@@ -189,42 +359,42 @@
   *ngIf="mostrarModalEdicion"
   [student]="estudianteSeleccionado"
   (close)="mostrarModalEdicion = false"
-  (save)="guardarEdicion($event)">
-</app-modal-estudiante-actualizar>
-
+  (save)="guardarEdicion($event)"
+></app-modal-estudiante-actualizar>
 <app-modal-estudiante-nuevo
   *ngIf="mostrarModalCreacion"
   (close)="mostrarModalCreacion = false"
-  (save)="guardarNuevoEstudiante($event)">
-</app-modal-estudiante-nuevo>
-
+  (save)="guardarNuevoEstudiante($event)"
+></app-modal-estudiante-nuevo>
 <app-modal-gestion-periodos
   *ngIf="mostrarModalPeriodos"
   (close)="mostrarModalPeriodos = false"
-  (updated)="onPeriodoActualizado()">
-</app-modal-gestion-periodos>
-
+  (updated)="onPeriodoActualizado()"
+></app-modal-gestion-periodos>
 <app-modal-reporte-detalle
   *ngIf="mostrarModalReporte"
   [reporte]="reporteSeleccionado"
   (close)="mostrarModalReporte = false"
-  (deleted)="recargarReportes()"> 
-</app-modal-reporte-detalle>
-
-<app-modal-carga-masiva 
+  (deleted)="recargarReportes()"
+></app-modal-reporte-detalle>
+<app-modal-carga-masiva
   *ngIf="mostrarCargaMasiva"
-  (close)="mostrarCargaMasiva = false" 
-  (success)="recargarTrasCarga()"> 
-</app-modal-carga-masiva>
-
+  (close)="mostrarCargaMasiva = false"
+  (success)="recargarTrasCarga()"
+></app-modal-carga-masiva>
 <app-modal-credencial
   *ngIf="mostrarModalCredencialVar"
   [estudiante]="estudianteSeleccionado"
-  (close)="mostrarModalCredencialVar = false">
-</app-modal-credencial>
-
+  (close)="mostrarModalCredencialVar = false"
+></app-modal-credencial>
 <app-modal-kardex
   *ngIf="mostrarModalKardex"
   [estudiante]="estudianteSeleccionado"
-  (close)="mostrarModalKardex = false">
-</app-modal-kardex>
+  (close)="mostrarModalKardex = false"
+></app-modal-kardex>
+<app-modal-atender-solicitud
+  *ngIf="mostrarModalAtender && ticketSeleccionado"
+  [ticket]="ticketSeleccionado"
+  (close)="mostrarModalAtender = false"
+  (resolved)="onSolicitudResuelta()"
+></app-modal-atender-solicitud>

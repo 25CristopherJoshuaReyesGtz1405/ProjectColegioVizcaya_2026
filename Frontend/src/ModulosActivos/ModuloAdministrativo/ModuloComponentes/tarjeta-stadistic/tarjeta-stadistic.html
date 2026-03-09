@@ -1,0 +1,30 @@
+<div class="kpi-card ultra-premium" [ngClass]="{'alert-card': baseColor === 'red'}">
+  
+  <div class="card-glow" [ngClass]="baseColor + '-glow'"></div>
+  
+  <div class="watermark"><i class="bi" [ngClass]="watermarkIcon || icono"></i></div>
+  
+  <div class="kpi-content">
+    <div class="kpi-header">
+      <span class="kpi-label" [ngClass]="{'text-red': baseColor === 'red'}">{{ titulo }}</span>
+      <div class="icon-ring" [ngClass]="'ring-' + baseColor" [class.pulse-animation]="baseColor === 'red'">
+        <i class="bi" [ngClass]="icono"></i>
+      </div>
+    </div>
+    
+    <div class="kpi-body">
+      <h3 class="kpi-value" [ngClass]="{'text-red': baseColor === 'red'}">{{ valor }}</h3>
+      <span class="badge-tag" [ngClass]="'tag-' + baseColor" *ngIf="tendenciaTexto">{{ tendenciaTexto }}</span>
+    </div>
+  </div>
+
+  <div class="kpi-footer">
+    <div class="mini-progress">
+      <div class="fill" [ngClass]="'bg-' + baseColor" [style.width.%]="progreso"></div>
+    </div>
+    <span class="status-text" [ngClass]="{'text-red': baseColor === 'red'}">
+      <i class="bi" [ngClass]="footerIcono"></i> {{ descripcion }}
+    </span>
+  </div>
+
+</div>

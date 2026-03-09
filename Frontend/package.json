@@ -30,11 +30,14 @@
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "apexcharts": "^5.6.0",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
+    "ng-apexcharts": "^2.2.0",
     "pdfmake": "^0.2.20",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {

@@ -1,121 +1,176 @@
 <div class="dashboard-page">
-  <!-- 1. ENCABEZADO CON BIENVENIDA -->
-  <header class="page-header">
+  
+  <header class="page-header animate-slide-in-left">
     <div class="header-content">
-      <h1 class="titulo-principal">Control Y Gestión De Materias En General</h1>
-      <br />
-      <p class="subtitulo">Resumen gestión operativa del Colegio Vizcaya.</p>
-      <br />
+      <h1 class="titulo-principal">Centro de Inteligencia Curricular</h1>
+      <p class="subtitulo">Gestión de asignaturas, auditoría de planeaciones y plan de estudios.</p>
+    </div>
+    <div class="header-actions">
+      <span class="fecha-actual"><i class="bi bi-calendar3 me-2 text-guinda"></i> {{ today | date: 'EEEE, dd/MM/yyyy' }}</span>
     </div>
   </header>
 
-  <!-- 2. TARJETAS DE INDICADORES (KPIs) -->
-  <!-- Se muestran con animación escalonada -->
-  <section class="stats-section" *ngIf="!estaCargando && estadisticas; else loadingSkeleton">
-    <app-tarjeta-stadistic
-      class="kpi-card delay-100"
-      titulo="Materias Activas"
-      [valor]="estadisticas.conteoEstudiantes.activos"
-      detalle="Todas las materias activas"
-      color="verde"
-      icono="bi-people-fill"
-    >
-    </app-tarjeta-stadistic>
-
-    <app-tarjeta-stadistic
-      class="kpi-card delay-100"
-      titulo="Estudiantes de 1ero"
-      [valor]="estadisticas.conteoEstudiantes.activos"
-      detalle="Materias de 1er grado"
-      color="morado"
-      icono="bi-people-fill"
-    >
-    </app-tarjeta-stadistic>
-
-    <app-tarjeta-stadistic
-      class="kpi-card delay-200"
-      titulo="Estudiantes de 2ndo"
-      [valor]="estadisticas.conteoEstudiantes.inactivos"
-      detalle="Materias de 2ndo grado"
-      color="naranja"
-      icono="bi-person-video3"
-    >
-    </app-tarjeta-stadistic>
-
-    <app-tarjeta-stadistic
-      class="kpi-card delay-400"
-      titulo="Estudiantes de 3ero"
-      [valor]="estadisticas.conteoReportesIndisciplina.total"
-      detalle="Materias de 3er grado"
-      color="guinda"
-      icono="bi-graph-up-arrow"
-    >
-    </app-tarjeta-stadistic>
+  <section class="stats-section" *ngIf="!estaCargando; else loadingSkeleton">
+    <app-tarjeta-stadistic class="delay-100" titulo="Total Asignaturas" [valor]="materias.length" detalle="Registradas en catálogo" color="guinda" icono="bi-journal-bookmark-fill"></app-tarjeta-stadistic>
+    <app-tarjeta-stadistic class="delay-200" titulo="Materias Activas" [valor]="materias.length - 2" detalle="Con grupos este ciclo" color="verde" icono="bi-layers-fill"></app-tarjeta-stadistic>
+    <app-tarjeta-stadistic class="delay-300" titulo="Déficit Planeaciones" [valor]="5" detalle="Maestros pendientes" color="naranja" icono="bi-file-earmark-x-fill"></app-tarjeta-stadistic>
+    <app-tarjeta-stadistic class="delay-400" titulo="Materias Huérfanas" [valor]="2" detalle="Sin grupos asignados" color="morado" icono="bi-inbox-fill"></app-tarjeta-stadistic>
   </section>
 
-  <!-- TEMPLATE DE CARGA (SKELETON) -->
   <ng-template #loadingSkeleton>
-    <div class="stats-section">
-      <div class="skeleton-card" *ngFor="let i of [1, 2, 3, 4]"></div>
-    </div>
+    <div class="stats-section"><div class="skeleton-card" *ngFor="let i of [1, 2, 3, 4]"></div></div>
   </ng-template>
 
-  <!-- 3. CONTENIDO PRINCIPAL (GRID) -->
-  <div class="main-layout">
-    <!-- COLUMNA IZQUIERDA (Datos Masivos) -->
+  <div class="main-layout mt-2">
+    
     <div class="col-primary">
-      <!-- Widget: Alumnos -->
-      <article class="widget-card animate-slide-up delay-500">
-        <div class="widget-header">
-          <div class="header-icon guinda-bg"><i class="bi bi-journal-text"></i></div>
-          <div class="header-info">
-            <h3>Catálogo de Materias</h3>
-            <p>Asignaturas activas en el plan de estudios</p>
+      
+      <div class="toolbar-section animate-slide-up delay-400">
+        <div class="toolbar-top">
+          <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Buscar por nombre o clave (Ej: MAT-101)..." [(ngModel)]="terminoBusqueda" />
           </div>
-          <button class="header-icon guinda-bg" (click)="mostrarModalMateria = true">
-            <i class="bi bi-cloud-plus"></i>
+          <button class="btn-guinda shadow-btn" (click)="abrirCrearMateria()">
+            <i class="bi bi-plus-lg me-1"></i> Nueva Asignatura
           </button>
         </div>
-        <div class="widget-body lista-estudiantes-scroll">
-          <app-materias-widget
-            (edit)="abrirEdicionMateria($event)"
-            (delete)="confirmarEliminarMateria($event)"
-          >
-          </app-materias-widget>
+        
+        <div class="toolbar-bottom mt-3">
+          <div class="smart-filters">
+            <span class="filter-label">Filtros:</span>
+            <button class="filter-pill" [class.active]="filtroActivo === 'TODOS'" (click)="setFiltro('TODOS')">Todas</button>
+            <button class="filter-pill" [class.active]="filtroActivo === '1_SEMESTRE'" (click)="setFiltro('1_SEMESTRE')">1° Sem</button>
+            <button class="filter-pill" [class.active]="filtroActivo === '2_SEMESTRE'" (click)="setFiltro('2_SEMESTRE')">2° Sem</button>
+            <button class="filter-pill" [class.active]="filtroActivo === '3_SEMESTRE'" (click)="setFiltro('3_SEMESTRE')">3° Sem</button>
+            <div class="divider-vertical"></div>
+            <button class="filter-pill pill-warning" [class.active]="filtroActivo === 'FALTAN_PLANEACIONES'" (click)="setFiltro('FALTAN_PLANEACIONES')">
+              <i class="bi bi-exclamation-circle me-1"></i> Faltan Planeaciones
+            </button>
+          </div>
         </div>
-      </article>
-    </div>
+      </div>
 
-    <!-- COLUMNA DERECHA (Panel Lateral de Gestión) -->
-    <aside class="col-secondary">
-      <aside class="col-secondary d-flex flex-column gap-4">
-        <div style="height: auto"><app-materias-alerts-widget></app-materias-alerts-widget></div>
+      <div class="subject-grid animate-slide-up delay-500 mt-4 custom-scroll">
+        
+        <div class="subject-card" *ngFor="let mat of materiasFiltradas">
+          
+          <div class="card-top">
+            <span class="clave-badge"><i class="bi bi-upc-scan"></i> {{ mat.claveMateria || 'S/N' }}</span>
+            <div class="status-dot" [ngClass]="mat.grado === 2 ? 'pulse-red bg-danger' : 'bg-success'" title="Estado del Temario"></div>
+          </div>
 
-        <div class="widget-card">
-          <div class="widget-header">
-            <div class="header-icon guinda-theme"><i class="bi bi-lightning-charge-fill"></i></div>
-            <div class="header-info">
-              <h3>Acciones Rápidas</h3>
+          <div class="card-center">
+            <div class="icon-wrapper guinda-gradient">
+              <i class="bi bi-journal-bookmark"></i>
+            </div>
+            <h3 class="subject-name" [title]="mat.nombre">{{ mat.nombre }}</h3>
+            <p class="subject-grade">{{ mat.grado }}° Semestre</p>
+          </div>
+
+          <div class="card-bottom">
+            <div class="stat-pill bg-blue-light text-blue">
+              <i class="bi bi-buildings-fill"></i> Activa
+            </div>
+            
+            <div class="stat-pill bg-green-light text-verde" *ngIf="mat.grado !== 2">
+              <i class="bi bi-file-earmark-check-fill"></i> Temario OK
+            </div>
+            <div class="stat-pill bg-red-light text-red border-alert" *ngIf="mat.grado === 2">
+              <i class="bi bi-file-earmark-x-fill"></i> Faltan
             </div>
           </div>
-          <div class="widget-body p-3 d-flex flex-column gap-2">
-            <button class="btn btn-outline-secondary w-100 text-start">
-              <i class="bi bi-file-earmark-pdf me-2"></i> Descargar Plan de Estudios
+
+          <div class="glass-overlay">
+            <div class="action-buttons">
+              <button class="action-btn" title="Ver Expediente Docente" (click)="abrirExpedienteMateria(mat)">
+                <i class="bi bi-layout-sidebar-reverse text-blue"></i>
+              </button>
+              <button class="action-btn" title="Editar Materia" (click)="abrirEdicionMateria(mat)">
+                <i class="bi bi-pencil-square text-medium"></i>
+              </button>
+              <button class="action-btn" title="Eliminar Materia" (click)="confirmarEliminarMateria(mat)">
+                <i class="bi bi-trash3-fill text-red"></i>
+              </button>
+            </div>
+          </div>
+          
+        </div>
+
+        <div class="empty-state" *ngIf="materiasFiltradas.length === 0">
+          <i class="bi bi-journal-x"></i>
+          <h3>No hay asignaturas encontradas</h3>
+          <p>Ajusta los filtros de búsqueda o registra una nueva materia.</p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <aside class="col-secondary">
+      
+      <div class="widget-card control-center-card animate-slide-up delay-400">
+        <div class="widget-header-premium">
+          <div class="title-group"><h3>Radar Curricular</h3><p>Acceso rápido</p></div>
+        </div>
+        <div class="widget-body p-4">
+          <div class="ios-grid">
+            <button class="ios-btn bg-blue-light" title="Descargar PDF" (click)="radarPlanEstudios()">
+              <i class="bi bi-file-earmark-pdf-fill text-blue"></i><span>Plan de<br>Estudios</span>
             </button>
-            <button class="btn btn-outline-secondary w-100 text-start">
-              <i class="bi bi-upload me-2"></i> Carga Masiva (CSV)
+            <button class="ios-btn bg-green-light" title="Importar CSV" (click)="radarCargaMasiva()">
+              <i class="bi bi-cloud-arrow-up-fill text-verde"></i><span>Carga<br>Masiva</span>
+            </button>
+            <button class="ios-btn bg-gold-light" title="Auditoría Académica" (click)="radarAuditoria()">
+              <i class="bi bi-clipboard2-pulse-fill text-warning"></i><span>Revisar<br>Temarios</span>
             </button>
           </div>
         </div>
-      </aside>
+      </div>
+
+      <div class="widget-card animate-slide-up delay-500">
+        <div class="widget-header-premium">
+          <div class="title-group"><h3>Atención Académica</h3><p>Pendientes operativos</p></div>
+        </div>
+        <div class="widget-body p-0">
+          <div class="inbox-list">
+            
+            <div class="inbox-item" (click)="setFiltro('FALTAN_PLANEACIONES')">
+              <div class="item-icon bg-red-light"><i class="bi bi-file-earmark-x-fill text-red"></i></div>
+              <div class="item-content">
+                <h4>Planeaciones Faltantes</h4>
+                <p>5 Maestros sin entregar instrumentación.</p>
+              </div>
+              <div class="item-action"><i class="bi bi-chevron-right"></i></div>
+            </div>
+
+            <div class="inbox-item">
+              <div class="item-icon bg-gold-light"><i class="bi bi-person-x-fill text-warning"></i></div>
+              <div class="item-content">
+                <h4>Sin Docente Asignado</h4>
+                <p>2 Materias requieren titular urgente.</p>
+              </div>
+              <div class="item-action"><i class="bi bi-chevron-right"></i></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
     </aside>
+
   </div>
 </div>
 
-<app-modal-materia
-  *ngIf="mostrarModalMateria"
+<app-modal-materia 
+  *ngIf="mostrarModalMateria" 
   [materiaEditar]="materiaSeleccionada"
   (close)="cerrarModalMateria()"
-  (success)="recargarMaterias()"
->
+  (success)="alGuardarMateria()">
 </app-modal-materia>
+
+<app-drawer-materia-detalle 
+  [materia]="materiaParaExpediente" 
+  [isOpen]="drawerMateriaAbierto" 
+  (close)="cerrarExpedienteMateria()">
+</app-drawer-materia-detalle>

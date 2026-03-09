@@ -1,0 +1,91 @@
+<div class="modal-backdrop fade-in" (click)="close.emit()">
+  <div class="modal-card scale-in" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <div class="icon-box">
+        <i class="bi bi-envelope-paper-fill"></i>
+      </div>
+      <div class="header-text">
+        <h2>Revisión de Corrección</h2>
+        <p>Ticket #{{ ticket.id | slice:0:8 | uppercase }}</p>
+      </div>
+      <button class="btn-close" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <div class="modal-body custom-scroll">
+      
+      <div class="users-grid">
+        <div class="student-card">
+          <div class="avatar doc"><i class="bi bi-person-video3"></i></div>
+          <div class="info">
+            <h3>{{ ticket.nombreDocente }}</h3>
+            <p>Docente Solicitante</p>
+          </div>
+        </div>
+        <div class="student-card">
+          <div class="avatar alu">{{ ticket.nombreAlumno.charAt(0) }}</div>
+          <div class="info">
+            <h3>{{ ticket.nombreAlumno }}</h3>
+            <p>Estudiante</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="subject-tag">
+        <i class="bi bi-journal-bookmark-fill"></i> {{ ticket.nombreMateria }}
+      </div>
+
+      <div class="comparison-container">
+        <div class="grade-box current">
+          <span class="label">Nota Anterior</span>
+          <div class="value">{{ ticket.calificacionAnterior }}</div>
+          <span class="rubro-tag">Registrada</span>
+        </div>
+
+        <div class="arrow-separator">
+          <i class="bi bi-arrow-right-circle-fill"></i>
+        </div>
+
+        <div class="grade-box new">
+          <span class="label">Nueva Nota</span>
+          <div class="value">{{ ticket.calificacionNueva }}</div>
+          <span class="hint">Solicitada</span>
+        </div>
+      </div>
+
+      <div class="warning-box info-yellow">
+        <i class="bi bi-chat-left-quote-fill"></i>
+        <div class="content-text">
+          <strong>Justificación del Docente:</strong>
+          <p>{{ ticket.motivo }}</p>
+          <span class="date-text">Enviado el {{ ticket.fechaSolicitud | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+      </div>
+
+      <div class="form-group animate-slide-up" *ngIf="mostrarInputRechazo">
+        <label><i class="bi bi-exclamation-triangle-fill text-danger"></i> Motivo del Rechazo (Obligatorio)</label>
+        <textarea [(ngModel)]="motivoRechazo" rows="3" placeholder="Explica al docente por qué esta solicitud no procede..."></textarea>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <ng-container *ngIf="!mostrarInputRechazo">
+        <button class="btn-reject" (click)="prepararRechazo()" [disabled]="procesando">Rechazar</button>
+        <button class="btn-approve" (click)="aprobar()" [disabled]="procesando">
+          <span *ngIf="!procesando"><i class="bi bi-check-lg"></i> Aprobar Cambio</span>
+          <span *ngIf="procesando">Procesando...</span>
+        </button>
+      </ng-container>
+
+      <ng-container *ngIf="mostrarInputRechazo">
+        <button class="btn-cancel" (click)="mostrarInputRechazo = false" [disabled]="procesando">Cancelar</button>
+        <button class="btn-confirm-reject" (click)="confirmarRechazo()" [disabled]="procesando">
+          <span *ngIf="!procesando">Confirmar Rechazo</span>
+          <span *ngIf="procesando">Procesando...</span>
+        </button>
+      </ng-container>
+    </div>
+
+  </div>
+</div>

@@ -14,6 +14,8 @@ import { PanelInicioDocente } from '../ModulosActivos/ModuloDocente/ModulosGener
 import { PanelCalifcaciones } from '../ModulosActivos/ModuloDocente/ModulosGenerales/panel-califcaciones/panel-califcaciones';
 import { PanelAsistenciaDocente } from '../ModulosActivos/ModuloDocente/ModulosGenerales/panel-asistencia-docente/panel-asistencia-docente';
 import { PanelGruposDocente } from '../ModulosActivos/ModuloDocente/ModulosGenerales/panel-grupos-docente/panel-grupos-docente';
+import { InicioPrincipal } from '../ModulosActivos/ModuloInicioGeneral/ModulosGenerales/inicio-principal/inicio-principal';
+import { SplashScreen } from '../ModulosActivos/ModuloAutenticacion/splash-screen/splash-screen';
 
 export const routes: Routes = [
   
@@ -107,44 +109,30 @@ export const routes: Routes = [
         path: 'asist',
         component: PanelAsistenciaDocente, 
       },
-      {
-        path: 'groups',
-        component: PanelGrupos, 
-      },
     ]
   },
 
-  // --- Módulo de Docente (Protegido) ---
-  // (Lo crearemos en Fase 4 - Prioridad 2)
-  /*{
-    path: 'docente',
-    // ¡Seguridad! No se puede entrar sin login Y sin el rol 'DOCENTE'
-    canActivate: [authGuard, rolGuard],
-    data: { rolRequerido: 'DOCENTE' }, // Le dice al 'rolGuard' qué rol buscar
-    loadChildren: () => import('./modulos/docente/docente.routes')
-      .then(r => r.DOCENTE_ROUTES)
+  // --- Ruta de Splash (Pública) ---
+  
+  {
+    path: 'home',
+    
+    children:
+    [
+      {
+        path: '', 
+        component: SplashScreen
+      },
+      {
+        path: 'start',
+        component: InicioPrincipal,
+      }
+    ]
   },
 
-  // --- Módulo de Administración (Protegido) ---
-  // (Lo crearemos en Fase 5)
-  {
-    path: 'admin',
-    // ¡Seguridad!
-    canActivate: [authGuard, rolGuard],
-    data: { rolRequerido: 'CONTROL_ESCOLAR' }, // O 'DIRECTORA'
-    loadChildren: () => import('./modulos/admin/admin.routes')
-      .then(r => r.ADMIN_ROUTES)
-  },
   
-  // --- Ruta de Splash (Pública) ---
-  // (La crearemos en Fase 2)
   
-  {
-    path: 'splash',
-    loadComponent: () => import('./modulos/splash/splash.component')
-      .then(c => c.SplashComponent)
-  },
-  
+  /*
   // --- Rutas por Defecto ---
   {
     path: '',
@@ -158,7 +146,7 @@ export const routes: Routes = [
 
     {
     path: '',
-    redirectTo: 'auth', // La app siempre empieza en el splash
+    redirectTo: 'home', 
     pathMatch: 'full'
   },
 ];

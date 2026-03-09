@@ -1,91 +1,100 @@
-<div class="modal-backdrop" (click)="close.emit()">
-  <div class="modal-content fade-in" (click)="$event.stopPropagation()">
+<div class="modal-backdrop fade-in" (click)="close.emit()">
+  <div class="premium-modal modal-periodos animate-slide-up" (click)="$event.stopPropagation()">
     
-    <header class="modal-header">
-      <div class="header-icon purple-theme">
-        <i class="bi bi-calendar-check-fill"></i>
+    <header class="modal-header guinda-gradient">
+      <div class="header-content">
+        <span class="badge-tag"><i class="bi bi-calendar-check-fill me-1"></i> Administración Académica</span>
+        <div class="header-titles">
+          <h2>Gestión de Periodos</h2>
+          <p>Configura las fechas y habilita la captura de calificaciones en el sistema</p>
+        </div>
       </div>
-      <div class="header-text">
-        <h2>Gestión de Periodos</h2>
-        <p class="subtitle">Configura las fechas y habilita la captura de calificaciones.</p>
-      </div>
-      <button class="btn-close" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
+      <button class="btn-close-white" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
     </header>
 
     <div class="modal-body-layout">
       
-      <aside class="sidebar-list">
-        <h6 class="sidebar-title">Historial</h6>
+      <aside class="sidebar-list custom-scroll">
+        <h6 class="sidebar-title"><i class="bi bi-clock-history me-1"></i> Historial de Ciclos</h6>
         <ul class="period-list">
           <li (click)="limpiarFormulario()" class="add-new">
-            <i class="bi bi-plus-circle"></i> Nuevo Periodo
+            <i class="bi bi-plus-circle-fill"></i> Crear Nuevo Periodo
           </li>
           <li *ngFor="let p of listaPeriodos" (click)="seleccionarPeriodo(p)" 
               [class.active]="p.id === periodoForm.id">
             <div class="p-info">
               <span class="p-name">{{ p.nombre }}</span>
-              <span class="p-status" [ngClass]="p.estatus === 'ABIERTO' ? 'text-success' : 'text-muted'">
+              <span class="p-status badge-sm" [ngClass]="p.estatus === 'ABIERTO' ? 'badge-green' : 'badge-gray'">
                 {{ p.estatus }}
               </span>
             </div>
-            <i class="bi bi-chevron-right"></i>
+            <i class="bi bi-chevron-right icon-arrow"></i>
           </li>
         </ul>
       </aside>
 
-      <form class="main-form" #form="ngForm">
+      <form class="main-form bg-gray-section custom-scroll" #form="ngForm">
         
-        <h6 class="section-title">
-          {{ periodoForm.id ? 'Editando Periodo' : 'Crear Nuevo Periodo' }}
-        </h6>
+        <h3 class="section-title">
+          <i class="bi" [ngClass]="periodoForm.id ? 'bi-pencil-square' : 'bi-stars'"></i>
+          {{ periodoForm.id ? 'Editando Configuración' : 'Configurar Nuevo Periodo' }}
+        </h3>
 
-        <div class="form-group mb-3">
-          <label>Nombre del Periodo</label>
-          <div class="input-wrapper">
-            <i class="bi bi-tag"></i>
-            <input type="text" name="nombre" [(ngModel)]="periodoForm.nombre" 
-                   required placeholder="Ej: Parcial 2 - 2024">
-          </div>
-        </div>
-
-        <div class="form-grid mb-4">
-          <div class="form-group">
-            <label>Fecha Inicio</label>
+        <div class="inputs-container">
+          <div class="input-group">
+            <label>Nombre del Periodo <span class="req">*</span></label>
             <div class="input-wrapper">
-              <i class="bi bi-calendar-event"></i>
-              <input type="date" name="inicio" [(ngModel)]="periodoForm.fechaInicio" required>
+              <i class="bi bi-tag icon"></i>
+              <input type="text" name="nombre" [(ngModel)]="periodoForm.nombre" 
+                     required placeholder="Ej: Parcial 2 - Semestre B 2024">
             </div>
           </div>
-          <div class="form-group">
-            <label>Fecha Fin</label>
-            <div class="input-wrapper">
-              <i class="bi bi-calendar-x"></i>
-              <input type="date" name="fin" [(ngModel)]="periodoForm.fechaFin" required>
+
+          <div class="row-group mt-2">
+            <div class="input-group flex-1">
+              <label>Fecha de Inicio <span class="req">*</span></label>
+              <div class="input-wrapper">
+                <i class="bi bi-calendar-event icon"></i>
+                <input type="date" name="inicio" [(ngModel)]="periodoForm.fechaInicio" required>
+              </div>
+            </div>
+            <div class="input-group flex-1">
+              <label>Fecha de Cierre <span class="req">*</span></label>
+              <div class="input-wrapper">
+                <i class="bi bi-calendar-x icon"></i>
+                <input type="date" name="fin" [(ngModel)]="periodoForm.fechaFin" required>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="status-control-box" [class.is-open]="periodoForm.estatus">
-          <div class="status-info">
-            <span class="label">Permisos de Captura</span>
-            <p class="desc" *ngIf="periodoForm.estatus">Los docentes <strong>PUEDEN</strong> subir calificaciones actualmente.</p>
-            <p class="desc" *ngIf="!periodoForm.estatus">El sistema está <strong>CERRADO</strong> para modificaciones.</p>
+          <div class="status-control-box mt-3" [class.is-open]="periodoForm.estatus">
+            <div class="status-icon pulse-glow" *ngIf="periodoForm.estatus">
+              <i class="bi bi-unlock-fill"></i>
+            </div>
+            <div class="status-icon locked" *ngIf="!periodoForm.estatus">
+              <i class="bi bi-lock-fill"></i>
+            </div>
+            <div class="status-info">
+              <span class="label">Permisos de Captura</span>
+              <p class="desc" *ngIf="periodoForm.estatus">El portal de docentes <strong>ESTÁ HABILITADO</strong> para subir calificaciones.</p>
+              <p class="desc" *ngIf="!periodoForm.estatus">El portal está <strong>BLOQUEADO</strong>. No se permiten modificaciones.</p>
+            </div>
+            
+            <label class="premium-switch">
+              <input type="checkbox" name="estatus" [(ngModel)]="periodoForm.estatus">
+              <span class="slider round"></span>
+            </label>
           </div>
-          
-          <label class="switch-lg">
-            <input type="checkbox" name="estatus" [(ngModel)]="periodoForm.estatus">
-            <span class="slider round"></span>
-          </label>
         </div>
 
       </form>
     </div>
 
-    <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="close.emit()">Cerrar</button>
-      <button class="btn btn-primary purple-btn" (click)="guardar()" [disabled]="!form.valid || cargando">
-        <span *ngIf="!cargando"><i class="bi bi-save"></i> Guardar Configuración</span>
-        <span *ngIf="cargando"><i class="bi bi-hourglass-split"></i> Procesando...</span>
+    <div class="modal-footer justify-end">
+      <button type="button" class="btn-ghost" (click)="close.emit()" [disabled]="cargando">Cancelar</button>
+      <button type="button" class="btn-guinda shadow-btn" (click)="guardar()" [disabled]="!form.valid || cargando">
+        <i class="bi" [ngClass]="cargando ? 'bi-hourglass-split spin-icon' : 'bi-save2-fill'"></i> 
+        {{ cargando ? 'Guardando...' : 'Guardar Periodo' }}
       </button>
     </div>
 

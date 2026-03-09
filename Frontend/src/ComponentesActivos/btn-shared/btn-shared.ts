@@ -13,7 +13,7 @@ export class BtnShared
 {
   @Input() text: string = 'Botón';
   @Input() iconClass: string = '';
-  @Input() variant: 'solid' | 'outline' = 'solid'; // 'solid' o 'outline'
+  @Input() variant: 'solid' | 'outline' = 'solid'; 
   @Input() disabled: boolean = false;
 
   @Output() onClick = new EventEmitter<void>();

@@ -1,0 +1,63 @@
+<div class="modal-backdrop fade-in" (click)="cerrarModal()">
+  
+  <div class="premium-modal animate-slide-up" (click)="$event.stopPropagation()">
+    
+    <header class="modal-header guinda-gradient">
+      <div class="header-content">
+        <span class="badge-tag"><i class="bi bi-sliders2 me-1"></i> Preferencias</span>
+        <div class="header-titles">
+          <h2>Configuración Global</h2>
+          <p>Ajustes de la cuenta administrativa</p>
+        </div>
+      </div>
+      <button class="btn-close-white" (click)="cerrarModal()"><i class="bi bi-x-lg"></i></button>
+    </header>
+
+    <div class="modal-body custom-scroll">
+      
+      <h3 class="section-title delay-100">Interfaz y Visualización</h3>
+      
+      <div class="policy-card delay-200">
+        <div class="icon-box bg-light-gray"><i class="bi bi-moon-stars text-muted"></i></div>
+        <div class="policy-content flex-row-between">
+          <div>
+            <h3>Modo Oscuro</h3>
+            <p>Esquema de colores para reducir fatiga visual.</p>
+          </div>
+          <label class="switch-ios"><input type="checkbox" (click)="toggleTheme()" title="Cambiar Tema"><span class="slider"></span></label>
+        </div>
+      </div>
+
+      <h3 class="section-title delay-300 mt-3">Notificaciones del Sistema</h3>
+      
+      <div class="policy-card delay-400">
+        <div class="icon-box bg-pastel-green"><i class="bi bi-bell text-success"></i></div>
+        <div class="policy-content flex-row-between">
+          <div>
+            <h3>Alertas Académicas</h3>
+            <p>Notificar al cierre de periodos de evaluación.</p>
+          </div>
+          <label class="switch-ios"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+      </div>
+
+      <div class="policy-card delay-500">
+        <div class="icon-box bg-pastel-warning"><i class="bi bi-clipboard-data text-warning"></i></div>
+        <div class="policy-content flex-row-between">
+          <div>
+            <h3>Resumen Diario</h3>
+            <p>Reporte automatizado al final de la jornada.</p>
+          </div>
+          <label class="switch-ios"><input type="checkbox" checked><span class="slider"></span></label>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-footer justify-end">
+      <button class="btn-ghost" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-guinda" (click)="cerrarModal()">Guardar Cambios</button>
+    </div>
+
+  </div>
+</div>

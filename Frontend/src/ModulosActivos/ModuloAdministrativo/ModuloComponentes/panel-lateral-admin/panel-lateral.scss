@@ -1,130 +1,168 @@
-/* --- Paleta de Colores Institucional --- */
 :host {
-  --color-guinda-oscuro: #5a1a21;
-  --color-guinda-claro: #8a2a34;
-  --color-texto-claro: #f0e6e6;
-  --color-texto-activo: #ffffff;
-  --color-fondo-hover: rgba(255, 255, 255, 0.08);
-  --color-activo: rgba(255, 255, 255, 0.15);
-  --fuente-principal: 'Roboto', sans-serif;
+  --guinda-dark: #5a1a21;
+  --guinda-main: #8a2a34;
+  --text-white: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.7);
+  --hover-bg: rgba(255, 255, 255, 0.08);
+  --active-bg: rgba(255, 255, 255, 0.15);
+  
+  // Variables de Animación y Dimensiones
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 85px;
+  --transition-speed: 0.4s;
 }
 
-/* =============================================
-   1. ESTRUCTURA PRINCIPAL DEL SIDEBAR
-   ============================================= */
-.sidebar {
-  width: 300px;
+.sidebar.premium-sidebar {
+  width: var(--sidebar-width);
   height: 100vh;
   display: flex;
-  flex-direction: column; 
-  position: relative;
-
-  
-  /* --- FONDO DEGRADADO GUINDA --- */
-  background: linear-gradient(180deg, var(--color-guinda-oscuro) 0%, var(--color-guinda-claro) 100%);
-  color: var(--color-texto-claro);
-  
-  transition: width 0.3s ease-in-out;
-}
-
-/* =============================================
-   2. ENCABEZADO (LOGO Y NOMBRE)
-   ============================================= */
-.sidebar-header {
-  padding: 1.5rem;
-  text-align: center;
-  flex-shrink: 0;
-}
-.school-name {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--color-texto-activo);
-  margin: 0 0 1rem 0;
-}
-.logo { 
-  margin: 1.5rem;
-  height: 160px; 
-  filter: brightness(0) invert(2); /* Pone el logo en blanco si es oscuro */
-}
-
-/* --- BARRA DE SEPARACIÓN --- */
-.separator {
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  margin: 0 1.5rem;
-}
-
-/* =============================================
-   3. MENÚ DE NAVEGACIÓN
-   ============================================= */
-.nav-menu {
-  flex-grow: 2;
-  overflow-y: auto;
-  display: flex;
-  align-self: center;
-  align-content: center;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 1.5rem;
+  background: linear-gradient(165deg, var(--guinda-dark) 0%, var(--guinda-main) 100%);
+  color: var(--text-white);
+  transition: width var(--transition-speed) cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 4px 0 25px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  overflow: hidden;
+
+  /* --- ESTADO COLAPSADO --- */
+  &.colapsado {
+    width: var(--sidebar-collapsed-width);
+    .sidebar-header { padding: 2rem 0.5rem 1.5rem; }
+    .logo-container { width: 50px; height: 50px; padding: 6px; }
+    .nav-menu { padding: 2rem 0.5rem; }
+    .nav-item { padding: 0.85rem; justify-content: center; }
+    .sidebar-footer { padding: 1.5rem 0.5rem; }
+  }
 }
 
-.nav-menu a {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.9rem 1.2rem;
-  border-radius: 24px;
-  text-decoration: none;
-  color: var(--color-texto-claro);
-  font-weight: 500;
-  
-  /* --- TIPOGRAFÍA MÁS GRANDE --- */
-  font-size: 1.05rem; 
-
-  cursor: pointer; // Esto hace que el cursor se convierta en "manita"
-  transition: all 0.2s ease;
+/* Ocultar elementos suavemente (Texto) */
+.hidden {
+  opacity: 0 !important;
+  white-space: nowrap;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 0.2s ease;
 }
 
-.nav-menu a i { 
-  font-size: 1.3rem;
-  opacity: 0.8;
-}
-
-/* --- EFECTOS HOVER Y ACTIVO --- */
-.nav-menu a:hover {
-  background-color: var(--color-fondo-hover);
-  color: var(--color-texto-activo);
-}
-
-.nav-menu a.active {
-  background-color: var(--color-activo);
-  color: var(--color-texto-activo);
-  font-weight: 600;
-}
-
-
-/* =============================================
-   4. PIE DE PÁGINA (ESLOGAN)
-   ============================================= */
-.sidebar-footer {
-  padding: 1.5rem;
+/* --- ENCABEZADO Y LOGO --- */
+.sidebar-header {
+  padding: 2.5rem 1.5rem 1.5rem;
   text-align: center;
-  flex-shrink: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-}
-.slogan {
-  margin: 0;
-  color: var(--color-texto-claro);
-  opacity: 0.8;
-  
-  /* --- ESLOGAN EN CURSIVA Y MÁS GRANDE --- */
-  font-style: italic;
-  font-size: 1.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex; flex-direction: column; align-items: center;
+  transition: padding var(--transition-speed) ease;
+
+  .logo-container {
+    width: 160px; height: 160px;
+    margin: 1.0rem;
+    border-radius: 20px; padding: 12px; cursor: pointer;
+    transition: all var(--transition-speed) cubic-bezier(0.34, 1.56, 0.64, 1);
+    
+    // Animación de rebote sutil en el logo
+    &:hover { transform: scale(1.08) rotate(3deg); background: rgba(255, 255, 255, 0.1); }
+    
+    .logo { width: 100%; height: 100%; object-fit: contain; filter: brightness(0) invert(1); transition: all var(--transition-speed); }
+  }
+
+  .header-text {
+    transition: opacity 0.3s ease; opacity: 1;
+    .school-name { font-size: 1.3rem; font-weight: 800; letter-spacing: 0.5px; margin: 0 0 4px 0; white-space: nowrap; }
+    .school-subtitle { font-size: .8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; white-space: nowrap; }
+  }
 }
 
+/* --- MENÚ DE NAVEGACIÓN --- */
+.nav-menu {
+  flex-grow: 1; padding: 2rem 1.2rem; overflow-y: auto; overflow-x: hidden;
+  display: flex; flex-direction: column; gap: 0.6rem;
+  transition: padding var(--transition-speed) ease;
 
-/* =============================================
-   5. ESTILOS PARA EL MODO COLAPSADO
-   ============================================= */
-.sidebar.colapsado {
+  .menu-label {
+    font-size: 0.65rem; color: var(--text-muted); font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 10px 10px;
+    transition: opacity 0.3s ease; opacity: 1;
+  }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1rem;
+    border-radius: 16px; text-decoration: none; color: var(--text-muted);
+    font-weight: 500; font-size: 0.95rem; position: relative;
+    transition: all 0.3s ease; white-space: nowrap;
+
+    .active-indicator {
+      position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 5px; height: 0; background: #fff; border-radius: 0 6px 6px 0;
+      transition: height 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 2px 0 8px rgba(255,255,255,0.5);
+    }
+    
+    .icon-box {
+      width: 35px; height: 35px; display: grid; place-items: center;
+      border-radius: 10px; transition: all 0.3s ease;
+      i { font-size: 1.3rem; transition: transform 0.3s ease; }
+    }
+
+    .link-text { transition: opacity 0.3s ease, transform 0.3s ease; opacity: 1; }
+
+    /* Animación Hover */
+    &:hover {
+      background: var(--hover-bg); color: var(--text-white);
+      .icon-box i { transform: scale(1.15) translateY(-2px); }
+      .link-text { transform: translateX(4px); }
+    }
+
+    /* ESTADO ACTIVO */
+    &.active {
+      background: var(--active-bg); color: var(--text-white); font-weight: 700;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 15px rgba(0,0,0,0.1);
+      
+      .active-indicator { height: 60%; }
+      .icon-box {
+        background: rgba(255,255,255,0.15);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        i { color: #fff; }
+      }
+    }
+  }
 }
+
+/* --- FOOTER --- */
+.sidebar-footer {
+  padding: 1rem; transition: padding var(--transition-speed) ease;
+
+  .footer-card {
+    background: rgba(48, 0, 0, 0.15); border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px; padding: 1rem; text-align: center;
+    transition: all var(--transition-speed) ease;
+    display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+    position: relative; overflow: hidden;
+
+    // Efecto de luz radial al pasar el ratón
+    &::before {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.5s; pointer-events: none;
+    }
+    &:hover::before { opacity: 1; }
+    &:hover .shield-icon { transform: scale(1.1) rotate(5deg); color: #fff; }
+
+    .shield-icon { font-size: 1.6rem; color: rgba(255,255,255,0.6); transition: all 0.3s ease; }
+    
+    .footer-text { transition: opacity 0.3s ease; opacity: 1; }
+    .slogan { margin: 0; color: var(--text-muted); font-size: 1.10em; font-style: italic; line-height: 1.4; font-weight: 500; white-space: nowrap; }
+
+    /* Adaptación del footer cuando el menú se colapsa */
+    &.icon-only {
+      padding: 1rem 0;
+      .shield-icon { margin: 0; font-size: 1.4rem; }
+    }
+  }
+}
+
+/* Scrollbar Elegante */
+.custom-scroll::-webkit-scrollbar { width: 5px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+.custom-scroll:hover::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.4); }

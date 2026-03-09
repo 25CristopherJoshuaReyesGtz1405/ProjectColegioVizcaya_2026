@@ -1,0 +1,94 @@
+/* VARIABLES */
+$guinda: #8c1d40; $guinda-dark: #65122d; $teal: #0f766e; $blue: #2563eb;
+$text-dark: #1f2937; $text-muted: #6b7280; $border: #e2e8f0; $bg-light: #f8fafc; $white: #ffffff;
+
+/* BACKDROP Y MODAL (36px) */
+.modal-backdrop { position: fixed; inset: 0; z-index: 1200; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(6px); display: flex; justify-content: center; align-items: center; padding: 1rem; }
+.premium-modal { width: 100%; background: $bg-light; border-radius: 36px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3); max-height: 90vh; &.visor-modal { max-width: 900px; } }
+
+/* HEADER */
+.modal-header.guinda-gradient { padding: 1.8rem 2.5rem; color: $white; background: linear-gradient(135deg, $guinda, $guinda-dark); display: flex; justify-content: space-between; align-items: flex-start; .badge-tag { background: rgba($white, 0.15); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; display: inline-block; margin-bottom: 0.8rem; } .header-titles { h2 { margin: 0 0 4px 0; font-size: 1.4rem; font-weight: 800; } p { margin: 0; font-size: 0.85rem; opacity: 0.9; } } .btn-close-white { background: transparent; border: none; color: rgba($white, 0.7); font-size: 1.4rem; cursor: pointer; transition: 0.2s; &:hover { color: $white; transform: rotate(90deg); } } }
+
+/* BARRA SPOTLIGHT */
+.spotlight-search-container {
+  padding: 1.5rem 2.5rem; background: $white; border-bottom: 1px solid $border; position: relative; z-index: 10;
+  
+  .search-wrapper {
+    position: relative; width: 100%;
+    .search-icon { position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 1.5rem; color: #cbd5e1; transition: 0.3s; }
+    
+    input {
+      width: 100%; height: 60px; padding: 0 3.5rem 0 3.5rem; border-radius: 36px;
+      border: 2px solid $border; background: $bg-light; font-size: 1.1rem; color: $text-dark; font-weight: 600;
+      transition: all 0.3s; outline: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+      &:focus { border-color: $guinda; background: $white; box-shadow: 0 0 0 4px rgba($guinda, 0.1); }
+      &::placeholder { color: #94a3b8; font-weight: 500; }
+      &:disabled { background: $border; color: $text-muted; opacity: 0.7; }
+    }
+    
+    &:focus-within .search-icon { color: $guinda; }
+
+    .btn-clear-search { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 1.5rem; color: #ef4444; cursor: pointer; transition: 0.2s; &:hover { transform: translateY(-50%) scale(1.1); } }
+  }
+
+  .search-results-dropdown {
+    position: absolute; top: calc(100% - 10px); left: 2.5rem; right: 2.5rem; background: $white; border-radius: 24px; border: 1px solid $border; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-height: 300px; overflow-y: auto; z-index: 20; padding: 0.5rem;
+    
+    .result-item {
+      display: flex; align-items: center; gap: 1rem; padding: 1rem 1.2rem; border-radius: 16px; cursor: pointer; transition: 0.2s;
+      &:hover { background: $bg-light; transform: translateX(5px); }
+      .res-avatar { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 1.2rem; color: white; &.bg-blue { background: $blue; } &.bg-teal { background: $teal; } }
+      .res-info { flex: 1; h4 { margin: 0; font-size: 0.95rem; font-weight: 700; color: $text-dark; } span { font-size: 0.75rem; color: $text-muted; font-weight: 600; text-transform: uppercase; } }
+    }
+  }
+}
+
+/* ESTADO VACÍO */
+.empty-state { display: flex; justify-content: center; align-items: center; min-height: 300px; padding: 3rem; .empty-content { text-align: center; color: #cbd5e1; i { font-size: 4rem; display: block; margin-bottom: 1rem; color: #e2e8f0; } h3 { font-size: 1.2rem; font-weight: 800; color: #94a3b8; margin: 0 0 0.5rem; } p { font-size: 0.9rem; max-width: 300px; margin: 0 auto; line-height: 1.5; } } }
+
+/* LAYOUT EXPEDIENTE (2 COLUMNAS) */
+.modal-body { padding: 0; overflow-y: auto; flex: 1; }
+.expediente-layout { display: grid; grid-template-columns: 1fr 2fr; @media (max-width: 768px) { grid-template-columns: 1fr; } }
+
+/* CREDENCIAL VIRTUAL (IZQUIERDA) */
+.id-card-column {
+  padding: 2rem; border-right: 1px solid $border; background: $white;
+  .virtual-id-card {
+    background: $bg-light; border-radius: 24px; padding: 2rem 1.5rem; border: 1px solid $border; text-align: center; position: relative; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    .card-glow { position: absolute; top: 0; left: 0; right: 0; height: 6px; &.blue-glow { background: linear-gradient(90deg, $blue, transparent); } &.teal-glow { background: linear-gradient(90deg, $teal, transparent); } }
+    
+    .profile-photo-circle { width: 120px; height: 120px; margin: 0 auto 1.2rem; border-radius: 50%; background: $white; border: 4px solid $white; box-shadow: 0 10px 20px rgba(0,0,0,0.08); display: grid; place-items: center; overflow: hidden; img { width: 100%; height: 100%; object-fit: cover; } i { font-size: 3rem; color: #cbd5e1; } }
+    .profile-name { margin: 0 0 0.2rem; font-size: 1.2rem; font-weight: 900; color: $text-dark; line-height: 1.2; }
+    .profile-id { font-size: 0.85rem; color: $text-muted; font-weight: 700; font-family: monospace; display: block; margin-bottom: 1.2rem; }
+    
+    .profile-badges { display: flex; justify-content: center; gap: 0.5rem; flex-wrap: wrap; .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; &.badge-blue { background: #eff6ff; color: $blue; } &.badge-teal { background: #f0fdfa; color: $teal; } &.badge-green { background: #ecfdf5; color: #059669; } } }
+  }
+}
+
+/* DATOS ESTRUCTURADOS (DERECHA) */
+.details-column { padding: 2rem 2.5rem; background: $bg-light; .section-title { font-size: 1.05rem; color: $text-dark; font-weight: 800; margin: 0 0 1.5rem 0; display: flex; align-items: center; gap: 0.5rem; i { color: $guinda; font-size: 1.3rem; } } }
+
+.data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.data-pill {
+  &.full-width { grid-column: span 2; }
+  label { display: block; font-size: 0.75rem; font-weight: 700; color: $text-muted; margin-bottom: 0.4rem; padding-left: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .value { 
+    background: $white; padding: 1rem 1.2rem; border-radius: 36px; border: 1px solid $border; font-size: 0.95rem; font-weight: 600; color: $text-dark; box-shadow: 0 2px 4px rgba(0,0,0,0.01); 
+    &.highlight-guinda { color: $guinda; font-weight: 900; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
+    &.text-teal { color: $teal; font-weight: 800; }
+  }
+  
+  &.list-pill .value-tags {
+    background: $white; padding: 1rem 1.2rem; border-radius: 24px; border: 1px solid $border; display: flex; flex-wrap: wrap; gap: 0.5rem;
+    .tag-materia { background: #f1f5f9; padding: 6px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; color: $text-dark; border: 1px solid #e2e8f0; }
+  }
+}
+
+/* FOOTER */
+.modal-footer { padding: 1.2rem 2.5rem; background: $white; border-top: 1px solid $border; display: flex; justify-content: flex-end; gap: 1rem; .btn-ghost { padding: 0.8rem 1.5rem; border-radius: 36px; border: 2px solid $border; background: transparent; color: $text-muted; font-weight: 700; cursor: pointer; transition: 0.2s; &:hover { background: #e2e8f0; color: $text-dark; } } .btn-guinda { padding: 0.8rem 1.8rem; border-radius: 36px; border: none; background: $guinda; color: $white; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 0.5rem; &.shadow-btn { box-shadow: 0 4px 12px rgba($guinda, 0.3); } &:hover:not(:disabled) { background: $guinda-dark; transform: translateY(-2px); box-shadow: 0 6px 15px rgba($guinda, 0.4); } &:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; } } }
+
+/* ANIMACIONES */
+.spin-icon { animation: spin 1s linear infinite; display: inline-block; } @keyframes spin { 100% { transform: rotate(360deg); } }
+.custom-scroll::-webkit-scrollbar { width: 6px; } .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.fade-in { animation: fadeIn 0.3s ease-out; } .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; opacity: 0; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } @keyframes slideUp { from { opacity: 0; transform: translateY(30px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }

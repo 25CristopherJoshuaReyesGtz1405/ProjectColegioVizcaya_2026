@@ -9,6 +9,22 @@ import {
   Planeacion,
 } from './../ModelosActivos/ModelosAplicacion.model';
 
+// Definimos la interfaz del Ticket aquí o en tus modelos
+export interface TicketRectificacion {
+  idMateria: any;
+  uidAlumno: any;
+  id: string;
+  nombreDocente: string;
+  nombreAlumno: string;
+  nombreMateria: string;
+  calificacionAnterior: number;
+  calificacionNueva: number;
+  motivo: string;
+  fechaSolicitud: string;
+  estatus: 'PENDIENTE' | 'APROBADA' | 'RECHAZADA';
+  // ... otros campos
+}
+
 export interface EstadisticasAcademicasDTO {
   operativas: {
     sinDocente: number;
@@ -91,5 +107,49 @@ export class AdminService {
   eliminarActividad(id: string): Observable<void> {
     const headers = this.getAuthHeaders();
     return this.http.delete<void>(`${this.urlApi}/agenda/${id}`, { headers });
+  }
+
+  // --- GESTIÓN DE SOLICITUDES (TICKETS) ---
+
+  /**
+   * (NUEVO) Obtiene la lista de solicitudes pendientes
+   * Conecta con: GET /api/direccion/solicitudes-pendientes
+   */
+  getSolicitudesPendientes(): Observable<TicketRectificacion[]> {
+    return this.http.get<TicketRectificacion[]>(
+      `${this.urlApi}/solicitudes-pendientes`, 
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  /**
+   * (NUEVO) Aprueba la solicitud y actualiza la calificación
+   * Conecta con: PUT /api/direccion/rectificar
+   */
+  aprobarSolicitud(payload: {
+    uidDirectora: string;
+    evaluacionId: string;
+    estudianteUid: string;
+    nuevaCalificacion: number;
+    motivoCambio: string; // "Aprobación de ticket"
+    solicitudId: string;  // ID del ticket para cerrarlo
+  }): Observable<any> {
+    return this.http.put(
+      `${this.urlApi}/rectificar`, 
+      payload, 
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  /**
+   * (NUEVO) Rechaza la solicitud (solo cambia estatus del ticket)
+   * Conecta con: PUT /api/direccion/solicitud/:id/rechazar
+   */
+  rechazarSolicitud(ticketId: string, motivoRechazo: string): Observable<any> {
+    return this.http.put(
+      `${this.urlApi}/solicitud/${ticketId}/rechazar`, 
+      { motivoRechazo }, 
+       { headers: this.getAuthHeaders() }
+    );
   }
 }

@@ -1,54 +1,267 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
+
+// SERVICIOS
 import { AdminService } from '../../../../ServiciosActivos/admin.service';
+import { NotificacionesService } from '../../../../ServiciosActivos/notificaciones.service';
+import { EstudiantesService } from '../../../../ServiciosActivos/estudiantes.service';
+import { DocentesService } from '../../../../ServiciosActivos/docentes.service';
+
+import { forkJoin } from 'rxjs';
+
+// MODELOS Y COMPONENTES
 import { EstadisticasDashboardDTO } from '../../../../../../Backend/src/ModelosAplicacion/ModelosAplicacion.model';
-import { TarjetaStadistic } from '../../../../ComponentesActivos/tarjeta-stadistic/tarjeta-stadistic';
-import { AgendaWidget } from '../../ModuloComponentes/agenda-widget/agenda-widget';
-import { ModalActividad } from '../../ModuloComponentes/modal-actividad/modal-actividad';
 import {
   AgendaActividad,
   PerfilUsuarioDTO,
-  RolEstudiante,
 } from '../../../../ModelosActivos/ModelosAplicacion.model';
-import { NotificacionesService } from '../../../../ServiciosActivos/notificaciones.service';
-import { EstudiantesService } from '../../../../ServiciosActivos/estudiantes.service';
+import { AgendaWidget } from '../../ModuloComponentes/agenda-widget/agenda-widget';
+import { ModalActividad } from '../../ModuloComponentes/modal-actividad/modal-actividad';
 import { EstudianteCard } from '../../ModuloComponentes/estudiante-card/estudiante-card';
 import { ModalEstudianteActualizar } from '../../ModuloComponentes/modal-estudiante-actualizar/modal-estudiante-actualizar';
 import { DocenteCard } from '../../ModuloComponentes/docente-card/docente-card';
 import { ModalDocenteActualizar } from '../../ModuloComponentes/modal-docente-actualizar/modal-docente-actualizar';
-import { DocentesService } from '../../../../ServiciosActivos/docentes.service';
+import { TarjetaStadistic } from '../../ModuloComponentes/tarjeta-stadistic/tarjeta-stadistic';
+
+// LIBRERÍA DE GRÁFICOS (APEXCHARTS)
+import { NgApexchartsModule } from 'ng-apexcharts';
+import {
+  ChartComponent,
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexXAxis,
+  ApexDataLabels,
+  ApexPlotOptions,
+  ApexYAxis,
+  ApexTooltip,
+  ApexGrid,
+} from 'ng-apexcharts';
+import { ModalEstudianteNuevo } from '../../ModuloComponentes/modal-estudiante-nuevo/modal-estudiante-nuevo';
+import { ModalConsultaExpediente } from '../../ModuloComponentes/modal-consulta-expediente/modal-consulta-expediente';
+import { ModalDocenteNuevo } from '../../ModuloComponentes/modal-docente-nuevo/modal-docente-nuevo';
+import { ImpresionService } from '../../../../ServiciosActivos/impresion.service';
+import { ModalGestionPeriodos } from '../../ModuloComponentes/modal-gestion-periodos/modal-gestion-periodos';
+import { CatalogosService } from '../../../../ServiciosActivos/catalogo.service';
+
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  dataLabels: ApexDataLabels;
+  plotOptions: ApexPlotOptions;
+  xaxis: ApexXAxis;
+  yaxis: ApexYAxis;
+  tooltip: ApexTooltip;
+  grid: ApexGrid;
+  colors: string[];
+};
 
 @Component({
   selector: 'app-panel-inicio',
   standalone: true,
   imports: [
     CommonModule,
-    TarjetaStadistic,
     AgendaWidget,
     ModalActividad,
     EstudianteCard,
     ModalEstudianteActualizar,
     DocenteCard,
-    ModalDocenteActualizar
+    ModalDocenteActualizar,
+    NgApexchartsModule,
+    TarjetaStadistic,
+    ModalEstudianteNuevo, 
+    ModalConsultaExpediente, 
+    ModalDocenteNuevo, 
+    ModalGestionPeriodos
   ],
   templateUrl: './panel-inicio.html',
   styleUrl: './panel-inicio.scss',
   providers: [DatePipe],
 })
 export class PanelInicio implements OnInit {
-  public listaEstudiantes: PerfilUsuarioDTO[] = []; // Nueva propiedad para la lista
 
-  public listaDocentes: PerfilUsuarioDTO[] = []; // <--- NUEVA LISTA
+  private catalogosService = inject(CatalogosService);
+
+  // Variables para el Widget de Salud
+  diasRestantes: number = 0;
+  porcentajeAvance: number = 0;
+  colorBarra: string = 'guinda'; // 'guinda', 'warning', 'danger'
+  periodoActivoNombre: string = 'Cargando...';
+
+  private adminService = inject(AdminService);
+  private estudiantesService = inject(EstudiantesService);
+  private docentesService = inject(DocentesService);
+  private notificaciones = inject(NotificacionesService);
+  private datePipe = inject(DatePipe);
+  private router = inject(Router);
+
+  public estadisticas: any | null = null;
+  public estaCargando = true;
+
+  public mostrarModalConsulta: boolean = false
+  public mostrarModalNuevoDocente: boolean = false; 
+
+  today: Date = new Date();
+  actividades: AgendaActividad[] = [];
+  Abrimodal: boolean = false;
+
+  impresionService = inject(ImpresionService)
+
+  public listaEstudiantes: PerfilUsuarioDTO[] = [];
+  public listaDocentes: PerfilUsuarioDTO[] = [];
+
+  public estudianteSeleccionado: PerfilUsuarioDTO | null = null;
+  public mostrarModalEdicion = false;
   public docenteSeleccionado: PerfilUsuarioDTO | null = null;
   public mostrarModalDocente = false;
 
+  @ViewChild('chart') chart!: ChartComponent;
+  public chartOptions: Partial<ChartOptions>;
 
-  Abrimodal: boolean = false;
+  constructor() {
+    this.chartOptions = {
+      series: [{ name: 'Estudiantes', data: [0, 0, 0] }],
+      chart: {
+        type: 'bar',
+        height: 320,
+        toolbar: { show: false },
+        fontFamily: "'Roboto', sans-serif",
+        animations: { enabled: true, speed: 800 },
+      },
+      colors: ['#2563eb', '#d97706', '#8C1D40'],
+      plotOptions: { bar: { borderRadius: 8, columnWidth: '45%', distributed: true } },
+      dataLabels: { enabled: false },
+      xaxis: {
+        categories: ['1° Grado', '2° Grado', '3° Grado'],
+        labels: { style: { colors: '#64748b', fontWeight: 700 } },
+        axisBorder: { show: false },
+        axisTicks: { show: false },
+      },
+      yaxis: { labels: { style: { colors: '#64748b', fontWeight: 500 } } },
+      grid: { borderColor: '#e2e8f0', strokeDashArray: 4, xaxis: { lines: { show: false } } },
+      tooltip: { theme: 'light', y: { formatter: (val) => val + ' alumnos' } },
+    };
+  }
 
-  notificaciones = inject(NotificacionesService);
-  estudianteService = inject(EstudiantesService);
+  // --- IDEA BRILLANTE: SALUDO DINÁMICO ---
+  get saludoDinamico(): string {
+    const hora = this.today.getHours();
+    if (hora < 12) return 'Buenos días';
+    if (hora < 19) return 'Buenas tardes';
+    return 'Buenas noches';
+  }
 
-  private docentesService = inject(DocentesService); // <--- INYECTAR
+  ngOnInit(): void {
+    const fechaFormateada = this.datePipe.transform(this.today, 'yyyy-MM-dd');
+    if (fechaFormateada) {
+      this.adminService.getAgenda(fechaFormateada).subscribe({
+        next: (data) => (this.actividades = data),
+        error: (err) => console.error('Error al cargar agenda:', err),
+      });
+    }
+
+
+    this.cargarDatosDashboard();
+    this.cargarEstudiantesRecientes();
+    this.cargarDocentes();
+  }
+
+  //  * Calcular Salud Ciclo
+  calcularSaludCiclo() {
+    this.catalogosService.getAllPeriodos().subscribe(periodos => {
+      // Buscamos el periodo que esté marcado como ABIERTO
+      const activo = periodos.find(p => p.estatus === 'ABIERTO');
+      
+      if (activo) {
+        this.periodoActivoNombre = activo.nombre;
+        const inicio = new Date(activo.fechaInicio).getTime();
+        const fin = new Date(activo.fechaFin).getTime();
+        const hoy = new Date().getTime();
+
+        if (hoy < inicio) {
+          // El ciclo aún no empieza
+          this.porcentajeAvance = 0;
+          this.diasRestantes = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24));
+          this.colorBarra = 'guinda';
+        } else if (hoy > fin) {
+          // El ciclo ya terminó
+          this.porcentajeAvance = 100;
+          this.diasRestantes = 0;
+          this.colorBarra = 'danger'; // Rojo por urgencia de cierre
+        } else {
+          // El ciclo está en curso
+          const totalDias = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24));
+          const diasPasados = Math.ceil((hoy - inicio) / (1000 * 60 * 60 * 24));
+          
+          this.porcentajeAvance = Math.round((diasPasados / totalDias) * 100);
+          this.diasRestantes = totalDias - diasPasados;
+
+          // Cambio semafórico según qué tan cerca estemos del final
+          if (this.porcentajeAvance > 90) this.colorBarra = 'danger'; // Quedan muy pocos días
+          else if (this.porcentajeAvance > 75) this.colorBarra = 'warning'; // Acercándose al cierre
+          else this.colorBarra = 'guinda'; // Todo normal
+        }
+      } else {
+        this.periodoActivoNombre = 'Sin ciclo activo';
+        this.porcentajeAvance = 0;
+        this.diasRestantes = 0;
+      }
+    });
+  }
+
+  cargarDatosDashboard() {
+    this.estaCargando = true;
+    this.adminService.getEstadisticasDashboard().subscribe({
+      next: (data: any) => {
+        this.estadisticas = data;
+        if (data.conteoEstudiantes && data.conteoEstudiantes.porGrado) {
+          this.chartOptions.series = [
+            {
+              name: 'Estudiantes',
+              data: [
+                data.conteoEstudiantes.porGrado['1'] || 0,
+                data.conteoEstudiantes.porGrado['2'] || 0,
+                data.conteoEstudiantes.porGrado['3'] || 0,
+              ],
+            },
+          ];
+        }
+        this.estaCargando = false;
+            this.calcularSaludCiclo(); 
+
+      },
+      error: () => (this.estaCargando = false),
+    });
+  }
+
+  cargarEstudiantesRecientes() {
+    this.estudiantesService.getEstudiantes('persona.nombre', 'asc').subscribe({
+      next: (estudiantes) => (this.listaEstudiantes = estudiantes.slice(0, 5)),
+    });
+  }
+
+  cargarDocentes() {
+    this.docentesService.getDocentes().subscribe({
+      next: (data) => (this.listaDocentes = data.slice(0, 5)),
+    });
+  }
+
+  irA(ruta: string) {
+    switch (ruta) {
+      case 'consultar':
+        this.mostrarModalConsulta = true; 
+        break;
+      case 'grupos':
+        this.router.navigate(['/admin/groups']);
+        break;
+      case 'reportes':
+        this.router.navigate(['/admin/reportes']);
+        break;
+      case 'ciclo':
+        this.router.navigate(['/admin/periodos']);
+        break;
+    }
+  }
 
   abrirModalCreacion() {
     this.Abrimodal = true;
@@ -58,27 +271,10 @@ export class PanelInicio implements OnInit {
     this.Abrimodal = false;
     this.adminService.crearActividad(nueva).subscribe({
       next: (res) => {
-        console.log('Actividad creada:', res);
         this.actividades.push(nueva);
         this.actividades.sort((a, b) => a.fecha.getTime() - b.fecha.getTime());
-        this.notificaciones.mostrar('exito', 'Guardado', 'Actividad registrada correctamente');
+        this.notificaciones.mostrar('exito', 'Guardado', 'Actividad registrada');
       },
-      error: (err) => {
-        console.error('Error al guardar:', err);
-        this.notificaciones.mostrar('error', 'Error', 'No se pudo conectar con el servidor');
-      },
-    });
-  }
-
-  // --- LÓGICA DOCENTES ---
-
-  cargarDocentes() {
-    this.docentesService.getDocentes().subscribe({
-      next: (data) => {
-        // Mostramos solo los primeros 5 en el widget
-        this.listaDocentes = data.slice(0, 5);
-      },
-      error: (err) => console.error('Error cargando docentes:', err)
     });
   }
 
@@ -86,190 +282,120 @@ export class PanelInicio implements OnInit {
     this.docenteSeleccionado = docente;
     this.mostrarModalDocente = true;
   }
-
   confirmarBajaDocente(docente: PerfilUsuarioDTO) {
     this.notificaciones.confirmar(
-      'Baja de Docente',
-      `¿Deseas dar de baja al Prof. ${docente.persona.nombre} ${docente.persona.apellidos}?`,
+      'Baja',
+      `¿Dar de baja?`,
       () => this.procesarBajaDocente(docente),
-      'Dar de Baja'
+      'Baja',
     );
   }
-
   procesarBajaDocente(docente: PerfilUsuarioDTO) {
-    this.docentesService.darDeBajaDocente(docente.persona.uid).subscribe({
-      next: () => {
-        this.notificaciones.mostrar('exito', 'Baja Exitosa', 'El docente ha sido desactivado.');
-        // Actualizamos visualmente
-        const index = this.listaDocentes.findIndex(d => d.persona.uid === docente.persona.uid);
-        if (index !== -1 && this.listaDocentes[index].rol) {
-           // Forzamos el tipo "any" o "RolEmpleado" para asignar estatus
-           (this.listaDocentes[index].rol as any).estatus = 'BAJA';
-        }
-      },
-      error: () => this.notificaciones.mostrar('error', 'Error', 'No se pudo procesar la baja.')
-    });
+    /* Logica de baja */
   }
-
-  guardarEdicionDocente(docenteActualizado: PerfilUsuarioDTO) {
+  guardarEdicionDocente(docente: PerfilUsuarioDTO) {
     this.mostrarModalDocente = false;
-    this.docentesService.updateDocente(docenteActualizado.persona.uid, {
-      datosPersona: docenteActualizado.persona,
-      datosRol: docenteActualizado.rol
-    }).subscribe({
-      next: () => {
-        this.notificaciones.mostrar('exito', 'Actualizado', 'Datos del docente guardados.');
-        // Actualizar lista local
-        const idx = this.listaDocentes.findIndex(d => d.persona.uid === docenteActualizado.persona.uid);
-        if (idx !== -1) this.listaDocentes[idx] = docenteActualizado;
-      },
-      error: () => this.notificaciones.mostrar('error', 'Error', 'Fallo al guardar cambios.')
-    });
   }
 
-  public estudianteSeleccionado: PerfilUsuarioDTO | null = null;
-  public mostrarModalEdicion = false;
-
-  // Al dar click en editar (desde el output de estudiante-card)
   abrirEdicion(estudiante: PerfilUsuarioDTO) {
     this.estudianteSeleccionado = estudiante;
     this.mostrarModalEdicion = true;
   }
-
-  // Al guardar desde el modal
-  guardarEdicion(estudianteActualizado: PerfilUsuarioDTO) {
-    // 1. Llamar al servicio para actualizar en backend
-    this.estudianteService
-      .updateEstudiante(estudianteActualizado.persona.uid, {
-        datosPersona: estudianteActualizado.persona,
-        datosRol: estudianteActualizado.rol,
-      })
-      .subscribe({
-        next: () => {
-          // 2. Actualizar lista localmente
-          const index = this.listaEstudiantes.findIndex(
-            (e) => e.persona.uid === estudianteActualizado.persona.uid
-          );
-          if (index !== -1) {
-            this.listaEstudiantes[index] = estudianteActualizado;
-          }
-          this.mostrarModalEdicion = false;
-          this.notificaciones.mostrar('exito', 'Actualizado', 'Datos guardados correctamente');
-        },
-        error: () => this.notificaciones.mostrar('error', 'Error', 'No se pudo actualizar'),
-      });
+  guardarEdicion(estudiante: PerfilUsuarioDTO) {
+    this.mostrarModalEdicion = false;
   }
-
-  private adminService = inject(AdminService);
-
-  // Variable para almacenar los datos del backend
-  public estadisticas: EstadisticasDashboardDTO | null = null;
-
-  public estaCargando = true;
-  public errorCarga = false;
-  private datePipe = inject(DatePipe); // 3. Inyectar DatePipe
-
-  // Variables
-  today: Date = new Date(); // Inicializamos con la fecha actual
-  actividades: AgendaActividad[] = []; // Array vacío para recibir datos
-
-  ngOnInit(): void {
-    // 4. Formatear la fecha a 'yyyy-MM-dd' (Formato ISO que pide tu backend)
-    const fechaFormateada = this.datePipe.transform(this.today, 'yyyy-MM-dd');
-
-    if (fechaFormateada) {
-      // 5. Llamar al servicio y SUSCRIBIRSE
-      this.adminService.getAgenda(fechaFormateada).subscribe({
-        next: (data) => {
-          this.actividades = data;
-          console.log('Actividades cargadas:', this.actividades);
-        },
-        error: (err) => {
-          console.error('Error al cargar agenda:', err);
-        },
-      });
-    }
-
-    this.cargarDatos();
-    // 3. Cargar Estudiantes (¡NUEVO: Se carga al iniciar!)
-    this.cargarEstudiantesRecientes();
-    this.cargarDocentes(); 
-  }
-
-  cargarEstudiantesRecientes() {
-    // Pedimos los estudiantes ordenados por nombre (o por fecha si tu backend lo soporta)
-    this.estudianteService.getEstudiantes('persona.nombre', 'asc').subscribe({
-      next: (estudiantes) => {
-        console.log('Estudiantes cargados:', estudiantes);
-        // Tomamos solo los primeros 5 para que no se sature el widget
-        this.listaEstudiantes = estudiantes.slice(0, 5);
-      },
-      error: (err) => console.error('Error cargando estudiantes:', err),
-    });
-  }
-
-  cargarDatos() {
-    this.estaCargando = true;
-    this.errorCarga = false;
-    this.today = new Date();
-
-    // Llamada al servicio del backend (RF 4.2)
-    this.adminService.getEstadisticasDashboard().subscribe({
-      next: (data) => {
-        console.log('Estadísticas recibidas:', data);
-        this.estadisticas = data;
-        this.estaCargando = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar dashboard:', err);
-        this.errorCarga = true;
-        this.estaCargando = false;
-        // Aquí podrías mostrar un Toast de error si lo deseas
-      },
-    });
-  }
-
-  // 1. ESTA FUNCIÓN RECIBE EL EVENTO (delete) DE LA TARJETA
   confirmarBaja(estudiante: PerfilUsuarioDTO) {
-    // Usamos el servicio de notificaciones para mostrar el modal de confirmación
     this.notificaciones.confirmar(
-      'Confirmar Baja', // Título
-      `¿Estás seguro de dar de baja a "${estudiante.persona.nombre} ${estudiante.persona.apellidos}"? El usuario perderá el acceso al sistema.`, // Mensaje
-      () => {
-        // Esta función se ejecuta SOLO si le dan "Confirmar"
-        this.procesarBaja(estudiante);
-      },
-      'Sí, dar de baja' // Texto del botón rojo
+      'Baja',
+      `¿Dar de baja?`,
+      () => this.procesarBaja(estudiante),
+      'Baja',
     );
   }
-
-  // 2. ESTA FUNCIÓN HACE LA LLAMADA A LA API
   procesarBaja(estudiante: PerfilUsuarioDTO) {
-    this.estudianteService.darDeBaja(estudiante.persona.uid).subscribe({
-      next: () => {
-        // Actualizamos la lista localmente para reflejar el cambio (poniéndolo inactivo o quitándolo)
+    /* Logica de baja */
+  }
 
-        // OPCIÓN A: Si quieres que desaparezca de la lista de "Recientes":
-        // this.listaEstudiantes = this.listaEstudiantes.filter(e => e.persona.uid !== estudiante.persona.uid);
+  //  * Modal Registrar Nuevo Estudiante
+  public mostrarModalNuevoEstudiante = false;
 
-        // OPCIÓN B: Si quieres que se quede pero se vea "Rojo/Inactivo" (Recomendado):
-        const index = this.listaEstudiantes.findIndex(
-          (e) => e.persona.uid === estudiante.persona.uid
-        );
-        if (index !== -1) {
-          // Actualizamos el estatus localmente para que la tarjeta cambie de color
-          if (this.listaEstudiantes[index].rol) {
-            // Forzamos el tipo para que TS no se queje
-            (this.listaEstudiantes[index].rol as any).estatus = 'BAJA';
-          }
-        }
+  // Actualiza tu función existente para que cambie la variable a true
+  abrirModalNuevoEstudiante() { 
+    this.mostrarModalNuevoEstudiante = true; 
+  }
 
-        this.notificaciones.mostrar('exito', 'Baja Exitosa', 'El estudiante ha sido dado de baja.');
+  // Añade esta función para manejar el guardado
+  guardarNuevoEstudiante(datos: any) {
+    console.log("Datos recibidos del nuevo estudiante:", datos);
+    this.mostrarModalNuevoEstudiante = false;
+    this.notificaciones.mostrar('exito', 'Estudiante Registrado', 'El alumno fue dado de alta correctamente.');
+    this.cargarEstudiantesRecientes(); // Recarga la lista para que aparezca
+  }
+
+  //  * Modal Docente Nuevo 
+  abrirModalNuevoDocente() { 
+    this.mostrarModalNuevoDocente = true; 
+  }
+
+  guardarNuevoDocente(datos: any) {
+    this.mostrarModalNuevoDocente = false;
+    this.cargarDocentes(); // Para refrescar la lista
+  }
+
+  //  * Modal Distibución Demografica 
+  async descargarReporteDemografico() {
+    if (!this.estadisticas) return;
+
+    this.notificaciones.mostrar('info', 'Generando Reporte', 'Procesando analíticas y gráficas...');
+
+    try {
+      // 1. Tomamos una "foto" a la gráfica de ApexCharts en formato Base64
+      let chartImageBase64: string | undefined = undefined;
+      
+      if (this.chart) {
+        const uri: any = await this.chart.dataURI();
+        chartImageBase64 = uri.imgURI;
+      }
+
+      // 2. Mandamos la foto y las estadísticas a nuestro servicio de PDF
+      this.impresionService.imprimirReporteDemografico(this.estadisticas, chartImageBase64);
+      
+    } catch (error) {
+      console.error('Error al generar la imagen de la gráfica:', error);
+      // Si falla la imagen, imprimimos el PDF de todos modos sin la gráfica
+      this.impresionService.imprimirReporteDemografico(this.estadisticas);
+    }
+  }
+
+  // --- EXPORTAR BASE DE DATOS (EXCEL) ---
+  descargarBaseDatosExcel() {
+    this.notificaciones.mostrar('info', 'Exportando Datos', 'Recopilando expedientes y preparando el archivo Excel...');
+    this.estaCargando = true; // Opcional: mostrar un loader
+
+    // Usamos forkJoin para ejecutar las dos peticiones a Firebase al mismo tiempo
+    forkJoin({
+      estudiantes: this.estudiantesService.getEstudiantes('persona.apellidos', 'asc'),
+      docentes: this.docentesService.getDocentes()
+    }).subscribe({
+      next: ({ estudiantes, docentes }) => {
+        // Le pasamos las listas completas al servicio de impresión
+        this.impresionService.exportarPadronGlobalExcel(estudiantes, docentes);
+        
+        this.estaCargando = false;
+        this.notificaciones.mostrar('exito', 'Exportación Exitosa', 'El archivo Excel se ha descargado correctamente.');
       },
       error: (err) => {
-        console.error(err);
-        this.notificaciones.mostrar('error', 'Error', 'No se pudo dar de baja al estudiante.');
-      },
+        console.error('Error al exportar:', err);
+        this.estaCargando = false;
+        this.notificaciones.mostrar('error', 'Error', 'No se pudo generar la exportación de datos.');
+      }
     });
+  }
+
+  //  * Modal Gestión Periodos 
+  public mostrarModalPeriodos = false;
+
+  abrirModalPeriodos() {
+    this.mostrarModalPeriodos = true;
   }
 }

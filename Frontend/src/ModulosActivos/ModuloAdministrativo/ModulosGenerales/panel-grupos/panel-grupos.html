@@ -1,117 +1,280 @@
-<div class="dashboard-page">
-  <!-- 1. ENCABEZADO CON BIENVENIDA -->
-  <header class="page-header">
+<div class="dashboard-page" [class.auditoria-active-bg]="modoAuditoria">
+  
+  <header class="page-header animate-slide-in-left">
     <div class="header-content">
-      <h1 class="titulo-principal">Control Y Gestión De Materias En General</h1>
-      <br />
-      <p class="subtitulo">Resumen gestión operativa del Colegio Vizcaya.</p>
-      <br />
+      <h1 class="titulo-principal" [ngClass]="modoAuditoria ? 'text-red' : ''">Control y Gestión de Aulas</h1>
+      <p class="subtitulo">Panel Logístico y Salud Académica.</p>
+    </div>
+    <div class="header-actions">
+      <span class="fecha-actual"><i class="bi bi-calendar3 me-2"></i> {{ today | date: 'EEEE, dd/MM/yyyy' }}</span>
     </div>
   </header>
 
-  <!-- 2. TARJETAS DE INDICADORES (KPIs) -->
-  <!-- Se muestran con animación escalonada -->
   <section class="stats-section" *ngIf="!estaCargando && estadisticas; else loadingSkeleton">
-    <app-tarjeta-stadistic
-      class="kpi-card delay-100"
-      titulo="Materias Activas"
-      [valor]="estadisticas.conteoEstudiantes.activos"
-      detalle="Todas las materias activas"
-      color="verde"
-      icono="bi-people-fill"
-    >
-    </app-tarjeta-stadistic>
-
-    <app-tarjeta-stadistic
-      class="kpi-card delay-100"
-      titulo="Estudiantes de 1ero"
-      [valor]="estadisticas.conteoEstudiantes.activos"
-      detalle="Materias de 1er grado"
-      color="morado"
-      icono="bi-people-fill"
-    >
-    </app-tarjeta-stadistic>
-
-    <app-tarjeta-stadistic
-      class="kpi-card delay-200"
-      titulo="Estudiantes de 2ndo"
-      [valor]="estadisticas.conteoEstudiantes.inactivos"
-      detalle="Materias de 2ndo grado"
-      color="naranja"
-      icono="bi-person-video3"
-    >
-    </app-tarjeta-stadistic>
-
-    <app-tarjeta-stadistic
-      class="kpi-card delay-400"
-      titulo="Estudiantes de 3ero"
-      [valor]="estadisticas.conteoReportesIndisciplina.total"
-      detalle="Materias de 3er grado"
-      color="guinda"
-      icono="bi-graph-up-arrow"
-    >
-    </app-tarjeta-stadistic>
+    <app-tarjeta-stadistic class="delay-100" titulo="Materias Activas" [valor]="estadisticasAnimadas.activas" color="verde" icono="bi-layers-fill"></app-tarjeta-stadistic>
+    <app-tarjeta-stadistic class="delay-200" titulo="Alumnos 1° Sem." [valor]="estadisticasAnimadas.primerG" color="morado" icono="bi-people-fill"></app-tarjeta-stadistic>
+    <app-tarjeta-stadistic class="delay-300" titulo="Alumnos 2° Sem." [valor]="estadisticasAnimadas.segundoG" color="naranja" icono="bi-person-video3"></app-tarjeta-stadistic>
+    <app-tarjeta-stadistic class="delay-400" titulo="Alumnos 3° Sem." [valor]="estadisticasAnimadas.tercerG" color="guinda" icono="bi-mortarboard-fill"></app-tarjeta-stadistic>
   </section>
 
-  <!-- TEMPLATE DE CARGA (SKELETON) -->
-  <ng-template #loadingSkeleton>
-    <div class="stats-section">
-      <div class="skeleton-card" *ngFor="let i of [1, 2, 3, 4]"></div>
-    </div>
-  </ng-template>
+  <ng-template #loadingSkeleton><div class="stats-section"><div class="skeleton-card" *ngFor="let i of [1, 2, 3, 4]"></div></div></ng-template>
 
-  <!-- 3. CONTENIDO PRINCIPAL (GRID) -->
-  <div class="main-layout">
-    <!-- COLUMNA IZQUIERDA (Datos Masivos) -->
+  <div class="main-layout mt-2">
+    
     <div class="col-primary">
-      <!-- Widget: Alumnos -->
-       <div>
-        <app-grupos-widget
-          (manage)="abrirGestionAlumnos($event)"
-          (delete)="confirmarEliminar($event)"
-          (add)="abrirModalCrear($event)"
-        >
-        </app-grupos-widget>
-      </div>
-    </div>
-
-    <!-- COLUMNA DERECHA (Panel Lateral de Gestión) -->
-    <aside class="col-secondary">
-      <aside class="col-secondary d-flex flex-column gap-4">
-        <div style="height: auto"><app-materias-alerts-widget></app-materias-alerts-widget></div>
-
-        <div class="widget-card">
-          <div class="widget-header">
-            <div class="header-icon guinda-theme"><i class="bi bi-lightning-charge-fill"></i></div>
-            <div class="header-info">
-              <h3>Acciones Rápidas</h3>
-            </div>
+      
+      <div class="toolbar-section animate-slide-up delay-400" [class.auditoria-toolbar]="modoAuditoria">
+        <div class="toolbar-top">
+          <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Buscar asignatura o maestro..." [(ngModel)]="terminoBusqueda"/>
           </div>
-          <div class="widget-body p-3 d-flex flex-column gap-2">
-            <button class="btn btn-outline-secondary w-100 text-start">
-              <i class="bi bi-file-earmark-pdf me-2"></i> Descargar Plan de Estudios
-            </button>
-            <button class="btn btn-outline-secondary w-100 text-start">
-              <i class="bi bi-upload me-2"></i> Carga Masiva (CSV)
+          <div class="actions-box">
+            <div class="triage-toggle" [class.active]="modoAuditoria">
+              <span class="triage-label"><i class="bi bi-shield-shaded"></i> Modo Auditoría</span>
+              <label class="premium-switch danger-switch">
+                <input type="checkbox" [(ngModel)]="modoAuditoria" (change)="toggleAuditoria()">
+                <span class="slider round"></span>
+              </label>
+            </div>
+            <button class="btn-guinda shadow-btn" (click)="abrirModalCrear()">
+              <i class="bi bi-plus-lg me-1"></i> Nueva Aula
             </button>
           </div>
         </div>
-      </aside>
+        
+        <div class="toolbar-bottom mt-3" *ngIf="!modoAuditoria">
+          <div class="smart-filters">
+            <span class="filter-label">Filtros:</span>
+            <button class="filter-pill" [class.active]="filtroActivo === 'TODOS'" (click)="setFiltro('TODOS')">Todas</button>
+            <button class="filter-pill" [class.active]="filtroActivo === '1_SEMESTRE'" (click)="setFiltro('1_SEMESTRE')">1° Sem</button>
+            <button class="filter-pill" [class.active]="filtroActivo === '2_SEMESTRE'" (click)="setFiltro('2_SEMESTRE')">2° Sem</button>
+            <button class="filter-pill" [class.active]="filtroActivo === '3_SEMESTRE'" (click)="setFiltro('3_SEMESTRE')">3° Sem</button>
+            <div class="divider-vertical"></div>
+            <button class="filter-pill pill-warning" [class.active]="filtroActivo === 'SIN_DOCENTE'" (click)="setFiltro('SIN_DOCENTE')"><i class="bi bi-person-exclamation me-1"></i> Sin Docente</button>
+            <button class="filter-pill pill-bajas" [class.active]="filtroActivo === 'VACIOS'" (click)="setFiltro('VACIOS')"><i class="bi bi-inbox me-1"></i> Vacíos</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="classroom-grid animate-slide-up delay-500 mt-4">
+        
+        <div class="classroom-card" 
+             *ngFor="let grupo of gruposFiltrados" 
+             [ngClass]="{'border-critical': evaluarRiesgoGrupo(grupo) === 'CRITICO' && modoAuditoria, 'selected-card': esGrupoSeleccionado(grupo)}"
+             (click)="abrirDrawer(grupo)">
+          
+          <div class="selection-indicator" *ngIf="esGrupoSeleccionado(grupo)">
+            <i class="bi bi-check-lg"></i>
+          </div>
+
+          <div class="smart-badge badge-red" *ngIf="!grupo.empleadoUid || grupo.empleadoUid === 'null'"><i class="bi bi-exclamation-triangle-fill"></i> Urge Docente</div>
+          
+          <div class="card-header">
+            <div class="teacher-avatar-wrapper" [ngClass]="getNivelCumplimiento(grupo)">
+              <img [src]="grupo.docente?.persona?.fotoUrl || 'assets/default-teacher.png'" class="teacher-img" *ngIf="grupo.empleadoUid && grupo.empleadoUid !== 'null'">
+              <div class="empty-avatar pulse-red" *ngIf="!grupo.empleadoUid || grupo.empleadoUid === 'null'"><i class="bi bi-person-x-fill"></i></div>
+            </div>
+            <div class="class-info">
+              <span class="badge-ciclo">{{ grupo.cicloEscolar }}</span>
+              <h3 class="subject-name text-truncate" [title]="grupo.materia?.nombre">{{ grupo.materia?.nombre || 'Sin Materia' }}</h3>
+              <p class="teacher-name">{{ grupo.docente ? grupo.docente.persona.nombre + ' ' + grupo.docente.persona.apellidos : 'Profesor No Asignado' }}</p>
+            </div>
+          </div>
+    
+          <div class="card-body">
+            <div class="occupancy-stats">
+              <div class="progress-info">
+                <span class="label">Ocupación del Aula</span>
+                <span class="value">{{ grupo.estudianteUids?.length || 0 }} <small class="text-muted">/ 30</small></span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-fill" [style.width]="((grupo.estudianteUids?.length || 0) / 30) * 100 + '%'" [ngClass]="{'bg-warning': (grupo.estudianteUids?.length || 0) < 5, 'bg-guinda': (grupo.estudianteUids?.length || 0) >= 5}"></div>
+              </div>
+            </div>
+            <div class="meta-footer">
+              <span class="grade-badge">{{ grupo.materia?.grado || '-' }}° "{{ grupo.letraGrupo || 'A' }}"</span>
+            </div>
+          </div>
+
+          <div class="glass-overlay">
+            <div class="action-buttons">
+              <button class="action-btn" title="Seleccionar Aula" (click)="toggleSeleccionGrupo(grupo, $event)">
+                <i class="bi" [ngClass]="esGrupoSeleccionado(grupo) ? 'bi-check-all text-guinda' : 'bi-ui-checks text-muted'"></i>
+              </button>
+              
+              <button class="action-btn" title="Gestionar Alumnos" (click)="abrirDrawer(grupo); $event.stopPropagation()"><i class="bi bi-people-fill text-blue"></i></button>
+              <button class="action-btn" title="Eliminar Grupo" (click)="confirmarEliminarGrupo(grupo, $event)"><i class="bi bi-trash3-fill text-red"></i></button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="empty-state" *ngIf="gruposFiltrados.length === 0">
+          <i class="bi bi-layout-text-window-reverse"></i>
+          <h3>No hay grupos encontrados</h3>
+          <p>Ajusta los filtros o cambia el modo de auditoría.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <aside class="col-secondary">
+      
+      <div class="widget-card control-center-card animate-slide-up delay-400">
+        <div class="widget-header-premium">
+          <div class="title-group"><h3>Radar Operativo</h3><p>Acciones Masivas</p></div>
+        </div>
+        <div class="widget-body p-4">
+          <div class="ios-grid">
+            
+            <button class="ios-btn bg-blue-light" title="Asignación rápida" (click)="radarReasignarDocentes()">
+              <i class="bi bi-person-lines-fill text-blue"></i><span>Reasignar<br>Docentes</span>
+            </button>
+            
+            <button class="ios-btn bg-gold-light" title="Generar PDF" (click)="radarReporteOcupacion()">
+              <i class="bi bi-file-earmark-pdf-fill text-warning"></i><span>Reporte<br>Ocupación</span>
+            </button>
+            
+            <button class="ios-btn bg-green-light" title="Próximamente" (click)="radarHorarios()">
+              <i class="bi bi-calendar3-range-fill text-verde"></i><span>Horarios<br>Generales</span>
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="widget-card animate-slide-up delay-500">
+        <div class="widget-header-premium">
+          <div class="title-group"><h3>Alertas Logísticas</h3><p>Aulas que requieren atención</p></div>
+          <span class="badge-count" *ngIf="gruposCriticos.length > 0">{{ gruposCriticos.length }}</span>
+        </div>
+        
+        <div class="widget-body p-0 custom-scroll" style="max-height: 350px;">
+          <div class="inbox-list">
+            
+            <div class="inbox-item" *ngFor="let critico of gruposCriticos" (click)="abrirDrawer(critico)">
+              <div class="item-icon bg-red-light"><i class="bi bi-exclamation-triangle-fill text-red"></i></div>
+              <div class="item-content">
+                <h4>{{ critico.materia?.nombre }}</h4>
+                <p><strong>Motivo:</strong> Docente no asignado</p>
+                <span class="date">{{ critico.materia?.grado }}° Semestre</span>
+              </div>
+              <div class="item-action"><i class="bi bi-chevron-right"></i></div>
+            </div>
+
+            <div class="empty-state p-4" *ngIf="gruposCriticos.length === 0">
+              <i class="bi bi-check-circle-fill text-verde" style="font-size: 2rem;"></i>
+              <h3 style="font-size: 1rem; margin-top: 10px;">Operación Estable</h3>
+              <p style="font-size: 0.8rem;">Todas las aulas tienen docente asignado.</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
     </aside>
+
   </div>
 </div>
 
-<app-modal-grupo-nuevo
-  *ngIf="mostrarModalNuevo"
-  (close)="mostrarModalNuevo = false"
-  (success)="alCrearGrupo()"
->
-</app-modal-grupo-nuevo>
+<div class="floating-bulk-toolbar" [class.show]="seleccionMasiva.length > 0">
+  <div class="toolbar-content">
+    <div class="selection-info">
+      <div class="count-badge pulse-animation">{{ seleccionMasiva.length }}</div>
+      <div class="text-data">
+        <span class="title">Aulas Seleccionadas</span>
+        <span class="subtitle">Modo de Gestión Masiva</span>
+      </div>
+    </div>
+    
+    <div class="bulk-actions">
+      <button class="btn-bulk bg-blue-light" (click)="accionMasivaAsignar()">
+        <i class="bi bi-person-lines-fill"></i> Asignar Docente General
+      </button>
+      <button class="btn-bulk bg-guinda-light" (click)="accionMasivaExportar()">
+        <i class="bi bi-file-earmark-pdf-fill"></i> Exportar Listas
+      </button>
+      
+      <div class="divider"></div>
+      
+      <button class="btn-cancel-bulk" title="Limpiar Selección" (click)="limpiarSeleccionMasiva()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  </div>
+</div>
 
-<app-modal-grupo-gestion
-  *ngIf="mostrarModalGestion"
-  [grupo]="grupoSeleccionado!"
-  (close)="mostrarModalGestion = false"
-  (updated)="alTerminarGestion()"
->
-</app-modal-grupo-gestion>
+<div class="floating-bulk-toolbar" [class.show]="seleccionMasiva.length > 0 && !mostrarModalAsignacionMasiva">
+  <div class="toolbar-content">
+    <div class="selection-info">
+      <div class="count-badge pulse-animation">{{ seleccionMasiva.length }}</div>
+      <div class="text-data">
+        <span class="title">Aulas Seleccionadas</span>
+        <span class="subtitle">Modo de Gestión Masiva</span>
+      </div>
+    </div>
+    
+    <div class="bulk-actions">
+      <button class="btn-bulk bg-blue-light" (click)="accionMasivaAsignar()" [disabled]="procesandoMasivo">
+        <i class="bi bi-person-lines-fill"></i> Asignar Docente
+      </button>
+      <button class="btn-bulk bg-guinda-light" (click)="accionMasivaExportar()" [disabled]="procesandoMasivo">
+        <i class="bi" [ngClass]="procesandoMasivo ? 'bi-hourglass-split spin' : 'bi-file-earmark-pdf-fill'"></i> Exportar Listas
+      </button>
+      <div class="divider"></div>
+      <button class="btn-cancel-bulk" title="Limpiar Selección" (click)="limpiarSeleccionMasiva()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop-premium" *ngIf="mostrarModalAsignacionMasiva">
+  <div class="modal-premium-content animate-slide-down">
+    
+    <div class="modal-header-guinda guinda-gradient">
+      <div class="header-titles">
+        <span class="badge-white">Gestión Logística</span>
+        <h2>Asignación Masiva</h2>
+        <p>Se asignará el mismo titular a <strong>{{ seleccionMasiva.length }} materias</strong>.</p>
+      </div>
+      <button class="btn-close-glass" (click)="mostrarModalAsignacionMasiva = false"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <div class="modal-body-list custom-scroll">
+      
+      <div class="empty-state-mini" *ngIf="docentesDisponibles.length === 0">
+        <i class="bi bi-people text-muted"></i>
+        <p>No hay docentes registrados en el sistema.</p>
+      </div>
+
+      <div class="docente-item-glass" *ngFor="let doc of docentesDisponibles" (click)="confirmarAsignacionMasiva(doc)" [class.disabled]="procesandoMasivo">
+        <img [src]="doc.persona.fotoUrl || 'assets/default-teacher.png'" class="doc-avatar">
+        <div class="doc-info">
+          <span class="doc-name">{{ doc.persona.nombre }} {{ doc.persona.apellidos }}</span>
+          <span class="doc-carga">
+            Carga actual: {{ getCargaDocente(doc.persona.uid) }} grupos
+            <div class="carga-bar"><div class="carga-fill" [style.width]="(getCargaDocente(doc.persona.uid) / 5) * 100 + '%'"></div></div>
+          </span>
+        </div>
+        <button class="btn-select-doc"><i class="bi bi-arrow-right"></i></button>
+      </div>
+
+    </div>
+
+    <div class="modal-footer-glass">
+      <button class="btn-outline" (click)="mostrarModalAsignacionMasiva = false">Cancelar Operación</button>
+    </div>
+
+  </div>
+</div>
+
+<app-drawer-grupo-detalle 
+  [grupo]="grupoSeleccionado" 
+  [isOpen]="drawerAbierto" 
+  (close)="cerrarDrawer()"
+  (grupoActualizado)="cargarGrupos()">
+</app-drawer-grupo-detalle>
+
+<app-modal-grupo-nuevo *ngIf="mostrarModalNuevo" (close)="mostrarModalNuevo = false" (success)="alCrearGrupo()"></app-modal-grupo-nuevo>

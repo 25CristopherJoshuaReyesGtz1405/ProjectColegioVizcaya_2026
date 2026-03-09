@@ -1,0 +1,112 @@
+<div class="offcanvas-backdrop fade-in" (click)="close.emit()">
+  
+  <div class="offcanvas-panel float-in-right" (click)="$event.stopPropagation()">
+    
+    <header class="expediente-header guinda-gradient">
+      <div class="header-actions">
+        <span class="badge-tag"><i class="bi bi-person-bounding-box me-1"></i> Expediente 360°</span>
+        <button class="btn-close-white" (click)="close.emit()"><i class="bi bi-x-lg"></i></button>
+      </div>
+      
+      <div class="profile-main">
+        <div class="avatar-lg">
+          <img *ngIf="alumno?.fotoUrl" [src]="alumno.fotoUrl">
+          <span *ngIf="!alumno?.fotoUrl">{{ alumno?.nombre?.charAt(0) }}</span>
+        </div>
+        <div class="profile-info">
+          <h2>{{ alumno?.nombre }}</h2>
+          <p><i class="bi bi-person-vcard"></i> Matrícula: {{ alumno?.matricula }}</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="expediente-body custom-scroll">
+      
+      <div *ngIf="cargando" class="loader-container">
+        <div class="spinner-border text-guinda"></div>
+        <p>Recopilando historial académico...</p>
+      </div>
+
+      <ng-container *ngIf="!cargando">
+        
+        <div class="section-block animate-slide-up delay-100">
+          <h3 class="section-title">Desempeño en {{ materiaNombre }}</h3>
+          
+          <div class="vital-signs-grid">
+            <div class="vital-card">
+              <div class="icon-box bg-pastel-green"><i class="bi bi-check2-circle text-success"></i></div>
+              <div class="vital-data">
+                <span>Promedio Actual</span>
+                <strong [ngClass]="alumno.promedioFinal >= 6 ? 'text-success' : 'text-danger'">
+                  {{ alumno.promedioFinal | number:'1.1-1' }}
+                </strong>
+              </div>
+            </div>
+            
+            <div class="vital-card">
+              <div class="icon-box bg-pastel-warning"><i class="bi bi-calendar-x text-warning"></i></div>
+              <div class="vital-data">
+                <span>Faltas Totales</span>
+                <strong>{{ kpis.inasistencias }}</strong>
+              </div>
+            </div>
+            
+            <div class="vital-card">
+              <div class="icon-box" [ngClass]="kpis.reportesActivos > 0 ? 'bg-pastel-red' : 'bg-light-gray'">
+                <i class="bi bi-shield-exclamation" [ngClass]="kpis.reportesActivos > 0 ? 'text-danger' : 'text-muted'"></i>
+              </div>
+              <div class="vital-data">
+                <span>Reportes Activos</span>
+                <strong>{{ kpis.reportesActivos }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block animate-slide-up delay-200">
+          <h3 class="section-title">Estatus General</h3>
+          <div class="risk-banner" [ngClass]="getNivelClass(kpis.nivelRiesgo)">
+            <div class="risk-icon"><i class="bi bi-activity"></i></div>
+            <div class="risk-text">
+              <h4>Nivel de Riesgo: <strong>{{ kpis.nivelRiesgo }}</strong></h4>
+              <p *ngIf="kpis.nivelRiesgo === 'BAJO'">El estudiante muestra un rendimiento estable y constante.</p>
+              <p *ngIf="kpis.nivelRiesgo === 'MEDIO'">Requiere atención. Promedio cercano al límite reprobatorio.</p>
+              <p *ngIf="kpis.nivelRiesgo === 'ALTO'">Alerta. El estudiante está en peligro inminente de reprobación.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block animate-slide-up delay-300">
+          <h3 class="section-title">Últimas Incidencias</h3>
+          
+          <div class="empty-state" *ngIf="historialDisciplina.length === 0">
+            <div class="empty-icon"><i class="bi bi-shield-check text-success"></i></div>
+            <p>Historial limpio. No hay reportes registrados en este periodo.</p>
+          </div>
+
+          <div class="timeline" *ngIf="historialDisciplina.length > 0">
+            <div class="timeline-item" *ngFor="let rep of historialDisciplina">
+              <div class="marker bg-danger"></div>
+              <div class="content box-danger">
+                <div class="t-header">
+                  <strong>Reporte de {{ rep.tipo }}</strong>
+                  <span>{{ rep.fecha | date:'dd MMM yyyy' }}</span>
+                </div>
+                <p>{{ rep.descripcion }}</p>
+                <span class="badge-severidad">Severidad: {{ rep.severidad }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </ng-container>
+    </div>
+
+    <div class="expediente-footer">
+      <button class="btn btn-outline-secondary btn-premium w-100" (click)="close.emit()">
+        <i class="bi bi-arrow-right me-2"></i> Cerrar Expediente
+      </button>
+    </div>
+
+  </div>
+</div>

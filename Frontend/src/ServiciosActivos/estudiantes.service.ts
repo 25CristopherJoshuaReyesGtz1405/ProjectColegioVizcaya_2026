@@ -54,17 +54,13 @@ export class EstudiantesService {
     });
   }
 
-  getEstudiantesBaja(sortBy?: string, order?: 'asc' | 'desc'): Observable<PerfilUsuarioDTO[]> {
+  // Obtener estudiantes inactivos (Bajas)
+  getEstudiantesBaja(sortBy?: string, order?: string) {
     let params = new HttpParams();
     if (sortBy) params = params.set('sortBy', sortBy);
     if (order) params = params.set('order', order);
-
-    return this.http.get<PerfilUsuarioDTO[]>('http://localhost:3000/api/estudiantes/baja', {
-      headers: this.getHeaders(),
-      params,
-    });
+    return this.http.get<PerfilUsuarioDTO[]>(`${this.apiUrl}/baja`, { params });
   }
-
   /**
    * Busca un estudiante por matrícula.
    */
@@ -117,4 +113,8 @@ export class EstudiantesService {
     // Endpoint sugerido: GET /api/estudiantes/:uid/kardex
     return this.http.get<KardexDTO>(`${this.apiUrl}/${uid}/kardex`);
   }
+
+  buscarEstudiantesGlobal(termino: string) {
+  return this.http.get<PerfilUsuarioDTO[]>(`${this.apiUrl}/buscar/global?q=${termino}`);
+}
 }
