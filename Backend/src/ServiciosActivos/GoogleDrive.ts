@@ -2,11 +2,10 @@ import { google } from 'googleapis';
 import { Readable } from 'stream';
 
 // --- CONFIGURACIÓN OAUTH2 ---
-const CLIENT_ID = '141454005675-lgcubd0309l5oea9ada4ktakudlbl740.apps.googleusercontent.com';
-const CLIENT_SECRET = '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';
-const REFRESH_TOKEN = '1//04-gZargquns3CgYIARAAGAQSNwF-L9IrsYG5rdENbpv46NoNSPIPWuqiCPZyaoMUGhDJ5GdljqFTIAd3gr-ejgNUkJXV6FdmuOY';
-
-const CARPETA_ID = '19C2aTcF8OnnERY2Q4domte2N7GTl-MRT'; 
+const CLIENT_ID = process.env['CLIENT_ID'];
+const CLIENT_SECRET = process.env['CLIENT_SECRET'];
+const REFRESH_TOKEN = process.env['REFRESH_TOKEN'];
+const CARPETA_ID = process.env['CARPETA_ID']; 
 
 // Configuramos el cliente que "imita" al usuario
 const oauth2Client = new google.auth.OAuth2(
@@ -15,7 +14,7 @@ const oauth2Client = new google.auth.OAuth2(
   'https://developers.google.com/oauthplayground' // Redirect URI
 );
 
-oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN as string });
 
 const drive = google.drive({ version: 'v3', auth: oauth2Client });
 

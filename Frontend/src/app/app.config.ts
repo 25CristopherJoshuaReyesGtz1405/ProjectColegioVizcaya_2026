@@ -8,7 +8,6 @@ import { routes } from './app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { authInterceptor } from '../ConfiguracionesActivas/Interceptores/auth.interceptor';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCtgS-c78GQKNDjyU2puOz-u41DQONMa7o",
@@ -30,8 +29,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([authInterceptor]) 
     ),
-
-    provideFirestore(() => getFirestore()),
 
     //  * Proveedores De La Base De Datos... 
     provideFirebaseApp(() => initializeApp(firebaseConfig)),

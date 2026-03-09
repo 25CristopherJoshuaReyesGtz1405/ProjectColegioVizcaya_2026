@@ -4,6 +4,9 @@ Frontend/node_modules
 Backend/src/ConfiguracionesActivas/ColegioVizcaya.json
 Backend/src/ConfiguracionesActivas/vizcaya-drive-key.json
 
+.env
+
+
 /dist
 /tmp
 /out-tsc
