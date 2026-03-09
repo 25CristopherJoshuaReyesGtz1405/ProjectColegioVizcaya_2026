@@ -12,6 +12,7 @@ import { NotificacionesService } from '../../../../ServiciosActivos/notificacion
 import { AdminService } from '../../../../ServiciosActivos/admin.service';
 import { Materia, EstadisticasDashboardDTO } from '../../../../ModelosActivos/ModelosAplicacion.model';
 import { DrawerMateriaDetalle } from '../../ModuloComponentes/drawer-materia-detalle/drawer-materia-detalle';
+import { FirebaseAppModule } from '@angular/fire/app';
 
 @Component({
   selector: 'app-panel-materias',
@@ -25,7 +26,7 @@ import { DrawerMateriaDetalle } from '../../ModuloComponentes/drawer-materia-det
   ],
   templateUrl: './panel-materias.html',
   styleUrl: './panel-materias.scss',
-  providers: [DatePipe]
+  providers: [DatePipe, FirebaseAppModule]
 })
 export class PanelMaterias implements OnInit {
 
